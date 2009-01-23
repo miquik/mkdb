@@ -18,14 +18,11 @@ namespace mkdb
 		private	wx.Window	_cur_window;	
 		private string _cur_action;
 		private PropertyGrid _obj_props_panel;
-		private Hashtable _widget_list;
+    	// Constructor is 'protected'
 
-		// Constructor is 'protected'
     	protected Common()
     	{
-			_cur_window = null;
-			_widget_list = new Hashtable();
-			_obj_props_panel = null;
+			_cur_window = null;    		
     	}
 
     	public static Common Instance()
@@ -52,7 +49,7 @@ namespace mkdb
 			set	{	_cur_window = value;	}
 		}    	
 		
-		public string CurrentAction
+		public string CurAction
 		{
 			get	{	return _cur_action;		}
 			set	{	_cur_action = value;	}
@@ -62,11 +59,6 @@ namespace mkdb
 		{
 			get	{	return	_obj_props_panel; 	}
 			set	{	_obj_props_panel = value;	}
-		}
-		
-		public Hashtable WidgetList
-		{
-			get	{	return _widget_list;	}
 		}
   	}	
 }

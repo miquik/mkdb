@@ -88,6 +88,11 @@ namespace mkdb.Widgets
 			_props = new wdbFrameProps();
 		}
 		
+		public string FrameName
+		{
+			get	{	return _elem.Title;	}
+		}
+		
 		public override bool InsertWidget(Panel _canvas)
 		{
 			InsertWidgetInEditor(_canvas);
@@ -124,6 +129,7 @@ namespace mkdb.Widgets
 			wxh = Win32Utils.FindWindow("wxWindowClassNR", winProps.Title);
 			Win32Utils.SetParent(wxh, _canvas.Handle);
 			_elem.EVT_MOUSE_EVENTS(new wx.EventListener(OnMouseEvent));
+			_elem.EVT_MOUSE_EVENTS(new wx.EventListener(OnMouseEvent));
 			cm.ChangeCurrentWindow(_elem);
 			return true;
 		}
@@ -146,6 +152,10 @@ namespace mkdb.Widgets
 			// Manage mouse events when inside this widget
 			// Mouse Left : show properties associates to this widget
 			// Mouse Right : Popup menu
+			if (evt.EventType == wx.Event.wxEVT_LEAVE_WINDOW)
+			{
+				// _elem.AcceleratorTable
+			}
         }
 	}
 }

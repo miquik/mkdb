@@ -200,6 +200,7 @@ namespace mkdb
 			this.objtree.Name = "objtree";
 			this.objtree.Size = new System.Drawing.Size(214, 311);
 			this.objtree.TabIndex = 1;
+			this.objtree.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.ObjtreeAfterSelect);
 			// 
 			// label1
 			// 
