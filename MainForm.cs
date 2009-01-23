@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using mkdb.Widgets;
 
 
 namespace mkdb
@@ -34,6 +35,10 @@ namespace mkdb
 		void ToolStripButton3Click(object sender, EventArgs e)
 		{
 			// Create a wxWindow on the top of canvas panel.
+			Common.Instance().ObjPropsPanel = objprops;
+			wdbFrame testframe = new wdbFrame();
+			testframe.InsertWidget(canvas);
+			/*
 			IntPtr wxh;
 			wx.Frame testframe = new wx.Frame(null, 10001,"Prova", new Point(0,0));
 			testframe.Title = "wxFrame1";
@@ -41,6 +46,7 @@ namespace mkdb
 			wxh = Win32Utils.FindWindow("wxWindowClassNR", "wxFrame1");
 			Win32Utils.SetParent(wxh, canvas.Handle);
 			testframe.Show();
+			*/
 			// wxWindowClassNR
 		}
 		

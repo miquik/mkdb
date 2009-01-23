@@ -76,7 +76,7 @@ namespace mkdb.Widgets
 	}
 	
 	/// <summary>
-	/// Description of wdbWindow.
+	/// Description of wdbFrame.
 	/// </summary>
 	public class wdbFrame : WidgetElem
 	{
@@ -90,8 +90,7 @@ namespace mkdb.Widgets
 		
 		public override bool InsertWidget(Panel _canvas)
 		{
-			wdbFrameProps winProps = (wdbFrameProps)_props;			
-			// _elem = new wx.Window(
+			InsertWidgetInEditor(_canvas);
 			return false;
 		}
 		
@@ -117,14 +116,15 @@ namespace mkdb.Widgets
 			winProps.Title = "Frame" + _frame_cur_index.ToString();
 			winProps.Pos = new System.Drawing.Point(0, 0);
 			winProps.Size = new System.Drawing.Size(300, 300);
+			winProps.ID = -1;
+			cm.ObjPropsPanel.SelectedObject = winProps;
 			
 			// TODO : Style
-			_elem = new wx.Frame(null, winProps.ID, winProps.Title, winProps.Pos, winProps.Size, 0);
+			_elem = new wx.Frame(null, winProps.ID, winProps.Title, winProps.Pos, winProps.Size, wx.Frame.wxDEFAULT_FRAME_STYLE);
 			wxh = Win32Utils.FindWindow("wxWindowClassNR", winProps.Title);
 			Win32Utils.SetParent(wxh, _canvas.Handle);
-			cm.CurrentWindow.Hide();
-			cm.CurrentWindow = _elem;
-			cm.CurrentWindow.Show();
+			_elem.EVT_MOUSE_EVENTS(new wx.EventListener(OnMouseEvent));
+			cm.ChangeCurrentWindow(_elem);
 			return true;
 		}
 		protected override bool InsertWidgetInText()
@@ -141,5 +141,11 @@ namespace mkdb.Widgets
 			return true;
 		}
 		
+		protected void OnMouseEvent(object sender, wx.Event evt)
+        {
+			// Manage mouse events when inside this widget
+			// Mouse Left : show properties associates to this widget
+			// Mouse Right : Popup menu
+        }
 	}
 }
