@@ -19,12 +19,23 @@ namespace mkdb
 	{
 		protected wx.Window _elem;
 		protected WidgetProps _props;
+		protected string _label;
 		
 		public WidgetElem()
 		{
 			_elem = null;
 			_props = null;
+			_label = "";
 		}
+		
+		public string Label
+		{
+			get	{	return _label;	}
+		}
+		public WidgetProps Props
+		{
+			get	{	return _props;	}
+		}		
 		
 		public abstract bool InsertWidget(System.Windows.Forms.Panel _canvas);
 		public abstract bool DeleteWidget();		

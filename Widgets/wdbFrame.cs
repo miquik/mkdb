@@ -87,12 +87,7 @@ namespace mkdb.Widgets
 			_elem = null;
 			_props = new wdbFrameProps();
 		}
-		
-		public string FrameName
-		{
-			get	{	return _elem.Title;	}
-		}
-		
+				
 		public override bool InsertWidget(Panel _canvas)
 		{
 			InsertWidgetInEditor(_canvas);
@@ -122,6 +117,7 @@ namespace mkdb.Widgets
 			winProps.Pos = new System.Drawing.Point(0, 0);
 			winProps.Size = new System.Drawing.Size(300, 300);
 			winProps.ID = -1;
+			_label = winProps.Title;
 			cm.ObjPropsPanel.SelectedObject = winProps;
 			
 			// TODO : Style

@@ -35,8 +35,8 @@ namespace mkdb
 			wdbFrame testframe = new wdbFrame();
 			Common.Instance().ObjPropsPanel = objprops;
 			testframe.InsertWidget(canvas);
-			objtree.SelectedNode.Nodes.Add(testframe.FrameName);
-			Common.Instance().WidgetList.Add(testframe.FrameName, testframe);
+			objtree.SelectedNode.Nodes.Add(testframe.Label);
+			Common.Instance().WidgetList.Add(testframe.Label, testframe);
 		}
 		
 		void ToolStripButton4Click(object sender, EventArgs e)
@@ -50,7 +50,12 @@ namespace mkdb
 		{
 			if (e.Action == TreeViewAction.ByMouse)
 			{
-				
+				WidgetElem elem = (WidgetElem)Common.Instance().WidgetList[e.Node.Text];
+				if (elem != null)
+				{
+					objprops.SelectedObject = elem.Props;
+					// Common.Instance().ChangeCurrentWindow();
+				}
 			}
 		}
 	}
