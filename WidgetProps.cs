@@ -63,11 +63,23 @@ namespace mkdb
 	/// <summary>
 	/// Abstract class for properties (WidgetProps).
 	/// </summary>
-	public abstract class WidgetProps
+	public abstract class WidgetProps : INotifyPropertyChanged
 	{
 		public WidgetProps()
 		{
 		}
+		
+		protected void NotifyPropertyChanged(String propertyName)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+        #region INotifyPropertyChanged Members
+        public event PropertyChangedEventHandler PropertyChanged;
+        #endregion		
 	}
 	
 	/// <summary>
@@ -90,7 +102,11 @@ namespace mkdb
 		public int BorderWidth
 		{
 			get	{	return _border;		}
-			set	{	_border = value;	}
+			set	
+			{	
+				_border = value;
+				NotifyPropertyChanged("BorderWidth");
+			}
 		}
 				
 		[CategoryAttribute("Alignment & Border"), DescriptionAttribute("Alignment and Border flags")]

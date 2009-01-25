@@ -107,6 +107,7 @@ namespace mkdb.Widgets
 		protected override bool InsertWidgetInEditor(Panel _canvas)
 		{
 			IntPtr wxh;
+			long _cstyle;
 			Common cm = Common.Instance();
 			
 			wdbFrameProps winProps = (wdbFrameProps)_props;
@@ -117,16 +118,16 @@ namespace mkdb.Widgets
 			winProps.Pos = new System.Drawing.Point(0, 0);
 			winProps.Size = new System.Drawing.Size(300, 300);
 			winProps.ID = -1;
-			_label = winProps.Title;
-			cm.ObjPropsPanel.SelectedObject = winProps;
+			_label = winProps.Title;			
+			_cstyle = ParseFrameStyle(winProps.Style);
 			
-			// TODO : Style
-			_elem = new wx.Frame(null, winProps.ID, winProps.Title, winProps.Pos, winProps.Size, wx.Frame.wxDEFAULT_FRAME_STYLE);
+			_elem = new wx.Frame(null, winProps.ID, winProps.Title, winProps.Pos, winProps.Size, _cstyle);
 			wxh = Win32Utils.FindWindow("wxWindowClassNR", winProps.Title);
 			Win32Utils.SetParent(wxh, _canvas.Handle);
 			_elem.EVT_MOUSE_EVENTS(new wx.EventListener(OnMouseEvent));
-			_elem.EVT_MOUSE_EVENTS(new wx.EventListener(OnMouseEvent));
+			
 			cm.ChangeCurrentWindow(_elem);
+			SetWidgetProps();
 			return true;
 		}
 		protected override bool InsertWidgetInText()
@@ -153,5 +154,39 @@ namespace mkdb.Widgets
 				// _elem.AcceleratorTable
 			}
         }
+				
+		public void winProps_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            System.Diagnostics.Debug.WriteLine(e.PropertyName + " has been changed.");            
+        }
+		
+		private long ParseFrameStyle(FrameStyle curstyle)
+		{
+			long _cstyle = 0;
+			if (curstyle & FrameStyle.wxCAPTION) _cstyle |= wx.Frame.wxCAPTION;
+			if (curstyle & FrameStyle.wxCLOSE_BOX) _cstyle |= wx.Frame.wxCLOSE_BOX;
+			if (curstyle & FrameStyle.wxDEFAULT_FRAME_STYLE) _cstyle |= wx.Frame.wxDEFAULT_FRAME_STYLE;
+			if (curstyle & FrameStyle.wxFRAME_FLOAT_ON_PARENT) _cstyle |= wx.Frame.wxFRAME_FLOAT_ON_PARENT;
+			if (curstyle & FrameStyle.wxFRAME_NO_TASKBAR) _cstyle |= wx.Frame.wxFRAME_NO_TASKBAR;
+			if (curstyle & FrameStyle.wxFRAME_SHAPED) _cstyle |= wx.Frame.wxFRAME_SHAPED;
+			if (curstyle & FrameStyle.wxFRAME_TOOL_WINDOW) _cstyle |= wx.Frame.wxFRAME_TOOL_WINDOW;
+			if (curstyle & FrameStyle.wxICONIZE) _cstyle |= wx.Frame.wxICONIZE;
+			if (curstyle & FrameStyle.wxMAXIMIZE) _cstyle |= wx.Frame.wxMAXIMIZE;
+			if (curstyle & FrameStyle.wxMAXIMIZE_BOX) _cstyle |= wx.Frame.wxMAXIMIZE_BOX;
+			if (curstyle & FrameStyle.wxMINIMIZE) _cstyle |= wx.Frame.wxMINIMIZE;
+			if (curstyle & FrameStyle.wxMINIMIZE_BOX) _cstyle |= wx.Frame.wxMINIMIZE_BOX;
+			if (curstyle & FrameStyle.wxRESIZE_BORDER) _cstyle |= wx.Frame.wxRESIZE_BORDER;			
+			if (curstyle & FrameStyle.wxSTAY_ON_TOP) _cstyle |= wx.Frame.wxSTAY_ON_TOP;			
+			if (curstyle & FrameStyle.wxSYSTEM_MENU) _cstyle |= wx.Frame.wxSYSTEM_MENU;						
+			return _cstyle;			
+		}
+		
+		public void SetWidgetProps()
+		{
+			wdbFrameProps winProps = (wdbFrameProps)_props;
+			winProps.PropertyChanged += new PropertyChangedEventHandler(winProps_PropertyChanged);
+			Common.Instance().ObjPropsPanel.SelectedObject = winProps;
+		}		
+		
 	}
 }
