@@ -15,7 +15,7 @@ namespace mkdb
 	/// <summary>
 	/// Description of WidgetElem.
 	/// </summary>
-	public abstract class WidgetElem
+	public abstract class WidgetElem : TreeNode
 	{
 		protected wx.Window _elem;
 		protected WidgetProps _props;
@@ -32,16 +32,20 @@ namespace mkdb
 		{
 			get	{	return _label;	}
 		}
-		public WidgetProps Props
+		public WidgetProps Properties
 		{
 			get	{	return _props;	}
 		}		
+		public wx.Window Element
+		{
+			get	{	return _elem;	}
+		}
 		
-		public abstract bool InsertWidget(System.Windows.Forms.Panel _canvas);
+		public abstract bool InsertWidget();
 		public abstract bool DeleteWidget();		
 		public abstract long FindBlockInText();
 		
-		protected abstract bool InsertWidgetInEditor(System.Windows.Forms.Panel _canvas);
+		protected abstract bool InsertWidgetInEditor();
 		protected abstract bool InsertWidgetInText();
 		
 		protected abstract bool DeleteWidgetFromEditor();

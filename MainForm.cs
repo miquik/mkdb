@@ -27,16 +27,18 @@ namespace mkdb
 			//
 			InitializeComponent();
 			objtree.Nodes.Add("Application");
+			Common.Instance().ObjPropsPanel = objprops;
 		}
 		
 		void ToolStripButton3Click(object sender, EventArgs e)
 		{
 			// Create a wxWindow on the top of canvas panel.
-			wdbFrame testframe = new wdbFrame();
-			Common.Instance().ObjPropsPanel = objprops;
-			testframe.InsertWidget(canvas);
-			objtree.SelectedNode.Nodes.Add(testframe.Label);
-			Common.Instance().WidgetList.Add(testframe.Label, testframe);
+			wdbFrame frame = new wdbFrame();
+			frame.InsertWidget();
+			IntPtr wxh = Win32Utils.FindWindow("wxWindowClassNR", frame.Element.Title);
+			Win32Utils.SetParent(wxh, canvas.Handle);
+			Common.Instance().ChangeCurrentWindow(frame.Element);
+			objtree.SelectedNode.Nodes.Add(frame);
 		}
 		
 		void ToolStripButton4Click(object sender, EventArgs e)
@@ -50,10 +52,12 @@ namespace mkdb
 		{
 			if (e.Action == TreeViewAction.ByMouse)
 			{
-				WidgetElem elem = (WidgetElem)Common.Instance().WidgetList[e.Node.Text];
+				// WidgetElem elem = (WidgetElem)Common.Instance().WidgetList[e.Node.Text];
+				// WidgetElem elem = (WidgetElem)objtree.Nodes.Find(e.Node.Text, true);
+				WidgetElem elem = (WidgetElem)objtree.SelectedNode;
 				if (elem != null)
 				{
-					objprops.SelectedObject = elem.Props;
+					objprops.SelectedObject = elem.Properties;
 					// Common.Instance().ChangeCurrentWindow();
 				}
 			}

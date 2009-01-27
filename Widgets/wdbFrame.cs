@@ -88,9 +88,9 @@ namespace mkdb.Widgets
 			_props = new wdbFrameProps();
 		}
 				
-		public override bool InsertWidget(Panel _canvas)
+		public override bool InsertWidget()
 		{
-			InsertWidgetInEditor(_canvas);
+			InsertWidgetInEditor();
 			return false;
 		}
 		
@@ -104,12 +104,9 @@ namespace mkdb.Widgets
 			return -1;
 		}
 		
-		protected override bool InsertWidgetInEditor(Panel _canvas)
+		protected override bool InsertWidgetInEditor()
 		{
-			IntPtr wxh;
 			long _cstyle;
-			Common cm = Common.Instance();
-			
 			wdbFrameProps winProps = (wdbFrameProps)_props;
 			_frame_cur_index++;
 			winProps.Name = "Frame" + _frame_cur_index.ToString();
@@ -119,15 +116,12 @@ namespace mkdb.Widgets
 			winProps.Size = new System.Drawing.Size(300, 300);
 			winProps.ID = -1;
 			_label = winProps.Title;			
-			_cstyle = ParseFrameStyle(winProps.Style);
-			
+			// _cstyle = ParseFrameStyle(winProps.Style);
+			_cstyle = wx.Frame.wxDEFAULT_FRAME_STYLE;			
 			_elem = new wx.Frame(null, winProps.ID, winProps.Title, winProps.Pos, winProps.Size, _cstyle);
-			wxh = Win32Utils.FindWindow("wxWindowClassNR", winProps.Title);
-			Win32Utils.SetParent(wxh, _canvas.Handle);
 			_elem.EVT_MOUSE_EVENTS(new wx.EventListener(OnMouseEvent));
-			
-			cm.ChangeCurrentWindow(_elem);
 			SetWidgetProps();
+			this.Text = winProps.Title;
 			return true;
 		}
 		protected override bool InsertWidgetInText()
@@ -149,10 +143,9 @@ namespace mkdb.Widgets
 			// Manage mouse events when inside this widget
 			// Mouse Left : show properties associates to this widget
 			// Mouse Right : Popup menu
-			if (evt.EventType == wx.Event.wxEVT_LEAVE_WINDOW)
-			{
-				// _elem.AcceleratorTable
-			}
+			// if (evt.EventType == wx.Event.wxEVT_LEAVE_WINDOW)
+			// {
+			// }
         }
 				
 		public void winProps_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -163,21 +156,21 @@ namespace mkdb.Widgets
 		private long ParseFrameStyle(FrameStyle curstyle)
 		{
 			long _cstyle = 0;
-			if (curstyle & FrameStyle.wxCAPTION) _cstyle |= wx.Frame.wxCAPTION;
-			if (curstyle & FrameStyle.wxCLOSE_BOX) _cstyle |= wx.Frame.wxCLOSE_BOX;
-			if (curstyle & FrameStyle.wxDEFAULT_FRAME_STYLE) _cstyle |= wx.Frame.wxDEFAULT_FRAME_STYLE;
-			if (curstyle & FrameStyle.wxFRAME_FLOAT_ON_PARENT) _cstyle |= wx.Frame.wxFRAME_FLOAT_ON_PARENT;
-			if (curstyle & FrameStyle.wxFRAME_NO_TASKBAR) _cstyle |= wx.Frame.wxFRAME_NO_TASKBAR;
-			if (curstyle & FrameStyle.wxFRAME_SHAPED) _cstyle |= wx.Frame.wxFRAME_SHAPED;
-			if (curstyle & FrameStyle.wxFRAME_TOOL_WINDOW) _cstyle |= wx.Frame.wxFRAME_TOOL_WINDOW;
-			if (curstyle & FrameStyle.wxICONIZE) _cstyle |= wx.Frame.wxICONIZE;
-			if (curstyle & FrameStyle.wxMAXIMIZE) _cstyle |= wx.Frame.wxMAXIMIZE;
-			if (curstyle & FrameStyle.wxMAXIMIZE_BOX) _cstyle |= wx.Frame.wxMAXIMIZE_BOX;
-			if (curstyle & FrameStyle.wxMINIMIZE) _cstyle |= wx.Frame.wxMINIMIZE;
-			if (curstyle & FrameStyle.wxMINIMIZE_BOX) _cstyle |= wx.Frame.wxMINIMIZE_BOX;
-			if (curstyle & FrameStyle.wxRESIZE_BORDER) _cstyle |= wx.Frame.wxRESIZE_BORDER;			
-			if (curstyle & FrameStyle.wxSTAY_ON_TOP) _cstyle |= wx.Frame.wxSTAY_ON_TOP;			
-			if (curstyle & FrameStyle.wxSYSTEM_MENU) _cstyle |= wx.Frame.wxSYSTEM_MENU;						
+			if ((curstyle & FrameStyle.wxCAPTION) == FrameStyle.wxCAPTION) _cstyle |= wx.Frame.wxCAPTION;
+			if ((curstyle & FrameStyle.wxCLOSE_BOX) == FrameStyle.wxCLOSE_BOX) _cstyle |= wx.Frame.wxCLOSE_BOX;
+			if ((curstyle & FrameStyle.wxDEFAULT_FRAME_STYLE) == FrameStyle.wxDEFAULT_FRAME_STYLE) _cstyle |= wx.Frame.wxDEFAULT_FRAME_STYLE;
+			if ((curstyle & FrameStyle.wxFRAME_FLOAT_ON_PARENT) == FrameStyle.wxFRAME_FLOAT_ON_PARENT) _cstyle |= wx.Frame.wxFRAME_FLOAT_ON_PARENT;
+			if ((curstyle & FrameStyle.wxFRAME_NO_TASKBAR) == FrameStyle.wxFRAME_NO_TASKBAR) _cstyle |= wx.Frame.wxFRAME_NO_TASKBAR;
+			if ((curstyle & FrameStyle.wxFRAME_SHAPED) == FrameStyle.wxFRAME_SHAPED) _cstyle |= wx.Frame.wxFRAME_SHAPED;
+			if ((curstyle & FrameStyle.wxFRAME_TOOL_WINDOW) == FrameStyle.wxFRAME_TOOL_WINDOW) _cstyle |= wx.Frame.wxFRAME_TOOL_WINDOW;
+			if ((curstyle & FrameStyle.wxICONIZE) == FrameStyle.wxICONIZE) _cstyle |= wx.Frame.wxICONIZE;
+			if ((curstyle & FrameStyle.wxMAXIMIZE) == FrameStyle.wxMAXIMIZE) _cstyle |= wx.Frame.wxMAXIMIZE;
+			if ((curstyle & FrameStyle.wxMAXIMIZE_BOX) == FrameStyle.wxMAXIMIZE_BOX) _cstyle |= wx.Frame.wxMAXIMIZE_BOX;
+			if ((curstyle & FrameStyle.wxMINIMIZE) == FrameStyle.wxMINIMIZE) _cstyle |= wx.Frame.wxMINIMIZE;
+			if ((curstyle & FrameStyle.wxMINIMIZE_BOX) == FrameStyle.wxMINIMIZE_BOX) _cstyle |= wx.Frame.wxMINIMIZE_BOX;
+			if ((curstyle & FrameStyle.wxRESIZE_BORDER) == FrameStyle.wxRESIZE_BORDER) _cstyle |= wx.Frame.wxRESIZE_BORDER;			
+			if ((curstyle & FrameStyle.wxSTAY_ON_TOP) == FrameStyle.wxSTAY_ON_TOP) _cstyle |= wx.Frame.wxSTAY_ON_TOP;			
+			if ((curstyle & FrameStyle.wxSYSTEM_MENU) == FrameStyle.wxSYSTEM_MENU) _cstyle |= wx.Frame.wxSYSTEM_MENU;						
 			return _cstyle;			
 		}
 		
@@ -187,6 +180,7 @@ namespace mkdb.Widgets
 			winProps.PropertyChanged += new PropertyChangedEventHandler(winProps_PropertyChanged);
 			Common.Instance().ObjPropsPanel.SelectedObject = winProps;
 		}		
+		
 		
 	}
 }
