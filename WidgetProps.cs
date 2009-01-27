@@ -126,15 +126,80 @@ namespace mkdb
 		}		
 	}
 	
+	public class wxPoint
+	{
+		private int _x;
+		private int _y;
+		public wxPoint()
+		{
+			_x = 0; _y = 0;
+		}
+		
+		public wxPoint(int x, int y)
+		{
+			_x = x; _y = y;
+		}
+		
+		public int X
+		{
+			get	{	return _x;	}
+			set	{	_x = value;	}
+		}
+
+		public int Y
+		{
+			get	{	return _y;	}
+			set	{	_y = value;	}
+		}
+			
+		public static implicit operator System.Drawing.Point(wxPoint pt) 
+   		{
+			return new System.Drawing.Point(pt._x, pt._y);
+   		}			
+	}
+	
+	public class wxSize
+	{
+		private int _width;
+		private int _height;
+		public wxSize()
+		{
+			_width = 0; _height = 0;
+		}
+		
+		public wxSize(int w, int h)
+		{
+			_width = w; _height = h;
+		}
+		
+		public int Width
+		{
+			get	{	return _width;	}
+			set	{	_width = value;	}
+		}
+
+		public int Height
+		{
+			get	{	return _height;	}
+			set	{	_height = value;	}
+		}
+			
+		public static implicit operator System.Drawing.Size(wxSize sz) 
+   		{
+			return new System.Drawing.Size(sz._width, sz._height);
+   		}			
+	}
+	
+	
 	public class wxWindowProps : wxABProps
 	{
 		protected int _id;
 		protected string _wname;
-		protected Point _pos;
-		protected Size _size;
+		protected wxPoint _pos;
+		protected wxSize _size;
 		protected Font _font;
-		protected Color _fc;
-		protected Color _bc;
+		protected wx.Colour _fc;
+		protected wx.Colour _bc;
 		protected bool _enabled;
 		protected bool _hidden;
 		protected WindowStyle _wstyle;
@@ -142,62 +207,68 @@ namespace mkdb
 // * wxWindow props : id, pos, size, font, fc, bc, window_name, window_style, 
 // 					tooltip, enabled, hidden.		
 		public wxWindowProps()
-		{					
+		{
+			_fc = new wx.Colour();
+			_bc = new wx.Colour();
+			_font = new Font(FontFamily.GenericSansSerif, 8);
+			_pos = new wxPoint(0, 0);
+			_size = new wxSize(0, 0);
+			_wstyle = WindowStyle.wxTAB_TRAVERSAL;
 		}
 		
 		[CategoryAttribute("wxWindows"), DescriptionAttribute("wxWindows properties")]
 		public int ID		
 		{
 			get	{	return _id;	}
-			set	{	_id = value; }
+			set	{	_id = value; NotifyPropertyChanged("ID"); }
 		}		
 		[CategoryAttribute("wxWindows"), DescriptionAttribute("wxWindows properties")]
 		public string WindowName
 		{
 			get	{	return _wname;	}
-			set	{	_wname = value; }
+			set	{	_wname = value; NotifyPropertyChanged("WindowName");	}
 		}
-		[CategoryAttribute("wxWindows"), DescriptionAttribute("wxWindows properties")]
-		public Color FC
+		[CategoryAttribute("wxWindows"), DescriptionAttribute("wxWindows properties"), TypeConverter(typeof(ColorConverter))]
+		public wx.Colour FC
 		{
 			get	{	return _fc;	}
-			set	{	_fc = value;	}
+			set	{	_fc = value; NotifyPropertyChanged("FC");	}
 		}
 		[CategoryAttribute("wxWindows"), DescriptionAttribute("wxWindows properties")]
-		public Color BC
+		public wx.Colour BC
 		{
 			get	{	return _bc;	}
-			set	{	_bc = value;	}
+			set	{	_bc = value; NotifyPropertyChanged("BC");	}
 		}		
 		[CategoryAttribute("wxWindows"), DescriptionAttribute("wxWindows properties")]
 		public Font Font
 		{
 			get	{	return _font;	}
-			set	{	_font = value;	}
+			set	{	_font = value; NotifyPropertyChanged("Font");	}
 		}
 		[CategoryAttribute("wxWindows"), DescriptionAttribute("wxWindows properties")]
 		public bool Enabled
 		{
 			get	{	return _enabled;	}
-			set	{	_enabled = value;	}
+			set	{	_enabled = value; NotifyPropertyChanged("Enabled");	}
 		}
-		[CategoryAttribute("wxWindows"), DescriptionAttribute("wxWindows properties")]
-		public Point Pos
+		[CategoryAttribute("wxWindows"), DescriptionAttribute("wxWindows properties"), TypeConverter(typeof(PointConverter))]
+		public wxPoint Pos
 		{
 			get	{	return _pos;	}
-			set	{	_pos = value;	}
+			set	{	_pos = value; NotifyPropertyChanged("Pos");	}
 		}
 		[CategoryAttribute("wxWindows"), DescriptionAttribute("wxWindows properties")]
-		public Size Size
+		public wxSize Size
 		{
 			get	{	return _size;	}
-			set	{	_size = value;	}
+			set	{	_size = value; NotifyPropertyChanged("Size");	}
 		}
 		[CategoryAttribute("wxWindows"), DescriptionAttribute("wxWindows properties")]
 		public bool Hidden
 		{
 			get	{	return _hidden;	}
-			set	{	_hidden = value;	}
+			set	{	_hidden = value; NotifyPropertyChanged("Hidden");	}
 		}
 		
 		[CategoryAttribute("wxWindows"), DescriptionAttribute("wxWindows properties")]
@@ -205,7 +276,7 @@ namespace mkdb
 		public WindowStyle WindowStyle
 		{
 			get	{	return _wstyle;	}
-			set	{	_wstyle = value;	}
+			set	{	_wstyle = value; NotifyPropertyChanged("WindowStyle");	}
 		}
 	}
 	

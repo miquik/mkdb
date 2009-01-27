@@ -56,14 +56,14 @@ namespace mkdb.Widgets
 		public string Name
 		{
 			get	{	return _name;	}
-			set	{	_name = value;	}
+			set	{	_name = value;	NotifyPropertyChanged("Name");	}
 		}
 		
 		[CategoryAttribute("Frame"), DescriptionAttribute("Frame props")]
 		public string Title
 		{
 			get	{	return _title;	}
-			set	{	_title = value;	}
+			set	{	_title = value;	NotifyPropertyChanged("Title");	}
 		}
 		
 		[CategoryAttribute("Frame"), DescriptionAttribute("Frame props")]
@@ -71,7 +71,7 @@ namespace mkdb.Widgets
 		public FrameStyle Style
 		{
 			get	{	return _fstyle;	}
-			set	{	_fstyle = value;	}
+			set	{	_fstyle = value; NotifyPropertyChanged("Style");	}
 		}
 	}
 	
@@ -86,6 +86,19 @@ namespace mkdb.Widgets
 		{
 			_elem = null;
 			_props = new wdbFrameProps();
+		}
+		
+		private void SetDefaultProps(string name)
+		{
+			wdbFrameProps winProps = (wdbFrameProps)_props;
+			winProps.WindowName = "wxFrameClass";			
+			winProps.Name = name;
+			winProps.Title = name;
+			winProps.Pos.X = 0; winProps.Pos.Y = 0;
+			winProps.Size.Width = 300; winProps.Size.Height = 300;
+			winProps.ID = -1;
+			winProps.FC = wx.Colour.wxWHITE;
+			winProps.BC = wx.Colour.wxLIGHT_GREY;
 		}
 				
 		public override bool InsertWidget()
@@ -109,14 +122,7 @@ namespace mkdb.Widgets
 			long _cstyle;
 			wdbFrameProps winProps = (wdbFrameProps)_props;
 			_frame_cur_index++;
-			winProps.Name = "Frame" + _frame_cur_index.ToString();
-			winProps.WindowName = "wxFrameClass";
-			winProps.Title = "Frame" + _frame_cur_index.ToString();
-			winProps.Pos = new System.Drawing.Point(0, 0);
-			winProps.Size = new System.Drawing.Size(300, 300);
-			winProps.ID = -1;
-			_label = winProps.Title;			
-			// _cstyle = ParseFrameStyle(winProps.Style);
+			SetDefaultProps("Frame" + _frame_cur_index.ToString());			
 			_cstyle = wx.Frame.wxDEFAULT_FRAME_STYLE;			
 			_elem = new wx.Frame(null, winProps.ID, winProps.Title, winProps.Pos, winProps.Size, _cstyle);
 			_elem.EVT_MOUSE_EVENTS(new wx.EventListener(OnMouseEvent));
@@ -150,7 +156,44 @@ namespace mkdb.Widgets
 				
 		public void winProps_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine(e.PropertyName + " has been changed.");            
+            // System.Diagnostics.Debug.WriteLine(e.PropertyName + " has been changed.");
+ 
+			wdbFrameProps wp = (wdbFrameProps)_props;
+            switch (e.PropertyName)
+            {
+            	case "Title":
+            		_elem.Title = wp.Title; this.Text = wp.Title;
+            		break;
+            	case "ID":
+            		_elem.ID = wp.ID;
+            		break;
+            	case "Pos":
+            		// Only change in Python text
+            		break;
+            	case "Size":
+            		_elem.Size = wp.Size;
+            		break;
+            	case "Font":
+            		// must convert to wx.Font
+            		break;
+            	case "FC":
+            		_elem.ForegroundColour = wp.FC;
+            		break;
+            	case "BC":
+            		_elem.BackgroundColour = wp.BC;
+            		break;
+            	case "Enabled":
+            		// Only change in Python text
+            		break;            		
+            	case "Hidden":
+            		// Only change in Python text
+            		break;            		
+            }
+            /*
+		protected string _name;
+		protected FrameStyle _fstyle;
+		protected WindowStyle _wstyle;
+		*/            
         }
 		
 		private long ParseFrameStyle(FrameStyle curstyle)
@@ -177,7 +220,7 @@ namespace mkdb.Widgets
 		public void SetWidgetProps()
 		{
 			wdbFrameProps winProps = (wdbFrameProps)_props;
-			winProps.PropertyChanged += new PropertyChangedEventHandler(winProps_PropertyChanged);
+			_props.PropertyChanged += new PropertyChangedEventHandler(winProps_PropertyChanged);
 			Common.Instance().ObjPropsPanel.SelectedObject = winProps;
 		}		
 		
