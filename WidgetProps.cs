@@ -126,70 +126,6 @@ namespace mkdb
 		}		
 	}
 	
-	public class wxPoint
-	{
-		private int _x;
-		private int _y;
-		public wxPoint()
-		{
-			_x = 0; _y = 0;
-		}
-		
-		public wxPoint(int x, int y)
-		{
-			_x = x; _y = y;
-		}
-		
-		public int X
-		{
-			get	{	return _x;	}
-			set	{	_x = value;	}
-		}
-
-		public int Y
-		{
-			get	{	return _y;	}
-			set	{	_y = value;	}
-		}
-			
-		public static implicit operator System.Drawing.Point(wxPoint pt) 
-   		{
-			return new System.Drawing.Point(pt._x, pt._y);
-   		}			
-	}
-	
-	public class wxSize
-	{
-		private int _width;
-		private int _height;
-		public wxSize()
-		{
-			_width = 0; _height = 0;
-		}
-		
-		public wxSize(int w, int h)
-		{
-			_width = w; _height = h;
-		}
-		
-		public int Width
-		{
-			get	{	return _width;	}
-			set	{	_width = value;	}
-		}
-
-		public int Height
-		{
-			get	{	return _height;	}
-			set	{	_height = value;	}
-		}
-			
-		public static implicit operator System.Drawing.Size(wxSize sz) 
-   		{
-			return new System.Drawing.Size(sz._width, sz._height);
-   		}			
-	}
-	
 	
 	public class wxWindowProps : wxABProps
 	{
@@ -198,22 +134,33 @@ namespace mkdb
 		protected wxPoint _pos;
 		protected wxSize _size;
 		protected Font _font;
-		protected wx.Colour _fc;
+		protected wxFont _font2;
+		protected wxColor _fc;
 		protected wx.Colour _bc;
 		protected bool _enabled;
 		protected bool _hidden;
 		protected WindowStyle _wstyle;
+		protected Color _cl;
+		protected int[]	_arrayint;
 		
 // * wxWindow props : id, pos, size, font, fc, bc, window_name, window_style, 
 // 					tooltip, enabled, hidden.		
 		public wxWindowProps()
 		{
-			_fc = new wx.Colour();
+			_fc = new wxColor();
+			_fc.Set(255, 0, 0);
 			_bc = new wx.Colour();
 			_font = new Font(FontFamily.GenericSansSerif, 8);
+			_font2 = new wxFont();
+			_font2.FaceName = "Arial";
+			_font2.PointSize = 8;
 			_pos = new wxPoint(0, 0);
 			_size = new wxSize(0, 0);
 			_wstyle = WindowStyle.wxTAB_TRAVERSAL;
+			_arrayint = new int[3];
+			_arrayint[0] = 1;
+			_arrayint[1] = 5;
+			_arrayint[2] = 7;
 		}
 		
 		[CategoryAttribute("wxWindows"), DescriptionAttribute("wxWindows properties")]
@@ -229,7 +176,21 @@ namespace mkdb
 			set	{	_wname = value; NotifyPropertyChanged("WindowName");	}
 		}
 		[CategoryAttribute("wxWindows"), DescriptionAttribute("wxWindows properties"), TypeConverter(typeof(ColorConverter))]
-		public wx.Colour FC
+		public Color CL
+		{
+			get	{	return _cl;	}
+			set	{	_cl = value;	}
+		}
+		[CategoryAttribute("wxWindows"), DescriptionAttribute("wxWindows properties")]
+		[Editor(typeof(System.ComponentModel.Design.CollectionEditor), typeof(UITypeEditor))]
+		public int[] ArrayInt
+		{
+			get	{	return _arrayint;	}
+			set	{	_arrayint = value;}
+		}		
+		[CategoryAttribute("wxWindows"), DescriptionAttribute("wxWindows properties")]
+		[Editor(typeof(wxColorEditors), typeof(UITypeEditor))]
+		public wxColor FC
 		{
 			get	{	return _fc;	}
 			set	{	_fc = value; NotifyPropertyChanged("FC");	}
@@ -247,12 +208,20 @@ namespace mkdb
 			set	{	_font = value; NotifyPropertyChanged("Font");	}
 		}
 		[CategoryAttribute("wxWindows"), DescriptionAttribute("wxWindows properties")]
+		[Editor(typeof(wxFontEditors), typeof(UITypeEditor))]
+		public wxFont Font2
+		{
+			get	{	return _font2;	}
+			set	{	_font2 = value;	}
+		}
+		[CategoryAttribute("wxWindows"), DescriptionAttribute("wxWindows properties")]
 		public bool Enabled
 		{
 			get	{	return _enabled;	}
 			set	{	_enabled = value; NotifyPropertyChanged("Enabled");	}
 		}
-		[CategoryAttribute("wxWindows"), DescriptionAttribute("wxWindows properties"), TypeConverter(typeof(PointConverter))]
+		[CategoryAttribute("wxWindows"), DescriptionAttribute("wxWindows properties"),
+		Editor(typeof(wxPointTypeConverter), typeof(TypeConverter))]
 		public wxPoint Pos
 		{
 			get	{	return _pos;	}

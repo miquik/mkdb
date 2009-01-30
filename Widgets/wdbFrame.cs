@@ -97,7 +97,7 @@ namespace mkdb.Widgets
 			winProps.Pos.X = 0; winProps.Pos.Y = 0;
 			winProps.Size.Width = 300; winProps.Size.Height = 300;
 			winProps.ID = -1;
-			winProps.FC = wx.Colour.wxWHITE;
+			// winProps.FC = (wxColor)wxColor.wxWHITE;
 			winProps.BC = wx.Colour.wxLIGHT_GREY;
 		}
 				
