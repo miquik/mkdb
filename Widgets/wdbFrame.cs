@@ -44,6 +44,7 @@ namespace mkdb.Widgets
 		protected string _name;
 		protected string _title;
 		protected FrameStyle _fstyle;
+		protected const int _prova = 10;
 		
 		public wdbFrameProps() : base()
 		{

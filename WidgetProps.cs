@@ -141,7 +141,7 @@ namespace mkdb
 		protected bool _hidden;
 		protected WindowStyle _wstyle;
 		protected Color _cl;
-		protected int[]	_arrayint;
+		protected wxFlags	_arrayint;
 		
 // * wxWindow props : id, pos, size, font, fc, bc, window_name, window_style, 
 // 					tooltip, enabled, hidden.		
@@ -157,10 +157,10 @@ namespace mkdb
 			_pos = new wxPoint(0, 0);
 			_size = new wxSize(0, 0);
 			_wstyle = WindowStyle.wxTAB_TRAVERSAL;
-			_arrayint = new int[3];
-			_arrayint[0] = 1;
-			_arrayint[1] = 5;
-			_arrayint[2] = 7;
+			_arrayint = new wxFlags();
+			_arrayint.AddItem("wxITEM1", 0x0001, false);
+			_arrayint.AddItem("wxITEM2", 0x0002, false);
+			_arrayint.AddItem("wxITEM_MIKI", 0x0004, true);
 		}
 		
 		[CategoryAttribute("wxWindows"), DescriptionAttribute("wxWindows properties")]
@@ -182,8 +182,9 @@ namespace mkdb
 			set	{	_cl = value;	}
 		}
 		[CategoryAttribute("wxWindows"), DescriptionAttribute("wxWindows properties")]
-		[Editor(typeof(System.ComponentModel.Design.CollectionEditor), typeof(UITypeEditor))]
-		public int[] ArrayInt
+		[TypeConverter(typeof(wxFlagsTypeConverter))]
+		[Editor(typeof(wxFlagsEditor), typeof(UITypeEditor))]
+		public wxFlags ArrayInt
 		{
 			get	{	return _arrayint;	}
 			set	{	_arrayint = value;}
