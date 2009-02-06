@@ -7,12 +7,29 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
+using System.Collections;
+using System.ComponentModel;
+using System.Drawing.Design;
+using System.Windows.Forms;
+using System.Windows.Forms.Design;
+using System.Drawing;
+using System.ComponentModel.Design.Serialization;
+using System.Reflection;
 
 namespace mkdb
 {
 	
 	public class wxColor : wx.Colour
 	{
+		public wxColor()
+		{			
+		}
+		
+		public wxColor(byte red, byte green, byte blue)
+		{			
+			Set(red, green, blue);
+		}		
+		
 		public override string ToString()
 		{
 			return this.Red + "; " + this.Green + "; " + this.Blue;
@@ -31,7 +48,6 @@ namespace mkdb
 
 		public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider, object value)
         {
-			System.Drawing.Color winColor;
             if (context == null || context.Instance == null || provider == null)
                 return value;
 
@@ -41,10 +57,12 @@ namespace mkdb
             colDialog.Color = System.Drawing.Color.FromArgb(255, color.Red, color.Green, color.Blue);
             if (colDialog.ShowDialog() != DialogResult.Cancel)
 			{
-   				winColor = colDialog.Color;
-   				color.Set(winColor.R, winColor.G, winColor.B);
+   				wxColor retcolor = new wxColor(colDialog.Color.R, 
+   				                               colDialog.Color.G, 
+   				                               colDialog.Color.B);
+   				return retcolor;
 			}            
-			return color;
+			return value;
 		}
 		
 		public override bool GetPaintValueSupported(ITypeDescriptorContext context)

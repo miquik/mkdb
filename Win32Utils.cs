@@ -23,10 +23,11 @@ namespace mkdb
 		[DllImport("user32.dll", SetLastError = true)]
 		public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
 		
-		// Find window by Caption only. Note you must pass IntPtr.Zero as the first parameter.
-		// Also consider whether you're being lazy or not.
 		[DllImport("user32.dll", EntryPoint="FindWindow", SetLastError = true)]
 		public static extern IntPtr FindWindowByCaption(IntPtr ZeroOnly, string lpWindowName);		
+		
+		[DllImport("user32.dll", SetLastError = true)]
+		public static extern bool InvalidateRect(IntPtr hWnd, ref System.Drawing.Rectangle lpRect, bool bErase); 		
 				
 		public Win32Utils()
 		{

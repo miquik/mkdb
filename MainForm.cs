@@ -28,6 +28,7 @@ namespace mkdb
 			InitializeComponent();
 			objtree.Nodes.Add("Application");
 			Common.Instance().ObjPropsPanel = objprops;
+			Common.Instance().Canvas = this.canvas;
 		}
 		
 		void ToolStripButton3Click(object sender, EventArgs e)
@@ -43,8 +44,12 @@ namespace mkdb
 		
 		void ToolStripButton4Click(object sender, EventArgs e)
 		{
-			wxWindowProps testprop = new wxWindowProps();
-			objprops.SelectedObject = testprop;
+			/* Create Sizer */
+			Common.Instance().CmdFlags = CommandFlags.TB_CMD_SIZER;
+			// TODO : Disable other command
+			// objprops.Enabled = false;
+			// wxWindowProps testprop = new wxWindowProps();
+			// objprops.SelectedObject = testprop;
 			// objprops.SelectedObject = new CheckBoxInPropertyGrid();
 		}
 		

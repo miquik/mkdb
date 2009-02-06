@@ -19,6 +19,8 @@ namespace mkdb
 		private string _cur_action;
 		private PropertyGrid _obj_props_panel;
 		private Hashtable _widget_list;
+		private Panel _canvas;
+		private CommandFlags _cf;
 
 		// Constructor is 'protected'
     	protected Common()
@@ -26,6 +28,7 @@ namespace mkdb
 			_cur_window = null;
 			_widget_list = new Hashtable();
 			_obj_props_panel = null;
+			_cf = CommandFlags.TB_NONE;
     	}
 
     	public static Common Instance()
@@ -67,6 +70,18 @@ namespace mkdb
 		public Hashtable WidgetList
 		{
 			get	{	return _widget_list;	}
+		}
+		
+		public Panel Canvas
+		{
+			get	{	return _canvas; }
+			set	{	_canvas = value; }
+		}
+		
+		public CommandFlags CmdFlags
+		{
+			get	{	return _cf; }
+			set	{	_cf = value; }			
 		}
   	}	
 }

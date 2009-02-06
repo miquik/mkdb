@@ -17,40 +17,40 @@ using System.Drawing.Design;
 
 namespace mkdb.Widgets
 {
-	[Flags]
-	public enum FrameStyle
-	{
-		wxCAPTION 				= 0x0001,
-		wxCLOSE_BOX				= 0x0002,
-		wxDEFAULT_FRAME_STYLE	= 0x0004,
-		wxFRAME_FLOAT_ON_PARENT = 0x0008,
-    	wxFRAME_NO_TASKBAR 		= 0x0010,
-    	wxFRAME_SHAPED 			= 0x0020,
-    	wxFRAME_TOOL_WINDOW 	= 0x0040,
-    	wxICONIZE 				= 0x0080,
-    	wxMAXIMIZE 				= 0x0100,
-    	wxMAXIMIZE_BOX 			= 0x0200,
-    	wxMINIMIZE 				= 0x0400,
-    	wxMINIMIZE_BOX 			= 0x0800,
-    	wxRESIZE_BORDER 		= 0x1000,
-    	wxSTAY_ON_TOP 			= 0x2000,
-		wxSYSTEM_MENU    		= 0x4000
-	}
-	
 	
 	public class wdbFrameProps : wxWindowProps
 	{
 		// * wxFrame props : name, title, style, wxWindow, toParent
 		protected string _name;
 		protected string _title;
-		protected FrameStyle _fstyle;
-		protected const int _prova = 10;
+		protected wxFlags _fstyle;
+		
+		/*
+		 *	Frame style
+		 *  - DEFAULT
+		 *  - TOOL_WINDOW
+		 * 	- wxCAPTION + SYSTEM MENU
+		 *  - MINIM_BOX
+		 *  - MIN_
+		 * 	- MAX_BOX
+		 *  - MAX
+		 *  - RESIZE_BORDER
+		 * */		
 		
 		public wdbFrameProps() : base()
 		{
 			_name = "";
 			_title = "Frame";
-			_fstyle = FrameStyle.wxDEFAULT_FRAME_STYLE;
+			_fstyle = new wxFlags();
+			_fstyle.AddItem("wxFRAME_DEFAULT", wx.Frame.wxDEFAULT_FRAME_STYLE, true);
+			_fstyle.AddItem("wxFRAME_TOOL_WINDOW", wx.Frame.wxCAPTION|wx.Frame.wxCLOSE_BOX|
+			                	wx.Frame.wxFRAME_TOOL_WINDOW|wx.Frame.wxSYSTEM_MENU, false);
+			_fstyle.AddItem("wxFRAME_BASE", wx.Frame.wxCAPTION|wx.Frame.wxCLOSE_BOX|wx.Frame.wxSYSTEM_MENU, false);			
+			_fstyle.AddItem("wxMAXIMIZE", wx.Frame.wxMAXIMIZE, false);						
+			_fstyle.AddItem("wxMAXIMIZE_BOX", wx.Frame.wxMAXIMIZE_BOX, false);						
+			_fstyle.AddItem("wxMINIMIZE", wx.Frame.wxMINIMIZE, false);						
+			_fstyle.AddItem("wxMINIMIZE_BOX", wx.Frame.wxMINIMIZE_BOX, false);						
+			_fstyle.AddItem("wxRESIZE_BORDER", wx.Frame.wxRESIZE_BORDER, false);						
 		}
 		
 		[CategoryAttribute("Frame"), DescriptionAttribute("Frame props")]
@@ -68,8 +68,9 @@ namespace mkdb.Widgets
 		}
 		
 		[CategoryAttribute("Frame"), DescriptionAttribute("Frame props")]
-        [Editor(typeof(FlagsEditor), typeof(UITypeEditor))]
-		public FrameStyle Style
+		[TypeConverter(typeof(wxFlagsTypeConverter))]
+		[Editor(typeof(wxFlagsEditor), typeof(UITypeEditor))]
+		public wxFlags Style
 		{
 			get	{	return _fstyle;	}
 			set	{	_fstyle = value; NotifyPropertyChanged("Style");	}
@@ -79,9 +80,10 @@ namespace mkdb.Widgets
 	/// <summary>
 	/// Description of wdbFrame.
 	/// </summary>
-	public class wdbFrame : WidgetElem
+	public class wdbFrame : WidgetElem, IDisposable
 	{
 		protected static long _frame_cur_index=0;
+		private bool disposed = false;
 		
 		public wdbFrame()
 		{
@@ -89,17 +91,45 @@ namespace mkdb.Widgets
 			_props = new wdbFrameProps();
 		}
 		
+		#region IDisposable methods implementation
+		// Implement IDisposable.
+        // Do not make this method virtual.
+        // A derived class should not be able to override this method.
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        private void Dispose(bool disposing)
+        {
+            // Check to see if Dispose has already been called.
+            if (!this.disposed)
+            {
+                // If disposing equals true, dispose all managed
+                // and unmanaged resources.
+                if(disposing)
+                {
+                    // Dispose managed resources.
+                    _elem.Close();
+                    _elem.Dispose();
+                }
+                // Note disposing has been done.
+                disposed = true;
+            }
+        }
+		#endregion			
+		
 		private void SetDefaultProps(string name)
 		{
 			wdbFrameProps winProps = (wdbFrameProps)_props;
 			winProps.WindowName = "wxFrameClass";			
 			winProps.Name = name;
 			winProps.Title = name;
-			winProps.Pos.X = 0; winProps.Pos.Y = 0;
-			winProps.Size.Width = 300; winProps.Size.Height = 300;
+			winProps.Pos = new System.Drawing.Point(0, 0);
+			winProps.Size = new System.Drawing.Size(300, 300);
 			winProps.ID = -1;
 			// winProps.FC = (wxColor)wxColor.wxWHITE;
-			winProps.BC = wx.Colour.wxLIGHT_GREY;
+			// winProps.BC = wxColor.wxLIGHT_GREY;
 		}
 				
 		public override bool InsertWidget()
@@ -117,16 +147,17 @@ namespace mkdb.Widgets
 		{
 			return -1;
 		}
-		
+				
 		protected override bool InsertWidgetInEditor()
 		{
-			long _cstyle;
+			uint _cstyle;
 			wdbFrameProps winProps = (wdbFrameProps)_props;
 			_frame_cur_index++;
 			SetDefaultProps("Frame" + _frame_cur_index.ToString());			
-			_cstyle = wx.Frame.wxDEFAULT_FRAME_STYLE;			
+			_cstyle = wx.Frame.wxDEFAULT_FRAME_STYLE;
 			_elem = new wx.Frame(null, winProps.ID, winProps.Title, winProps.Pos, winProps.Size, _cstyle);
 			_elem.EVT_MOUSE_EVENTS(new wx.EventListener(OnMouseEvent));
+			_elem.EVT_CLOSE(new wx.EventListener(OnClose));
 			SetWidgetProps();
 			this.Text = winProps.Title;
 			return true;
@@ -147,6 +178,18 @@ namespace mkdb.Widgets
 		
 		protected void OnMouseEvent(object sender, wx.Event evt)
         {
+			if (evt.EventType == wx.Event.wxEVT_LEFT_DOWN)
+			{
+				/*
+				switch (Common.Instance().CmdFlags) {
+					case CommandFlags.TB_CMD_SIZER:
+						// Add new sizer here...
+						wx.BoxSizer sz = new wx.BoxSizer((int)1);
+						_elem.SetSizerAndFit(sz, true);
+						break;
+				}
+				*/
+			}
 			// Manage mouse events when inside this widget
 			// Mouse Left : show properties associates to this widget
 			// Mouse Right : Popup menu
@@ -154,7 +197,12 @@ namespace mkdb.Widgets
 			// {
 			// }
         }
-				
+		
+		protected void OnClose(object sender, wx.Event evt)
+        {
+			// DO NOTHING
+        }		
+						
 		public void winProps_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             // System.Diagnostics.Debug.WriteLine(e.PropertyName + " has been changed.");
@@ -170,12 +218,13 @@ namespace mkdb.Widgets
             		break;
             	case "Pos":
             		// Only change in Python text
+            		// _elem.Position = wp.Pos;
             		break;
             	case "Size":
             		_elem.Size = wp.Size;
             		break;
             	case "Font":
-            		// must convert to wx.Font
+            		_elem.Font = wp.Font;
             		break;
             	case "FC":
             		_elem.ForegroundColour = wp.FC;
@@ -189,42 +238,32 @@ namespace mkdb.Widgets
             	case "Hidden":
             		// Only change in Python text
             		break;            		
+            	case "Style":
+            		// Only change in Python text
+            		_elem.StyleFlags = wp.Style.ToLong;
+            		break;            		
+            	case "WindowStyle":
+            		// Only change in Python text
+            		_elem.WindowStyle = wp.WindowStyle.ToLong;
+            		break;            		            		
+            	case "Border":
+            		break;            		            		
+            	case "Alignment":
+            		break;            		            		
             }
-            /*
-		protected string _name;
-		protected FrameStyle _fstyle;
-		protected WindowStyle _wstyle;
-		*/            
+       		_elem.Raise();
+       		_elem.Update();
+       		// Common.Instance().Canvas.Invalidate();
+			// System.Drawing.Rectangle invalidateRect = new System.Drawing.Rectangle(0, 0, _elem.Width, _elem.Height);         		
+       		// Win32Utils.InvalidateRect(_elem.GetHandle(), ref invalidateRect, true);
         }
-		
-		private long ParseFrameStyle(FrameStyle curstyle)
-		{
-			long _cstyle = 0;
-			if ((curstyle & FrameStyle.wxCAPTION) == FrameStyle.wxCAPTION) _cstyle |= wx.Frame.wxCAPTION;
-			if ((curstyle & FrameStyle.wxCLOSE_BOX) == FrameStyle.wxCLOSE_BOX) _cstyle |= wx.Frame.wxCLOSE_BOX;
-			if ((curstyle & FrameStyle.wxDEFAULT_FRAME_STYLE) == FrameStyle.wxDEFAULT_FRAME_STYLE) _cstyle |= wx.Frame.wxDEFAULT_FRAME_STYLE;
-			if ((curstyle & FrameStyle.wxFRAME_FLOAT_ON_PARENT) == FrameStyle.wxFRAME_FLOAT_ON_PARENT) _cstyle |= wx.Frame.wxFRAME_FLOAT_ON_PARENT;
-			if ((curstyle & FrameStyle.wxFRAME_NO_TASKBAR) == FrameStyle.wxFRAME_NO_TASKBAR) _cstyle |= wx.Frame.wxFRAME_NO_TASKBAR;
-			if ((curstyle & FrameStyle.wxFRAME_SHAPED) == FrameStyle.wxFRAME_SHAPED) _cstyle |= wx.Frame.wxFRAME_SHAPED;
-			if ((curstyle & FrameStyle.wxFRAME_TOOL_WINDOW) == FrameStyle.wxFRAME_TOOL_WINDOW) _cstyle |= wx.Frame.wxFRAME_TOOL_WINDOW;
-			if ((curstyle & FrameStyle.wxICONIZE) == FrameStyle.wxICONIZE) _cstyle |= wx.Frame.wxICONIZE;
-			if ((curstyle & FrameStyle.wxMAXIMIZE) == FrameStyle.wxMAXIMIZE) _cstyle |= wx.Frame.wxMAXIMIZE;
-			if ((curstyle & FrameStyle.wxMAXIMIZE_BOX) == FrameStyle.wxMAXIMIZE_BOX) _cstyle |= wx.Frame.wxMAXIMIZE_BOX;
-			if ((curstyle & FrameStyle.wxMINIMIZE) == FrameStyle.wxMINIMIZE) _cstyle |= wx.Frame.wxMINIMIZE;
-			if ((curstyle & FrameStyle.wxMINIMIZE_BOX) == FrameStyle.wxMINIMIZE_BOX) _cstyle |= wx.Frame.wxMINIMIZE_BOX;
-			if ((curstyle & FrameStyle.wxRESIZE_BORDER) == FrameStyle.wxRESIZE_BORDER) _cstyle |= wx.Frame.wxRESIZE_BORDER;			
-			if ((curstyle & FrameStyle.wxSTAY_ON_TOP) == FrameStyle.wxSTAY_ON_TOP) _cstyle |= wx.Frame.wxSTAY_ON_TOP;			
-			if ((curstyle & FrameStyle.wxSYSTEM_MENU) == FrameStyle.wxSYSTEM_MENU) _cstyle |= wx.Frame.wxSYSTEM_MENU;						
-			return _cstyle;			
-		}
-		
+				
 		public void SetWidgetProps()
 		{
 			wdbFrameProps winProps = (wdbFrameProps)_props;
 			_props.PropertyChanged += new PropertyChangedEventHandler(winProps_PropertyChanged);
 			Common.Instance().ObjPropsPanel.SelectedObject = winProps;
 		}		
-		
-		
+				
 	}
 }

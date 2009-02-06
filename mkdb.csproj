@@ -36,15 +36,16 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="wx.NET">
-      <HintPath>Lib\wx.NET.dll</HintPath>
+      <HintPath>wx.NET.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="ColorEditor.cs" />
+    <Compile Include="Command.cs" />
     <Compile Include="Common.cs" />
     <Compile Include="DrawUtils.cs" />
-    <Compile Include="FlagsEditors.cs" />
+    <Compile Include="FlagEditor.cs" />
     <Compile Include="FontEditor.cs" />
     <Compile Include="MainForm.cs" />
     <Compile Include="MainForm.Designer.cs">
@@ -53,6 +54,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="WidgetElem.cs" />
     <Compile Include="WidgetProps.cs" />
+    <Compile Include="Widgets\wdbBoxSizer.cs" />
     <Compile Include="Widgets\wdbFrame.cs" />
     <Compile Include="Win32Utils.cs" />
     <Compile Include="wxApp.cs" />
