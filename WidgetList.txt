@@ -1,0 +1,37 @@
+﻿-- TODO : report, print
+wxFrame
+wxButton
+wxLabel
+wxTextEdit
+wxComboBox
+wxCheckBox
+wxRadioBox
+wxListBox
+wxGrid
+wxImage
+ADO Control DB
+wxOpenDialog
+wxSaveDialog
+wxSizer (BoxSizer, StaticBoxSizer, GridSizer, FlexGridSizer, Spacer)
+
+
+* Align props : border, flags
+* wxWindow props : id, pos, size, font, fc, bc, window_name, window_style, 
+					tooltip, enabled, hidden.
+* wxFrame props : name, title, style, wxWindow, Align
+* wxButton props : name, style, label, default, wxWindow, Align
+* wxLabel props : name, style, label, wxWindow, Align
+* wxTextEdit props : name, style, value, maxlength, wxWindow, Align
+* wxComboBox props : name, style, value, list, wxWindow, Align
+* wxCheckBox props : name, style, label, checked, wxWindow, Align
+* wxRadioBox props : name style, label, list, selection, wxWindow, Align
+* wxListBox props : name, style, list, wxWindow, Align
+* wxGrid props : , wxWindow, Align
+* wxImage props : name, bitmap, wxWindow, Align
+* wxBoxSizer : name, orient, min_size, Align
+* wxStaticBoxSizer : id, name, label, orient, min_size, Align
+* wxGridSizer : name, rows, cols, vgap, hgap, min_size, Align
+* wxFlexGridSizer : name, rows, cols, vgap, hgap, Align
+* wxSpacer : width, height, Align
+
+

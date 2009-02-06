@@ -42,13 +42,13 @@ namespace mkdb
 	/// <summary>
 	/// Alignment and borders (Ref. to Parent).
 	/// </summary>
-	public class wxABProps : WidgetProps
+	public class wxAlignProps : WidgetProps
 	{
 		private int _border;
 		private wxFlags _aflag;
 		private wxFlags _bflag;
 		
-		public wxABProps()
+		public wxAlignProps()
 		{
 			_border = 1;
 			_bflag = new wxFlags();
@@ -78,6 +78,7 @@ namespace mkdb
 		}
 				
 		[CategoryAttribute("Alignment & Border"), DescriptionAttribute("Alignment and Border flags")]
+		[TypeConverter(typeof(wxFlagsTypeConverter))]
         [Editor(typeof(wxFlagsEditor), typeof(UITypeEditor))]
 		public wxFlags Border
 		{
@@ -86,6 +87,7 @@ namespace mkdb
 		}		
 		
 		[CategoryAttribute("Alignment & Border"), DescriptionAttribute("Alignment and Border flags")]
+		[TypeConverter(typeof(wxFlagsTypeConverter))]
         [Editor(typeof(wxFlagsEditor), typeof(UITypeEditor))]
 		public wxFlags Alignment
 		{
@@ -95,7 +97,7 @@ namespace mkdb
 	}
 	
 	
-	public class wxWindowProps : wxABProps
+	public class wxWindowProps : wxAlignProps
 	{
 		protected int _id;
 		protected string _wname;
@@ -108,8 +110,6 @@ namespace mkdb
 		protected bool _hidden;
 		protected wxFlags _wstyle;
 		
-// * wxWindow props : id, pos, size, font, fc, bc, window_name, window_style, 
-// 					tooltip, enabled, hidden.		
 		public wxWindowProps()
 		{
 			_fc = new wxColor(0, 0, 0);	
