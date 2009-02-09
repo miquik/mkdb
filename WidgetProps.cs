@@ -22,6 +22,13 @@ namespace mkdb
 	/// </summary>
 	public abstract class WidgetProps : INotifyPropertyChanged
 	{
+		protected bool _enable_not;
+		public bool EnableNotification
+		{
+			get	{	return	_enable_not;	}
+			set	{	_enable_not = value;	}
+		}				
+			
 		public WidgetProps()
 		{
 		}
@@ -38,7 +45,7 @@ namespace mkdb
         public event PropertyChangedEventHandler PropertyChanged;
         #endregion		
 	}
-	
+	 	
 	/// <summary>
 	/// Alignment and borders (Ref. to Parent).
 	/// </summary>

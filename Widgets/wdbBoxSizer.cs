@@ -58,7 +58,7 @@ namespace mkdb.Widgets
 		protected static long _frame_cur_index=0;
 		private bool disposed = false;
 		
-		public wdbBoxSizer()
+		public wdbBoxSizer() : base((int)StandardWidgetID.WID_BOXSIZER)
 		{
 			_elem = null;
 			_props = new wdbBoxSizerProps();
@@ -94,13 +94,32 @@ namespace mkdb.Widgets
 			wdbBoxSizerProps bsProps = (wdbBoxSizerProps)_props;
 			bsProps.Name = name;
 			bsProps.Orient = 1;
-			bsProps.MinSize = -1;
+			bsProps.MinSize = 500;
 		}
 				
-		public override bool InsertWidget()
+		public override bool InsertWidget(WidgetElem parent)
 		{
-			InsertWidgetInEditor();
-			return false;
+			wdbBoxSizerProps bsProps = (wdbBoxSizerProps)_props;
+			_frame_cur_index++;
+			SetDefaultProps("BoxSizer" + _frame_cur_index.ToString());			
+			_sizer = new wx.BoxSizer((int)bsProps.Orient);
+			/** NB. In this case "_elem" contains the parent of this sizer **/
+			_elem = parent.Element;
+			/** *** *** **/
+			if (parent.IsSizer)
+			{
+				// Add a sizer to a sizer
+				parent.Sizer.Add(_sizer);
+			} else {
+				parent.Element.SetSizer(_sizer, true);
+				_sizer.FitInside(parent.Element);
+			}
+			// _sizer.EVT_MOUSE_EVENTS(new wx.EventListener(OnMouseEvent));
+			// parent.Sizer.SetSizerAndFit(_sizer, true);
+			SetWidgetProps();
+			this.Text = "BoxSizer" + _frame_cur_index.ToString();			
+			IsSizer = true;
+			return true;
 		}
 		
 		public override bool DeleteWidget()
@@ -112,32 +131,40 @@ namespace mkdb.Widgets
 		{
 			return -1;
 		}
-				
-		protected override bool InsertWidgetInEditor()
+		
+		public override bool CanAcceptChildren()
 		{
-			wdbBoxSizerProps bsProps = (wdbBoxSizerProps)_props;
-			_frame_cur_index++;
-			SetDefaultProps("BoxSizer" + _frame_cur_index.ToString());
-			wx.Frame cframe = (wx.Frame)Common.Instance().CurrentWindow;
-			_elem = new wx.BoxSizer((int)bsProps.Orient);
-			_elem.EVT_MOUSE_EVENTS(new wx.EventListener(OnMouseEvent));
-			cframe.SetSizerAndFit(_elem, true);
-			SetWidgetProps();
 			return true;
 		}
+				
+				
 		protected override bool InsertWidgetInText()
 		{
 			return true;			
-		}
-		
-		protected override bool DeleteWidgetFromEditor()
-		{
-			return true;
-		}
+		}		
 		protected override bool DeleteWidgetFromText()
 		{
 			return true;
 		}
+		
+		public override void PaintOnSelection()
+		{
+			int w, h;
+			wx.ClientDC wdc = new wx.ClientDC(_elem);
+			if (wdc != null)
+			{
+				wdc.Pen = new wx.Pen(new wx.Colour(255, 0, 0));
+				wdc.Pen.Width = -1;
+				wdc.GetSize(out w, out h);
+				// wdc.DrawCircle(_elem.Width/2, _elem.Height/2, 100);
+				wdc.DrawLine(0, 0, w - 1, 0);
+				wdc.DrawLine(w - 1, 0, w - 1, h - 1);
+				wdc.DrawLine(0, h - 1, w - 1, h - 1);
+				wdc.DrawLine(0, 0, 0, h - 1);
+				// wdc.DrawRectangle(0, 0, _elem.Width, _elem.Height);
+			}
+			wdc.Dispose();
+		}		
 		
 		protected void OnMouseEvent(object sender, wx.Event evt)
         {
@@ -205,18 +232,17 @@ namespace mkdb.Widgets
             	case "Alignment":
             		break;            		            		
             }
-       		_elem.Raise();
-       		_elem.Update();
+       		_elem.SetSize(0, 0, _elem.Width+1, _elem.Height+1);
+       		_elem.SetSize(0, 0, _elem.Width-1, _elem.Height-1);
+       		_elem.Refresh();
+   	   		wx.App.SafeYield(_elem);
        		*/
-       		// Common.Instance().Canvas.Invalidate();
-			// System.Drawing.Rectangle invalidateRect = new System.Drawing.Rectangle(0, 0, _elem.Width, _elem.Height);         		
-       		// Win32Utils.InvalidateRect(_elem.GetHandle(), ref invalidateRect, true);
         }
 				
 		public void SetWidgetProps()
 		{
 			wdbBoxSizerProps winProps = (wdbBoxSizerProps)_props;
-			_props.PropertyChanged += new PropertyChangedEventHandler(winProps_PropertyChanged);
+			// _props.PropertyChanged += new PropertyChangedEventHandler(winProps_PropertyChanged);
 			Common.Instance().ObjPropsPanel.SelectedObject = winProps;
 		}		
 				

@@ -76,7 +76,19 @@ namespace mkdb.Widgets
 			set	{	_fstyle = value; NotifyPropertyChanged("Style");	}
 		}
 	}
-	
+	/*
+	public class wxFrameNoFocus : wx.Frame
+	{
+	  // (null, winProps.ID, winProps.Title, winProps.Pos, winProps.Size, _cstyle);
+		public wxFrameNoFocus(wx.Window _parent, int _id, string _title, System.Drawing.Point _p, 
+	                        System.Drawing.Size _s, uint _style) : base(_parent, _id, _title, _p, _s, _style)
+	  	{}
+		public override bool AcceptsFocus()
+		{
+			return false;
+		}
+	}
+	*/
 	/// <summary>
 	/// Description of wdbFrame.
 	/// </summary>
@@ -84,8 +96,9 @@ namespace mkdb.Widgets
 	{
 		protected static long _frame_cur_index=0;
 		private bool disposed = false;
+		private wx.MDIParentFrame pframe;
 		
-		public wdbFrame()
+		public wdbFrame() : base((int)StandardWidgetID.WID_FRAME)
 		{
 			_elem = null;
 			_props = new wdbFrameProps();
@@ -132,48 +145,64 @@ namespace mkdb.Widgets
 			// winProps.BC = wxColor.wxLIGHT_GREY;
 		}
 				
-		public override bool InsertWidget()
-		{
-			InsertWidgetInEditor();
-			return false;
-		}
-		
-		public override bool DeleteWidget()
-		{
-			return false;
-		}
-		
-		public override long FindBlockInText()
-		{
-			return -1;
-		}
-				
-		protected override bool InsertWidgetInEditor()
+		public override bool InsertWidget(WidgetElem parent)
 		{
 			uint _cstyle;
 			wdbFrameProps winProps = (wdbFrameProps)_props;
 			_frame_cur_index++;
 			SetDefaultProps("Frame" + _frame_cur_index.ToString());			
 			_cstyle = wx.Frame.wxDEFAULT_FRAME_STYLE;
-			_elem = new wx.Frame(null, winProps.ID, winProps.Title, winProps.Pos, winProps.Size, _cstyle);
+			pframe = new wx.MDIParentFrame(null, -1, "");
+			// _elem = new wx.Frame(null, winProps.ID, winProps.Title, winProps.Pos, winProps.Size, _cstyle);			
+			_elem = new wx.MDIChildFrame(pframe, winProps.ID, winProps.Title, winProps.Pos, winProps.Size, _cstyle);
 			_elem.EVT_MOUSE_EVENTS(new wx.EventListener(OnMouseEvent));
 			_elem.EVT_CLOSE(new wx.EventListener(OnClose));
 			SetWidgetProps();
 			this.Text = winProps.Title;
 			return true;
 		}
+		public override bool DeleteWidget()
+		{
+			return false;
+		}		
+		
 		protected override bool InsertWidgetInText()
 		{
 			return true;			
 		}
 		
-		protected override bool DeleteWidgetFromEditor()
-		{
-			return true;
-		}
 		protected override bool DeleteWidgetFromText()
 		{
 			return true;
+		}
+		
+		public override long FindBlockInText()
+		{
+			return -1;
+		}
+		
+		public override bool CanAcceptChildren()
+		{
+			if (_elem.Sizer == null)
+				return true;
+			return false;
+		}
+		
+		public override void PaintOnSelection()
+		{			
+			wx.WindowDC wdc = new wx.WindowDC(_elem);
+			if (wdc != null)
+			{
+				wdc.Pen = new wx.Pen(new wx.Colour(255, 0, 0));
+				wdc.Pen.Width = -1;
+				// wdc.DrawCircle(_elem.Width/2, _elem.Height/2, 100);
+				wdc.DrawLine(0, 0, _elem.Width - 1, 0);
+				wdc.DrawLine(_elem.Width - 1, 1, _elem.Width - 1, _elem.Height - 1);
+				wdc.DrawLine(0, _elem.Height - 1, _elem.Width - 1, _elem.Height - 1);
+				wdc.DrawLine(0, 0, 0, _elem.Height - 1);
+				// wdc.DrawRectangle(0, 0, _elem.Width, _elem.Height);
+			}
+			wdc.Dispose();
 		}
 		
 		protected void OnMouseEvent(object sender, wx.Event evt)
@@ -205,8 +234,6 @@ namespace mkdb.Widgets
 						
 		public void winProps_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            // System.Diagnostics.Debug.WriteLine(e.PropertyName + " has been changed.");
- 
 			wdbFrameProps wp = (wdbFrameProps)_props;
             switch (e.PropertyName)
             {
@@ -250,12 +277,13 @@ namespace mkdb.Widgets
             		break;            		            		
             	case "Alignment":
             		break;            		            		
-            }
-       		_elem.Raise();
-       		_elem.Update();
-       		// Common.Instance().Canvas.Invalidate();
-			// System.Drawing.Rectangle invalidateRect = new System.Drawing.Rectangle(0, 0, _elem.Width, _elem.Height);         		
-       		// Win32Utils.InvalidateRect(_elem.GetHandle(), ref invalidateRect, true);
+            }            
+       		/** Che ci tocca inventare... **/
+       		_elem.SetSize(0, 0, _elem.Width+1, _elem.Height+1);
+       		_elem.SetSize(0, 0, _elem.Width-1, _elem.Height-1);
+       		/** Che ci tocca inventare... **/
+       		_elem.Refresh();
+   	   		wx.App.SafeYield(_elem);
         }
 				
 		public void SetWidgetProps()

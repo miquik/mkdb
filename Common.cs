@@ -15,20 +15,19 @@ namespace mkdb
   	public class Common
   	{
     	private static Common _instance;
-		private	wx.Window	_cur_window;	
-		private string _cur_action;
+		private	WidgetElem	_cur_element;	
+		private CommandFlags _cur_action;
 		private PropertyGrid _obj_props_panel;
 		private Hashtable _widget_list;
 		private Panel _canvas;
-		private CommandFlags _cf;
 
 		// Constructor is 'protected'
     	protected Common()
     	{
-			_cur_window = null;
+			_cur_element = null;
 			_widget_list = new Hashtable();
 			_obj_props_panel = null;
-			_cf = CommandFlags.TB_NONE;
+			_cur_action = CommandFlags.TB_NONE;
     	}
 
     	public static Common Instance()
@@ -42,20 +41,21 @@ namespace mkdb
       		return _instance;
     	}
     	
-    	public void ChangeCurrentWindow(wx.Window neww)
+    	public void ChangeCurrentWindow(WidgetElem neww)
     	{
-    		if (_cur_window != null) _cur_window.Hide();
-    		_cur_window = neww;
-    		_cur_window.Show();
+   			if (neww.IsSizer) return;
+   			if (_cur_element != null) _cur_element.Element.Hide();
+   			_cur_element = neww;
+   			_cur_element.Element.Show();
     	}
     	
-		public wx.Window CurrentWindow
+		public WidgetElem CurrentElement
 		{
-			get	{	return _cur_window;		}
-			set	{	_cur_window = value;	}
+			get	{	return _cur_element;	}
+			set	{	_cur_element = value;	}
 		}    	
 		
-		public string CurrentAction
+		public CommandFlags CurrentAction
 		{
 			get	{	return _cur_action;		}
 			set	{	_cur_action = value;	}
@@ -76,12 +76,6 @@ namespace mkdb
 		{
 			get	{	return _canvas; }
 			set	{	_canvas = value; }
-		}
-		
-		public CommandFlags CmdFlags
-		{
-			get	{	return _cf; }
-			set	{	_cf = value; }			
 		}
   	}	
 }

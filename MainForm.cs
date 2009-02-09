@@ -31,26 +31,47 @@ namespace mkdb
 			Common.Instance().Canvas = this.canvas;
 		}
 		
+		WidgetElem FindBestParent(WidgetElem curNode)
+		{
+			WidgetElem parent;
+			// Find an available Sizer starting from current node
+			if (curNode.CanAcceptChildren())
+				return curNode;
+			parent = (WidgetElem)curNode.Parent;
+			if (parent == null)
+				return null;		
+			return FindBestParent(parent);
+		}
+		
 		void ToolStripButton3Click(object sender, EventArgs e)
 		{
 			// Create a wxWindow on the top of canvas panel.
 			wdbFrame frame = new wdbFrame();
-			frame.InsertWidget();
-			IntPtr wxh = Win32Utils.FindWindow("wxWindowClassNR", frame.Element.Title);
-			Win32Utils.SetParent(wxh, canvas.Handle);
-			Common.Instance().ChangeCurrentWindow(frame.Element);
+			frame.InsertWidget(null);
+			// IntPtr wxh = Win32Utils.FindWindow("wxWindowClassNR", frame.Element.Title);
+			Win32Utils.SetParent(frame.Element.GetHandle(), canvas.Handle);
+			Common.Instance().ChangeCurrentWindow(frame);
 			objtree.SelectedNode.Nodes.Add(frame);
+			objtree.SelectedNode = frame;
+			frame.PaintOnSelection();			
 		}
 		
 		void ToolStripButton4Click(object sender, EventArgs e)
 		{
 			/* Create Sizer */
-			Common.Instance().CmdFlags = CommandFlags.TB_CMD_SIZER;
-			// TODO : Disable other command
-			// objprops.Enabled = false;
-			// wxWindowProps testprop = new wxWindowProps();
-			// objprops.SelectedObject = testprop;
-			// objprops.SelectedObject = new CheckBoxInPropertyGrid();
+			WidgetElem parent;
+			parent = FindBestParent((WidgetElem)objtree.SelectedNode);
+			if (parent == null)
+			{
+				// TODO : Error here!!
+			} else {
+				// Add this sizer
+				wdbBoxSizer bsizer = new wdbBoxSizer();
+				bsizer.InsertWidget(parent);
+				parent.Nodes.Add(bsizer);
+				objtree.SelectedNode = bsizer;
+				bsizer.PaintOnSelection();			
+			}
 		}
 		
 		void ObjtreeAfterSelect(object sender, TreeViewEventArgs e)
@@ -63,6 +84,7 @@ namespace mkdb
 				if (elem != null)
 				{
 					objprops.SelectedObject = elem.Properties;
+					elem.PaintOnSelection();
 					// Common.Instance().ChangeCurrentWindow();
 				}
 			}
