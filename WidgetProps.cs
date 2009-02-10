@@ -23,6 +23,8 @@ namespace mkdb
 	public abstract class WidgetProps : INotifyPropertyChanged
 	{
 		protected bool _enable_not;
+		
+		[Browsable(false)]
 		public bool EnableNotification
 		{
 			get	{	return	_enable_not;	}
@@ -35,6 +37,8 @@ namespace mkdb
 		
 		public void NotifyPropertyChanged(String propertyName)
         {
+			if (_enable_not == false)
+				return;
             if (PropertyChanged != null)
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));

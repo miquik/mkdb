@@ -19,16 +19,19 @@ namespace mkdb
 	/// Description of MainForm.
 	/// </summary>
 	public partial class MainForm : Form
-	{		
+	{					
 		public MainForm()
 		{
 			//
 			// The InitializeComponent() call is required for Windows Forms designer support.
 			//
 			InitializeComponent();
-			objtree.Nodes.Add("Application");
 			Common.Instance().ObjPropsPanel = objprops;
 			Common.Instance().Canvas = this.canvas;
+			// objtree.Nodes.Add("Application");
+			objtree.Nodes.Add(new wdbApp());
+			wdbApp _tapp = (wdbApp)objtree.Nodes[0];
+			_tapp.InsertWidget(null);
 		}
 		
 		WidgetElem FindBestParent(WidgetElem curNode)
@@ -46,10 +49,12 @@ namespace mkdb
 		void ToolStripButton3Click(object sender, EventArgs e)
 		{
 			// Create a wxWindow on the top of canvas panel.
+			wdbApp _tapp = (wdbApp)objtree.Nodes[0];			
 			wdbFrame frame = new wdbFrame();
-			frame.InsertWidget(null);
+			frame.InsertWidget(_tapp);
+			// frame.InsertWidget(null);
 			// IntPtr wxh = Win32Utils.FindWindow("wxWindowClassNR", frame.Element.Title);
-			Win32Utils.SetParent(frame.Element.GetHandle(), canvas.Handle);
+			// Win32Utils.SetParent(frame.Element.GetHandle(), canvas.Handle);
 			Common.Instance().ChangeCurrentWindow(frame);
 			objtree.SelectedNode.Nodes.Add(frame);
 			objtree.SelectedNode = frame;

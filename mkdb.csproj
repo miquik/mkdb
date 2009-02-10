@@ -54,6 +54,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="WidgetElem.cs" />
     <Compile Include="WidgetProps.cs" />
+    <Compile Include="Widgets\wdbApp.cs" />
     <Compile Include="Widgets\wdbBoxSizer.cs" />
     <Compile Include="Widgets\wdbFrame.cs" />
     <Compile Include="Win32Utils.cs" />

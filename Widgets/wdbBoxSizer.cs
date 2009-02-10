@@ -153,7 +153,7 @@ namespace mkdb.Widgets
 			wx.ClientDC wdc = new wx.ClientDC(_elem);
 			if (wdc != null)
 			{
-				wdc.Pen = new wx.Pen(new wx.Colour(255, 0, 0));
+				wdc.Pen = new wx.Pen(new wx.Colour(255, 0, 0), 3);
 				wdc.Pen.Width = -1;
 				wdc.GetSize(out w, out h);
 				// wdc.DrawCircle(_elem.Width/2, _elem.Height/2, 100);

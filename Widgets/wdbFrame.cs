@@ -76,19 +76,7 @@ namespace mkdb.Widgets
 			set	{	_fstyle = value; NotifyPropertyChanged("Style");	}
 		}
 	}
-	/*
-	public class wxFrameNoFocus : wx.Frame
-	{
-	  // (null, winProps.ID, winProps.Title, winProps.Pos, winProps.Size, _cstyle);
-		public wxFrameNoFocus(wx.Window _parent, int _id, string _title, System.Drawing.Point _p, 
-	                        System.Drawing.Size _s, uint _style) : base(_parent, _id, _title, _p, _s, _style)
-	  	{}
-		public override bool AcceptsFocus()
-		{
-			return false;
-		}
-	}
-	*/
+
 	/// <summary>
 	/// Description of wdbFrame.
 	/// </summary>
@@ -141,8 +129,6 @@ namespace mkdb.Widgets
 			winProps.Pos = new System.Drawing.Point(0, 0);
 			winProps.Size = new System.Drawing.Size(300, 300);
 			winProps.ID = -1;
-			// winProps.FC = (wxColor)wxColor.wxWHITE;
-			// winProps.BC = wxColor.wxLIGHT_GREY;
 		}
 				
 		public override bool InsertWidget(WidgetElem parent)
@@ -152,9 +138,11 @@ namespace mkdb.Widgets
 			_frame_cur_index++;
 			SetDefaultProps("Frame" + _frame_cur_index.ToString());			
 			_cstyle = wx.Frame.wxDEFAULT_FRAME_STYLE;
-			pframe = new wx.MDIParentFrame(null, -1, "");
+			// pframe = new wx.MDIParentFrame(null, -1, "");
 			// _elem = new wx.Frame(null, winProps.ID, winProps.Title, winProps.Pos, winProps.Size, _cstyle);			
-			_elem = new wx.MDIChildFrame(pframe, winProps.ID, winProps.Title, winProps.Pos, winProps.Size, _cstyle);
+			_elem = new wx.MDIChildFrame((wx.MDIParentFrame)parent.Element, winProps.ID, winProps.Title, winProps.Pos, winProps.Size, _cstyle);
+			// _elem = new wx.MDIChildFrame(pframe, winProps.ID, winProps.Title, winProps.Pos, winProps.Size, _cstyle);
+			// _elem.Show();
 			_elem.EVT_MOUSE_EVENTS(new wx.EventListener(OnMouseEvent));
 			_elem.EVT_CLOSE(new wx.EventListener(OnClose));
 			SetWidgetProps();
@@ -191,16 +179,14 @@ namespace mkdb.Widgets
 		public override void PaintOnSelection()
 		{			
 			wx.WindowDC wdc = new wx.WindowDC(_elem);
+			// wdc.SetLogicalFunction((int)wx.Logic.wxNOR);
 			if (wdc != null)
 			{
-				wdc.Pen = new wx.Pen(new wx.Colour(255, 0, 0));
-				wdc.Pen.Width = -1;
-				// wdc.DrawCircle(_elem.Width/2, _elem.Height/2, 100);
+				wdc.Pen = new wx.Pen(new wx.Colour(255, 0, 0), 3);
 				wdc.DrawLine(0, 0, _elem.Width - 1, 0);
 				wdc.DrawLine(_elem.Width - 1, 1, _elem.Width - 1, _elem.Height - 1);
 				wdc.DrawLine(0, _elem.Height - 1, _elem.Width - 1, _elem.Height - 1);
 				wdc.DrawLine(0, 0, 0, _elem.Height - 1);
-				// wdc.DrawRectangle(0, 0, _elem.Width, _elem.Height);
 			}
 			wdc.Dispose();
 		}
