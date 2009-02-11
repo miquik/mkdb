@@ -264,113 +264,114 @@ namespace mkdb.Widgets
 			return best;
 		}
 
-		protected void OnMouseMotion(object sender, wx.Event e)
+		protected void OnMouseMotion(object sender, wx.Event evt)
 		{
+			wx.MouseEvent e = (wx.MouseEvent)evt;
 			if (m_sizing != mSizing.NONE)
 			{
-				IntPtr dc = Win32Utils.GetDC(null);
-				// Pen pen = new Pen(
-				/*
-				// HDC PaintDC = (HDC) PaintWxDC.GetHDC();
-				// wx.ScreenDC dc = new wx.DC;
-				wxPen pen( *wxBLACK, 1, wxDOT );
+				IntPtr hdc = Win32Utils.GetDC(null);
+				Graphics dc = Graphics.FromHdc(hdc);
+				Pen pen = new Pen(Brushes.Black, 1.0f);
+				Brush tbrush = Brushes.Transparent;
+				System.Drawing.Point pos = Parent.ClientToScreen(Position);
 
+				/*
+				wxPen pen( *wxBLACK, 1, wxDOT );
 				dc.SetPen( pen );
 				dc.SetBrush( *wxTRANSPARENT_BRUSH );
 				dc.SetLogicalFunction( wxINVERT );
-
-				//wxPoint pos = ClientToScreen(wxPoint(0, 0));
-				wxPoint pos = GetParent()->ClientToScreen( GetPosition() );
-
+				*/
+				
 				if ( m_curX >= 0 && m_curY >= 0 )
-					dc.DrawRectangle( pos.x, pos.y, m_curX, m_curY );
+					dc.DrawRectangle(pen, pos.x, pos.y, m_curX, m_curY);
 
 				if ( m_sizing == RIGHT || m_sizing == RIGHTBOTTOM )
-					m_curX = e.GetX() + m_difX;
+					m_curX = e.Position.X + m_difX;
 				else
-					m_curX = GetSize().x;
+					m_curX = this.Size.Width;
 
 				if ( m_sizing == BOTTOM || m_sizing == RIGHTBOTTOM )
-					m_curY = e.GetY() + m_difY;
+					m_curY = e.Position.Y + m_difY;
 				else
-					m_curY = GetSize().y;
+					m_curY = this.Size.Height;
 
 				// User min size
-				wxSize minSize = GetMinSize();
-				if ( m_curX < minSize.x ) m_curX = minSize.x;
-				if ( m_curY < minSize.y ) m_curY = minSize.y;
+				System.Drawing.Size minSize = this.MinSize;
+				if ( m_curX < minSize.Width )	m_curX = minSize.Width;
+				if ( m_curY < minSize.Height ) 	m_curY = minSize.Height;
 
 				// Internal min size
-				if ( m_curX < m_minSize.x ) m_curX = m_minSize.x;
-				if ( m_curY < m_minSize.y ) m_curY = m_minSize.y;
+				if ( m_curX < m_minSize.Width )		m_curX = m_minSize.Width;
+				if ( m_curY < m_minSize.Height ) 	m_curY = m_minSize.Height;
 
-				wxSize maxSize = GetMaxSize();
-				if ( m_curX > maxSize.x && maxSize.x != wxDefaultCoord ) m_curX = maxSize.x;
-				if ( m_curY > maxSize.y && maxSize.y != wxDefaultCoord ) m_curY = maxSize.y;
+				System.Drawing.Size maxSize = this.MaxSize;
+				if ( m_curX > maxSize.Width && maxSize.Width != wx.Panel.wxDefaultCoord ) m_curX = maxSize.Width;
+				if ( m_curY > maxSize.Height && maxSize.Height != wx.Panel.wxDefaultCoord ) m_curY = maxSize.Height;
 
-				dc.DrawRectangle( pos.x, pos.y, m_curX, m_curY );
-
+				dc.DrawRectangle(pen, pos.X, pos.Y, m_curX, m_curY);
+				/*				
 				dc.SetLogicalFunction( wxCOPY );
 				dc.SetPen( wxNullPen );
 				dc.SetBrush( wxNullBrush );
 				*/
-			}
-
-			else
+			} else 
 			{
 				int x, y;
-				GetClientSize( &x, &y );
+				x = this.ClientSize.Width;
+				y = this.ClientSize.Height;
 
-				if ( ( e.GetX() >= x - m_resizeBorder && e.GetY() >= y - m_resizeBorder ) ||
-				    ( e.GetX() < m_resizeBorder && e.GetY() < m_resizeBorder ) )
+				if ( ( e.Position.X >= x - m_resizeBorder && e.Position.Y >= y - m_resizeBorder ) ||
+				    ( e.Position.X < m_resizeBorder && e.Position.Y < m_resizeBorder ) )
 				{
-					SetCursor( wxCursor( wxCURSOR_SIZENWSE ) );
+					this.Cursor = wx.StockCursor.wxCURSOR_SIZENWSE;
 				}
-				else if ( ( e.GetX() < m_resizeBorder && e.GetY() >= y - m_resizeBorder ) ||
-				         ( e.GetX() > x - m_resizeBorder && e.GetY() < m_resizeBorder ) )
+				else if ( ( e.Position.X < m_resizeBorder && e.Position.Y >= y - m_resizeBorder ) ||
+				         ( e.Position.X > x - m_resizeBorder && e.Position.Y < m_resizeBorder ) )
 				{
-					SetCursor( wxCursor( wxCURSOR_SIZENESW ) );
+					this.Cursor = wx.StockCursor.wxCURSOR_SIZENESW;
 				}
-				else if ( e.GetX() >= x - m_resizeBorder || e.GetX() < m_resizeBorder )
+				else if ( e.Position.X >= x - m_resizeBorder || e.Position.X < m_resizeBorder )
 				{
-					SetCursor( wxCursor( wxCURSOR_SIZEWE ) );
+					this.Cursor = wx.StockCursor.wxCURSOR_SIZEWE;
 				}
-				else if ( e.GetY() >= y - m_resizeBorder || e.GetY() < m_resizeBorder )
+				else if ( e.Position.Y >= y - m_resizeBorder || e.Position.Y < m_resizeBorder )
 				{
-					SetCursor( wxCursor( wxCURSOR_SIZENS ) );
+					this.Cursor = wx.StockCursor.wxCURSOR_SIZENS;
 				}
 				else
 				{
-					SetCursor( *wxSTANDARD_CURSOR );
+					this.Cursor = wx.StockCursor.wxCURSOR_ARROW;
 				}
-
-				m_titleBar->SetCursor( *wxSTANDARD_CURSOR );
-				m_frameContent->SetCursor( *wxSTANDARD_CURSOR );
+				m_titleBar.Cursor = wx.StockCursor.wxCURSOR_ARROW;
+				m_frameContent.Cursor = wx.StockCursor.wxCURSOR_ARROW;
+				// m_titleBar->SetCursor( *wxSTANDARD_CURSOR );
+				// m_frameContent->SetCursor( *wxSTANDARD_CURSOR );
 			}
 		}
 
-		void wxInnerFrame::OnLeftDown( wxMouseEvent& e )
+		protected void OnLeftDown(object sender, wx.Event evt)
 		{
-			if ( m_sizing == NONE )
+			wx.MouseEvent e = (wx.MouseEvent)evt;
+			if ( m_sizing == mSizing.NONE )
 			{
-				if ( e.GetX() >= GetSize().x - m_resizeBorder && e.GetY() >= GetSize().y - m_resizeBorder )
-					m_sizing = RIGHTBOTTOM;
-				else if ( e.GetX() >= GetSize().x - m_resizeBorder )
-					m_sizing = RIGHT;
-				else if ( e.GetY() >= GetSize().y - m_resizeBorder )
-					m_sizing = BOTTOM;
+				if (e.Position.X >= this.Size.Width - m_resizeBorder && e.Position.Y >= this.Size.Height - m_resizeBorder)
+					m_sizing = mSizing.RIGHTBOTTOM;
+				else if (e.Position.X) >= this.Size.Width - m_resizeBorder)
+					m_sizing = mSizing.RIGHT;
+				else if (e.Position.Y >= this.Size.Height - m_resizeBorder)
+					m_sizing = mSizing.BOTTOM;
 
-				if ( m_sizing != NONE )
+				if ( m_sizing != mSizing.NONE )
 				{
-					m_difX = GetSize().x - e.GetX();
-					m_difY = GetSize().y - e.GetY();
+					m_difX = this.Size.Width - e.Position.X;
+					m_difY = this.Size.Height - e.Position.Y;
 					CaptureMouse();
-					OnMouseMotion( e );
+					OnMouseMotion(evt);
 				}
 			}
 		}
 
-		void wxInnerFrame::OnLeftUp( wxMouseEvent& )
+		protected void OnLeftUp(object sender, wx.Event evt)
 		{
 			if ( m_sizing != NONE )
 			{
