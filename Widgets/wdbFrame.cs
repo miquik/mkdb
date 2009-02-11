@@ -133,16 +133,11 @@ namespace mkdb.Widgets
 				
 		public override bool InsertWidget(WidgetElem parent)
 		{
-			uint _cstyle;
+			uint _cstyle = 0;
 			wdbFrameProps winProps = (wdbFrameProps)_props;
 			_frame_cur_index++;
 			SetDefaultProps("Frame" + _frame_cur_index.ToString());			
-			_cstyle = wx.Frame.wxDEFAULT_FRAME_STYLE;
-			// pframe = new wx.MDIParentFrame(null, -1, "");
-			// _elem = new wx.Frame(null, winProps.ID, winProps.Title, winProps.Pos, winProps.Size, _cstyle);			
 			_elem = new wx.MDIChildFrame((wx.MDIParentFrame)parent.Element, winProps.ID, winProps.Title, winProps.Pos, winProps.Size, _cstyle);
-			// _elem = new wx.MDIChildFrame(pframe, winProps.ID, winProps.Title, winProps.Pos, winProps.Size, _cstyle);
-			// _elem.Show();
 			_elem.EVT_MOUSE_EVENTS(new wx.EventListener(OnMouseEvent));
 			_elem.EVT_CLOSE(new wx.EventListener(OnClose));
 			SetWidgetProps();

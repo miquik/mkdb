@@ -28,6 +28,9 @@ namespace mkdb
 		
 		[DllImport("user32.dll", SetLastError = true)]
 		public static extern bool InvalidateRect(IntPtr hWnd, ref System.Drawing.Rectangle lpRect, bool bErase); 		
+		
+    	[DllImport("user32.dll",EntryPoint="GetDC")]
+    	public static extern IntPtr GetDC(IntPtr ptr);		
 				
 		public Win32Utils()
 		{
