@@ -84,7 +84,6 @@ namespace mkdb.Widgets
 	{
 		protected static long _frame_cur_index=0;
 		private bool disposed = false;
-		private wx.MDIParentFrame pframe;
 		
 		public wdbFrame() : base((int)StandardWidgetID.WID_FRAME)
 		{
@@ -137,8 +136,12 @@ namespace mkdb.Widgets
 			wdbFrameProps winProps = (wdbFrameProps)_props;
 			_frame_cur_index++;
 			SetDefaultProps("Frame" + _frame_cur_index.ToString());			
-			_elem = new wx.MDIChildFrame((wx.MDIParentFrame)parent.Element, winProps.ID, winProps.Title, winProps.Pos, winProps.Size, _cstyle);
-			_elem.EVT_MOUSE_EVENTS(new wx.EventListener(OnMouseEvent));
+			// _elem = new wx.MDIChildFrame((wx.MDIParentFrame)parent.Element, winProps.ID, winProps.Title, winProps.Pos, winProps.Size, _cstyle);
+			_cstyle = wx.Frame.wxDEFAULT_FRAME_STYLE;
+			_elem = new wifInnerFrame(parent.Element, -1, winProps.Pos, winProps.Size, _cstyle);
+			wifInnerFrame wif = (wifInnerFrame)_elem;
+			wif.BarTitle = winProps.Title;
+			// _elem.EVT_MOUSE_EVENTS(new wx.EventListener(OnMouseEvent));
 			_elem.EVT_CLOSE(new wx.EventListener(OnClose));
 			SetWidgetProps();
 			this.Text = winProps.Title;

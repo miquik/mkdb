@@ -23,7 +23,7 @@ namespace mkdb
 		private static void Main(string[] args)
 		{
 			wxApp applic = new wxApp();
-			applic.Run();
+			applic.Run();		
 			/*
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);

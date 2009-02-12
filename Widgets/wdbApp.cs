@@ -88,8 +88,12 @@ namespace mkdb.Widgets
 			Panel panel = Common.Instance().Canvas;
 			wdbAppProps winProps = (wdbAppProps)_props;		
 			uint _cstyle = wx.Frame.wxFRAME_TOOL_WINDOW|wx.Stretch.wxEXPAND;					
+			/*
 			_elem = new wx.MDIParentFrame(null, -1, "", new System.Drawing.Point(0, 0),
 			                              new System.Drawing.Size(panel.Width, panel.Height), _cstyle);
+			                              */
+			_elem = new wx.Frame(null, -1, "", new System.Drawing.Point(0, 0),
+			                     new System.Drawing.Size(panel.Width, panel.Height), _cstyle);
 			Win32Utils.SetParent(_elem.GetHandle(), panel.Handle);
 			_elem.Show();
 			SetWidgetProps();

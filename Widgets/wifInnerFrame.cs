@@ -12,6 +12,9 @@ using System.ComponentModel;
 using System.Windows.Forms.Design;
 using System.Windows.Forms;
 using System.Drawing.Design;
+using System.Drawing.Drawing2D;
+using System.Reflection;
+using System.Resources;
 using wx;
 
 namespace mkdb.Widgets
@@ -32,12 +35,36 @@ namespace mkdb.Widgets
 		public wifTitleBar(wx.Window _parent, int _id, System.Drawing.Point _pos, System.Drawing.Size _size, uint _style)
 			: base(_parent, _id, _pos, _size, _style)
 		{
-			m_minimize = new wx.Bitmap("../../icons/windows/minimize_xpm.xpm", wx.BitmapType.wxBITMAP_TYPE_XPM);
-			m_minimize_dis = new wx.Bitmap("../../icons/windows/minimize_disabled_xpm.xpm", wx.BitmapType.wxBITMAP_TYPE_XPM);
-			m_maximize = new wx.Bitmap("../../icons/windows/maximize_xpm.xpm", wx.BitmapType.wxBITMAP_TYPE_XPM);
-			m_maximize_dis = new wx.Bitmap("../../icons/windows/maximize_disabled_xpm.xpm", wx.BitmapType.wxBITMAP_TYPE_XPM);
-			m_close = new wx.Bitmap("../../icons/windows/close_xpm.xpm", wx.BitmapType.wxBITMAP_TYPE_XPM);
-			m_close_dis = new wx.Bitmap("../../icons/windows/close_disabled_xpm.xpm", wx.BitmapType.wxBITMAP_TYPE_XPM);
+			// get a reference to the current assembly
+			
+			string str = XpmIcons.minimize_xpm;
+			byte[] dbyte = StrToByteArray(str);
+			// wx.XPMHandler img = new wx.XPMHandler();
+			wx.Image img = new wx.Image(dbyte, wx.BitmapType.wxBITMAP_TYPE_XPM_DATA);
+			m_minimize = new wx.Bitmap(new wx.Image(StrToByteArray(XpmIcons.minimize_xpm), wx.BitmapType.wxBITMAP_TYPE_XPM_DATA));
+			
+			/*
+            Assembly ass = Assembly.GetExecutingAssembly();            
+            m_minimize = new wx.Bitmap("minimize_xpm", ass);
+            m_minimize_dis = new wx.Bitmap("minimize_disabled_xpm", ass);
+            m_maximize = new wx.Bitmap("maximize_xpm", ass);
+            m_maximize_dis = new wx.Bitmap("maximize_disabled_xpm", ass);
+            m_close = new wx.Bitmap("close_xpm", ass);
+            m_close_dis = new wx.Bitmap("close_disabled_xpm", ass);
+            */          
+           	// m_minimize = new wx.Bitmap();
+           	// bool res = m_minimize.LoadFile("../../icons/windows/minimize_xpm.xpm", wx.BitmapType.wxBITMAP_TYPE_XPM);
+           	m_minimize_dis = new wx.Bitmap();
+           	m_minimize_dis.LoadFile("../../icons/windows/minimize_disabled_xpm.xpm", wx.BitmapType.wxBITMAP_TYPE_XPM);
+           	m_maximize = new wx.Bitmap();
+           	m_maximize.LoadFile("../../icons/windows/maximize_xpm.xpm", wx.BitmapType.wxBITMAP_TYPE_XPM);
+           	m_maximize_dis = new wx.Bitmap();
+           	m_maximize_dis.LoadFile("../../icons/windows/maximize_disabled_xpm.xpm", wx.BitmapType.wxBITMAP_TYPE_XPM);
+           	m_close = new wx.Bitmap();
+           	m_close.LoadFile("../../icons/windows/close_xpm.xpm", wx.BitmapType.wxBITMAP_TYPE_XPM);
+           	m_close_dis = new wx.Bitmap();
+           	m_close_dis.LoadFile("../../icons/windows/close_disabled_xpm.xpm", wx.BitmapType.wxBITMAP_TYPE_XPM);
+			
 			m_style = _style;	
 			
 			m_color1 = new wxColor();
@@ -55,6 +82,14 @@ namespace mkdb.Widgets
 			this.EVT_PAINT(new wx.EventListener(OnPaint));
 			this.EVT_SIZE(new wx.EventListener(OnSize));			
 		}		
+		
+		// C# to convert a string to a byte array.
+		public static byte[] StrToByteArray(string str)
+		{
+    		System.Text.ASCIIEncoding  encoding=new System.Text.ASCIIEncoding();
+    		return encoding.GetBytes(str);
+		}
+		
 		
 		protected System.Drawing.Size DoGetBestSize()
 		{
@@ -81,19 +116,25 @@ namespace mkdb.Widgets
 
 		protected void OnSize(object sender, wx.Event e)
 		{
+			// wx.ClientDC dc = new wx.ClientDC(this);
 			wx.ClientDC dc = new wx.ClientDC(this);
 			wx.BufferedDC bdc = new wx.BufferedDC(dc, this.ClientSize);
-			DrawTitleBar(bdc);
+			DrawTitleBar(bdc, bdc.GetPPI());
+			// wx.BufferedDC bdc = new wx.BufferedDC(dc, this.ClientSize);
+			// DrawTitleBar(bdc, bdc.GetPPI());
 		}
 
 		protected void OnPaint(object sender, wx.Event e)
 		{
+			// wx.Bitmap bmp = new wx.Bitmap(this.ClientSize.Width, this.ClientSize.Height, 24);
 			wx.PaintDC dc = new wx.PaintDC(this);
-			wx.BufferedDC bdc = new BufferedDC(dc, this.ClientSize);
-			DrawTitleBar(bdc);
+			// wx.BufferedDC bdc = new BufferedDC(dc, bmp);
+			DrawTitleBar(dc, dc.GetPPI());
+			// wx.BufferedDC bdc = new BufferedDC(dc, this.ClientSize);
+			// DrawTitleBar(bdc, bdc.GetPPI());
 		}
 
-		public void DrawTitleBar(wx.DC dc)
+		public void DrawTitleBar(wx.DC dc, System.Drawing.Size ppi)
 		{
 			int margin = 2;
 			int tbPosX, tbPosY; // title bar
@@ -136,7 +177,7 @@ namespace mkdb.Widgets
 			for (int i = 0; i < tbWidth; i++)
 			{
 				col.Set((byte)colourR, (byte)colourG, (byte)colourB);
-				pen.Colour = col ;
+				pen.Colour = col;
 				dc.Pen = pen;
 				dc.DrawLine(tbPosX + i, tbPosY, tbPosX + i, tbPosY + tbHeight);
 				colourR += incR;
@@ -145,8 +186,9 @@ namespace mkdb.Widgets
 			}
 
 			// Draw title text
-			Font font = dc.Font;
-			System.Drawing.Size ppi = dc.SizeMM;
+			wx.Font font = dc.Font;
+			// System.Drawing.Size ppi = dc.SizeMM;
+			// System.Drawing.Size ppi = dc.DeviceOrigin;
 
 			int fontSize = 72 * txtHeight / ppi.Height;
 			font.Weight = wx.FontWeight.wxBOLD;
@@ -164,11 +206,11 @@ namespace mkdb.Widgets
 			dc.DrawLabel(m_titleText, new System.Drawing.Rectangle(txtPosX, txtPosY, tw, th));
 
 			// Draw Buttons
-			bool hasClose = ( m_style & wxCLOSE_BOX ) != 0;
-			bool hasMinimize = ( m_style & wxMINIMIZE_BOX ) != 0;
-			bool hasMaximize = ( m_style & wxMAXIMIZE_BOX ) != 0;
+			bool hasClose = ( m_style & wx.Panel.wxCLOSE_BOX ) != 0;
+			bool hasMinimize = ( m_style & wx.Panel.wxMINIMIZE_BOX ) != 0;
+			bool hasMaximize = ( m_style & wx.Panel.wxMAXIMIZE_BOX ) != 0;
 
-			if (( m_style & wxSYSTEM_MENU) == 0)
+			if (( m_style & wx.Panel.wxSYSTEM_MENU) == 0)
 			{
 				// On Windows, no buttons are drawn without System Menu
 				return;
@@ -207,6 +249,7 @@ namespace mkdb.Widgets
       		RIGHT,
       		BOTTOM
     	};
+		public const int wxEVT_INNER_FRAME_RESIZED = 6000;
 		private	mSizing m_sizing;
     	protected int m_curX, m_curY, m_difX, m_difY;
     	protected int m_resizeBorder;
@@ -214,6 +257,7 @@ namespace mkdb.Widgets
     	protected System.Drawing.Size m_baseMinSize;
   		protected wifTitleBar	m_titleBar;
   		protected wx.Panel	m_frameContent;
+  		protected wx.EventListener m_inner_frame_resized;
 		
 		public wifInnerFrame(wx.Window _parent, int _id, System.Drawing.Point _pos, System.Drawing.Size _size, uint _style)
 					: base(_parent, _id, _pos, _size, wxRAISED_BORDER | wxFULL_REPAINT_ON_RESIZE )
@@ -222,15 +266,15 @@ namespace mkdb.Widgets
 			m_curX = m_curY = -1;
 			m_resizeBorder = 10;
 
-			m_titleBar = new wifTitleBar(this, -1, wx.Panel.wxDefaultPosition, wx.Panel.wxDefaultSize, style);
+			m_titleBar = new wifTitleBar(this, -1, wx.Panel.wxDefaultPosition, wx.Panel.wxDefaultSize, _style);
 			m_frameContent = new wx.Panel(this, -1, wx.Panel.wxDefaultPosition, wx.Panel.wxDefaultSize);
 
 			// Use spacers to create a 1 pixel border on left and top of content panel - this is for drawing the selection box
 			// Use borders to create a 2 pixel border on right and bottom - this is so the back panel can catch mouse events for resizing
-			wx.BoxSizer sizer = new wx.BoxSizer(0);
+			wx.BoxSizer sizer = new wx.BoxSizer(wx.Orientation.wxVERTICAL);
 			sizer.Add(m_titleBar, 0, wx.Stretch.wxGROW | wx.Direction.wxRIGHT, 2);
 			// sizer->AddSpacer( 1 );
-			wx.BoxSizer horiSizer = new wx.BoxSizer(1);
+			wx.BoxSizer horiSizer = new wx.BoxSizer(wx.Orientation.wxHORIZONTAL);
 			// horiSizer->AddSpacer( 1 );
 			horiSizer.Add(m_frameContent, 1, wx.Stretch.wxGROW);
 			sizer.Add(horiSizer, 1, wx.Stretch.wxGROW | wx.Direction.wxBOTTOM | wx.Direction.wxRIGHT, 2);
@@ -248,6 +292,17 @@ namespace mkdb.Widgets
 			{
 				SetSize(this.BestSize);
 			}			
+			m_inner_frame_resized = null;
+			this.EVT_MOTION(new wx.EventListener(OnMouseMotion));
+			this.EVT_LEFT_DOWN(new wx.EventListener(OnLeftDown));
+			this.EVT_LEFT_UP(new wx.EventListener(OnLeftUp));
+			/*
+			BEGIN_EVENT_TABLE( wxInnerFrame, wxPanel )
+			EVT_MOTION( wxInnerFrame::OnMouseMotion )
+			EVT_LEFT_DOWN( wxInnerFrame::OnLeftDown )
+			EVT_LEFT_UP( wxInnerFrame::OnLeftUp )
+			END_EVENT_TABLE()
+			*/
 		}
 		
 		/**/
@@ -269,12 +324,12 @@ namespace mkdb.Widgets
 			wx.MouseEvent e = (wx.MouseEvent)evt;
 			if (m_sizing != mSizing.NONE)
 			{
-				IntPtr hdc = Win32Utils.GetDC(null);
+				IntPtr hdc = Win32Utils.GetDC((IntPtr)0);
 				Graphics dc = Graphics.FromHdc(hdc);
-				Pen pen = new Pen(Brushes.Black, 1.0f);
-				Brush tbrush = Brushes.Transparent;
+				System.Drawing.Brush brush = new HatchBrush(HatchStyle.DottedGrid, Color.Black, Color.Transparent);
+				System.Drawing.Pen pen = new System.Drawing.Pen(brush, 1.0f);
+				// System.Drawing.Pen pen = new System.Drawing.Pen(Brushes.Black, 1.0f);
 				System.Drawing.Point pos = Parent.ClientToScreen(Position);
-
 				/*
 				wxPen pen( *wxBLACK, 1, wxDOT );
 				dc.SetPen( pen );
@@ -283,14 +338,14 @@ namespace mkdb.Widgets
 				*/
 				
 				if ( m_curX >= 0 && m_curY >= 0 )
-					dc.DrawRectangle(pen, pos.x, pos.y, m_curX, m_curY);
+					dc.DrawRectangle(pen, pos.X, pos.Y, m_curX, m_curY);
 
-				if ( m_sizing == RIGHT || m_sizing == RIGHTBOTTOM )
+				if ( m_sizing == mSizing.RIGHT || m_sizing == mSizing.RIGHTBOTTOM )
 					m_curX = e.Position.X + m_difX;
 				else
 					m_curX = this.Size.Width;
 
-				if ( m_sizing == BOTTOM || m_sizing == RIGHTBOTTOM )
+				if ( m_sizing == mSizing.BOTTOM || m_sizing == mSizing.RIGHTBOTTOM )
 					m_curY = e.Position.Y + m_difY;
 				else
 					m_curY = this.Size.Height;
@@ -309,6 +364,7 @@ namespace mkdb.Widgets
 				if ( m_curY > maxSize.Height && maxSize.Height != wx.Panel.wxDefaultCoord ) m_curY = maxSize.Height;
 
 				dc.DrawRectangle(pen, pos.X, pos.Y, m_curX, m_curY);
+				// dc.ReleaseHdc();
 				/*				
 				dc.SetLogicalFunction( wxCOPY );
 				dc.SetPen( wxNullPen );
@@ -323,27 +379,27 @@ namespace mkdb.Widgets
 				if ( ( e.Position.X >= x - m_resizeBorder && e.Position.Y >= y - m_resizeBorder ) ||
 				    ( e.Position.X < m_resizeBorder && e.Position.Y < m_resizeBorder ) )
 				{
-					this.Cursor = wx.StockCursor.wxCURSOR_SIZENWSE;
+					this.Cursor = new wx.Cursor(wx.StockCursor.wxCURSOR_SIZENWSE);
 				}
 				else if ( ( e.Position.X < m_resizeBorder && e.Position.Y >= y - m_resizeBorder ) ||
 				         ( e.Position.X > x - m_resizeBorder && e.Position.Y < m_resizeBorder ) )
 				{
-					this.Cursor = wx.StockCursor.wxCURSOR_SIZENESW;
+					this.Cursor = new wx.Cursor(wx.StockCursor.wxCURSOR_SIZENESW);
 				}
 				else if ( e.Position.X >= x - m_resizeBorder || e.Position.X < m_resizeBorder )
 				{
-					this.Cursor = wx.StockCursor.wxCURSOR_SIZEWE;
+					this.Cursor = new wx.Cursor(wx.StockCursor.wxCURSOR_SIZEWE);
 				}
 				else if ( e.Position.Y >= y - m_resizeBorder || e.Position.Y < m_resizeBorder )
 				{
-					this.Cursor = wx.StockCursor.wxCURSOR_SIZENS;
+					this.Cursor = new wx.Cursor(wx.StockCursor.wxCURSOR_SIZENS);
 				}
 				else
 				{
-					this.Cursor = wx.StockCursor.wxCURSOR_ARROW;
+					this.Cursor = new wx.Cursor(wx.StockCursor.wxCURSOR_ARROW);
 				}
-				m_titleBar.Cursor = wx.StockCursor.wxCURSOR_ARROW;
-				m_frameContent.Cursor = wx.StockCursor.wxCURSOR_ARROW;
+				m_titleBar.Cursor = new wx.Cursor(wx.StockCursor.wxCURSOR_ARROW);
+				m_frameContent.Cursor = new wx.Cursor(wx.StockCursor.wxCURSOR_ARROW);
 				// m_titleBar->SetCursor( *wxSTANDARD_CURSOR );
 				// m_frameContent->SetCursor( *wxSTANDARD_CURSOR );
 			}
@@ -355,93 +411,116 @@ namespace mkdb.Widgets
 			if ( m_sizing == mSizing.NONE )
 			{
 				if (e.Position.X >= this.Size.Width - m_resizeBorder && e.Position.Y >= this.Size.Height - m_resizeBorder)
+				{
 					m_sizing = mSizing.RIGHTBOTTOM;
-				else if (e.Position.X) >= this.Size.Width - m_resizeBorder)
+				}
+				else if (e.Position.X >= this.Size.Width - m_resizeBorder)
+				{
 					m_sizing = mSizing.RIGHT;
+				}
 				else if (e.Position.Y >= this.Size.Height - m_resizeBorder)
+				{
 					m_sizing = mSizing.BOTTOM;
-
+				}
 				if ( m_sizing != mSizing.NONE )
 				{
 					m_difX = this.Size.Width - e.Position.X;
 					m_difY = this.Size.Height - e.Position.Y;
 					CaptureMouse();
-					OnMouseMotion(evt);
+					OnMouseMotion(this, evt);
 				}
 			}
 		}
 
 		protected void OnLeftUp(object sender, wx.Event evt)
 		{
-			if ( m_sizing != NONE )
+			if ( m_sizing != mSizing.NONE )
 			{
-				m_sizing = NONE;
+				m_sizing = mSizing.NONE;
 				ReleaseMouse();
-
+				
+				IntPtr hdc = Win32Utils.GetDC((IntPtr)0);
+				Graphics dc = Graphics.FromHdc(hdc);
+				System.Drawing.Brush brush = new HatchBrush(HatchStyle.DottedGrid, Color.Black, Color.Transparent);
+				System.Drawing.Pen pen = new System.Drawing.Pen(brush, 1.0f);
+				// System.Drawing.Pen pen = new System.Drawing.Pen(Brushes.Black, 1.0f);
+				System.Drawing.Point pos = Parent.ClientToScreen(Position);
+				
+				/*
 				wxScreenDC dc;
 				wxPen pen( *wxBLACK, 1, wxDOT );
-
 				dc.SetPen( pen );
 				dc.SetBrush( *wxTRANSPARENT_BRUSH );
 				dc.SetLogicalFunction( wxINVERT );
-
-				//wxPoint pos = ClientToScreen(wxPoint(0, 0));
-				wxPoint pos = GetParent()->ClientToScreen( GetPosition() );
-
-				dc.DrawRectangle( pos.x, pos.y, m_curX, m_curY );
-
+				*/
+				
+				dc.DrawRectangle(pen, pos.X, pos.Y, m_curX, m_curY);
+				/*
 				dc.SetLogicalFunction( wxCOPY );
 				dc.SetPen( wxNullPen );
 				dc.SetBrush( wxNullBrush );
-
-				SetSize( m_curX, m_curY );
-
+				*/
+				SetSize(m_curX, m_curY);
+				if (m_inner_frame_resized != null)
+				{
+					wx.CommandEvent _event = new wx.CommandEvent(wxEVT_INNER_FRAME_RESIZED, this.ID);
+					this.EventHandler.ProcessEvent(_event);
+				}
+				/*
 				wxCommandEvent event( wxEVT_INNER_FRAME_RESIZED, GetId() );
 				event.SetEventObject( this );
 				GetEventHandler()->ProcessEvent( event );
-
+				*/
 				m_curX = m_curY = -1;
+				// dc.ReleaseHdc();				
 			}
 		}
 
 
-		void wxInnerFrame::ShowTitleBar( bool show )
+		public void ShowTitleBar(bool show)
 		{
-			m_titleBar->Show( show );
-			m_minSize = ( show ? m_baseMinSize : wxSize( 10, 10 ) );
+			m_titleBar.Show(show);
+			m_minSize = (show ? m_baseMinSize : new System.Drawing.Size(10, 10));
 			Layout();
 		}
 
-		void wxInnerFrame::SetToBaseSize()
+		public void SetToBaseSize()
 		{
-			if ( m_titleBar->IsShown() )
+			if (m_titleBar.IsShown)
 			{
-				SetSize( m_baseMinSize );
+				SetSize(m_baseMinSize);
 			}
 			else
 			{
-				SetSize( wxSize( 10, 10 ) );
+				SetSize(new System.Drawing.Size(10, 10));
 			}
 		}
-
-		bool wxInnerFrame::IsTitleBarShown()
+		
+		public string BarTitle
 		{
-			return m_titleBar->IsShown();
+			get	{	return m_titleBar.BarTitle;		}
+			set	{	m_titleBar.BarTitle = value;	}
 		}
 
-		void wxInnerFrame::SetTitle( const wxString &title )
+		public uint TitleStyle
 		{
-			m_titleBar->SetTitle( title );
+			set	{	m_titleBar.SetStyle(value);	}
 		}
-
-		wxString wxInnerFrame::GetTitle()
+		
+		public bool IsTitleBarShown
 		{
-			return m_titleBar->GetTitle();
+			get	{	return m_titleBar.IsShown;	}
 		}
-
-		void wxInnerFrame::SetTitleStyle( long style )
+		
+		public wx.EventListener EvtInnerFrameResized
 		{
-			m_titleBar->SetStyle( style );
+			get	{	return m_inner_frame_resized;	}
+			set	
+			{
+				m_inner_frame_resized = value;
+				this.EventHandler.AddCommandListener(wxEVT_INNER_FRAME_RESIZED, this.ID,
+				                                     m_inner_frame_resized);
+			}
 		}
 	}
 }
