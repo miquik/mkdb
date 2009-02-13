@@ -24,11 +24,12 @@ namespace provablit
 			InitializeComponent();			
 			// wx.Frame frame = new wx.Frame(null, -1, "Prova");
 			wx.Frame frame = new wx.Frame(null, -1, "");
-			InnerFrame panel = new InnerFrame(frame, -1, "Prova", wx.Panel.wxDefaultPosition, new Size(this.Width, this.Height), 0);
+			InnerFrame panel = new InnerFrame(frame, -1, "Prova", wx.Panel.wxDefaultPosition, new Size(frame.Width, frame.Height), 0);
 			frame.StyleFlags = 0;
-			Win32Utils.SetParent(panel.GetHandle(), this.Handle);
+			frame.Show();
+			// Win32Utils.SetParent(panel.GetHandle(), this.Handle);
 			// frame.Show();
-			panel.EVT_MOUSE_EVENTS(new wx.EventListener(OnMouseEvent));
+			// panel.EVT_MOUSE_EVENTS(new wx.EventListener(OnMouseEvent));
 			// wx.MiniFrame frame = new wx.MDIClientWindow(null, -1, "Prova");
 			// frame.StyleFlags = 0;
 			// frame.Show();

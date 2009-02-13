@@ -11,6 +11,38 @@ using System.Drawing;
 
 namespace provablit
 {
+	public class InnerTitleBar : wx.Panel
+	{
+		protected uint style;
+		
+		public InnerTitleBar(wx.Window _parent, int _id, string _title, Point _pos, Size _size, uint _style) :
+				base(_parent, _id, _pos, _size, 0)
+		{
+			style = _style;		
+			SetSize(this.Width, 12);
+			this.EVT_PAINT(new wx.EventListener(OnPaint));
+		}
+		
+		protected void DrawTitleBar(wx.DC dc)
+		{
+			int margin = 2;
+			int height = this.Font.PointSize + 2*margin;
+			// title_bar.SetSize(0, 0, this.Width, height);
+			// dc.Pen = new wx.Pen(new wx.Colour(0, 0, 255));
+			dc.Pen = new wx.Pen(wx.Colour.wxCYAN, 1);
+			dc.Brush = new wx.Brush(wx.Colour.wxCYAN, wx.FillStyle.wxNORMAL);
+			dc.DrawRectangle(margin, margin, this.Width-margin, height);
+			// dc.DrawLine(margin, height/2, this.Width-margin, height/2);
+		}
+		
+		protected void OnPaint(object sender, wx.Event e)
+		{
+			wx.PaintDC pdc = new wx.PaintDC(this);
+			DrawTitleBar(pdc);			
+		}
+		
+	}
+	
 	/// <summary>
 	/// Description of InnerFrame.
 	/// </summary>
@@ -27,7 +59,7 @@ namespace provablit
 			wintitle = _title;
 			style = _style;
 			//
-			title_bar = new wx.Panel(this, -1, wx.Panel.wxDefaultPosition, wx.Panel.wxDefaultSize, wx.Panel.wxDOUBLE_BORDER);
+			title_bar = new InnerTitleBar(this, -1, wx.Panel.wxDefaultPosition, wx.Panel.wxDefaultSize, _style);
 			frame_content = new wx.Panel(this, -1, wx.Panel.wxDefaultPosition, wx.Panel.wxDefaultSize, 0);
 			//
 			wx.BoxSizer sizer = new wx.BoxSizer(wx.Orientation.wxVERTICAL);
@@ -38,27 +70,6 @@ namespace provablit
 			SetSizer(sizer);
 			this.AutoLayout = true;
 			Layout();
-			this.EVT_PAINT(new wx.EventListener(OnPaint));
-			// wx.ClientDC cdc = new wx.ClientDC(title_bar);
-			// DrawTitleBar(cdc);
-		}
-		
-		protected void DrawTitleBar(wx.DC dc)
-		{
-			int margin = 2;
-			int height = this.Font.PointSize + 2*margin;
-			title_bar.SetSize(0, 0, this.Width, height);
-			// dc.Pen = new wx.Pen(new wx.Colour(0, 0, 255));
-			dc.Pen = new wx.Pen(wx.Colour.wxCYAN, 1);
-			dc.Brush = new wx.Brush(wx.Colour.wxCYAN, wx.FillStyle.wxNORMAL);
-			dc.DrawRectangle(margin, margin, this.Width-margin, height);
-			// dc.DrawLine(margin, height/2, this.Width-margin, height/2);
-		}
-		
-		protected void OnPaint(object sender, wx.Event e)
-		{
-			wx.PaintDC pdc = new wx.PaintDC(title_bar);
-			DrawTitleBar(pdc);
-		}
+		}		
 	}
 }
