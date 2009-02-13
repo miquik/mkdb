@@ -36,13 +36,15 @@ namespace mkdb.Widgets
 			: base(_parent, _id, _pos, _size, _style)
 		{
 			// get a reference to the current assembly
-			
+			// System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
+			//(Image)resources.GetObject("minimize_xpm");
+			/*
 			string str = XpmIcons.minimize_xpm;
 			byte[] dbyte = StrToByteArray(str);
 			// wx.XPMHandler img = new wx.XPMHandler();
 			wx.Image img = new wx.Image(dbyte, wx.BitmapType.wxBITMAP_TYPE_XPM_DATA);
 			m_minimize = new wx.Bitmap(new wx.Image(StrToByteArray(XpmIcons.minimize_xpm), wx.BitmapType.wxBITMAP_TYPE_XPM_DATA));
-			
+			*/
 			/*
             Assembly ass = Assembly.GetExecutingAssembly();            
             m_minimize = new wx.Bitmap("minimize_xpm", ass);
@@ -52,8 +54,8 @@ namespace mkdb.Widgets
             m_close = new wx.Bitmap("close_xpm", ass);
             m_close_dis = new wx.Bitmap("close_disabled_xpm", ass);
             */          
-           	// m_minimize = new wx.Bitmap();
-           	// bool res = m_minimize.LoadFile("../../icons/windows/minimize_xpm.xpm", wx.BitmapType.wxBITMAP_TYPE_XPM);
+           	m_minimize = new wx.Bitmap();
+           	m_minimize.LoadFile("../../icons/windows/minimize_xpm.xpm", wx.BitmapType.wxBITMAP_TYPE_XPM);
            	m_minimize_dis = new wx.Bitmap();
            	m_minimize_dis.LoadFile("../../icons/windows/minimize_disabled_xpm.xpm", wx.BitmapType.wxBITMAP_TYPE_XPM);
            	m_maximize = new wx.Bitmap();
