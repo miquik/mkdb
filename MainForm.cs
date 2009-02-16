@@ -79,6 +79,11 @@ namespace mkdb
 			}
 		}
 		
+		void ObjtreeBeforeSelect(object sender, TreeViewCancelEventArgs e)
+		{
+			WidgetElem elem = (WidgetElem)e.Node;
+		}		
+		
 		void ObjtreeAfterSelect(object sender, TreeViewEventArgs e)
 		{
 			if (e.Action == TreeViewAction.ByMouse)
@@ -94,5 +99,27 @@ namespace mkdb
 				}
 			}
 		}
+		
+		void CanvasPaint(object sender, PaintEventArgs e)
+		{
+			// Redraw all widgets and paint selection.
+    		TreeNodeCollection nodes = objtree.Nodes;
+    		foreach (TreeNode n in nodes)
+    		{
+        		CanvasPaintRecursive(n);
+    		}			
+		}
+		
+		// recursively move through the treeview nodes
+		// and reset backcolors to white
+		private void CanvasPaintRecursive(TreeNode treeNode)
+		{
+    		foreach (TreeNode tn in treeNode.Nodes)
+    		{
+    			WidgetElem _e = (WidgetElem)tn;
+    			_e.PaintOnSelection();
+        		CanvasPaintRecursive(tn);
+    		}
+		}		
 	}
 }

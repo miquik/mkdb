@@ -11,6 +11,7 @@ using System.ComponentModel;
 using System.Windows.Forms.Design;
 using System.Windows.Forms;
 using System.Drawing.Design;
+using System.Drawing;
 
 
 namespace mkdb.Widgets
@@ -149,21 +150,29 @@ namespace mkdb.Widgets
 		
 		public override void PaintOnSelection()
 		{
-			int w, h;
-			wx.ClientDC wdc = new wx.ClientDC(_elem);
-			if (wdc != null)
+			if (this.IsSelected) 
 			{
-				wdc.Pen = new wx.Pen(new wx.Colour(255, 0, 0), 3);
-				wdc.Pen.Width = -1;
-				wdc.GetSize(out w, out h);
-				// wdc.DrawCircle(_elem.Width/2, _elem.Height/2, 100);
-				wdc.DrawLine(0, 0, w - 1, 0);
-				wdc.DrawLine(w - 1, 0, w - 1, h - 1);
-				wdc.DrawLine(0, h - 1, w - 1, h - 1);
-				wdc.DrawLine(0, 0, 0, h - 1);
-				// wdc.DrawRectangle(0, 0, _elem.Width, _elem.Height);
+				Graphics dc = Graphics.FromHwnd(_elem.Parent.GetHandle());
+				Pen _pen = new Pen(Color.Red, 2);
+				dc.DrawRectangle(_pen, 10, 10, _elem.ClientSize.Width-10, _elem.ClientSize.Height-10);
+				/*
+				int w, h;
+				wx.ClientDC wdc = new wx.ClientDC(_elem);
+				if (wdc != null)
+				{
+					wdc.Pen = new wx.Pen(new wx.Colour(255, 0, 0), 3);
+					wdc.Pen.Width = -1;
+					wdc.GetSize(out w, out h);
+					// wdc.DrawCircle(_elem.Width/2, _elem.Height/2, 100);
+					wdc.DrawLine(0, 0, w - 1, 0);
+					wdc.DrawLine(w - 1, 0, w - 1, h - 1);
+					wdc.DrawLine(0, h - 1, w - 1, h - 1);
+					wdc.DrawLine(0, 0, 0, h - 1);
+					// wdc.DrawRectangle(0, 0, _elem.Width, _elem.Height);
+				}
+				wdc.Dispose();
+				*/
 			}
-			wdc.Dispose();
 		}		
 		
 		protected void OnMouseEvent(object sender, wx.Event evt)

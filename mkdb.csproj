@@ -58,6 +58,7 @@
     <Compile Include="Widgets\wdbBoxSizer.cs" />
     <Compile Include="Widgets\wdbFrame.cs" />
     <Compile Include="Widgets\wifInnerFrame.cs" />
+    <Compile Include="Widgets\wifSimpleFrame.cs" />
     <Compile Include="Win32Utils.cs" />
     <Compile Include="wxApp.cs" />
     <EmbeddedResource Include="MainForm.resx">

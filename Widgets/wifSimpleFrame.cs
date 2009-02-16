@@ -15,28 +15,7 @@ using System.IO;
 
 namespace mkdb
 {	
-	public class wifInnerFrameContent : wx.Panel
-	{		
-		public wifInnerFrameContent(wx.Window _parent, int _id, Point _pos, Size _size) :
-				base(_parent, _id, _pos, _size, 0)
-		{
-			this.EVT_PAINT(new wx.EventListener(OnPaint));
-			this.EVT_SIZE(new wx.EventListener(OnSize));
-		}
-		
-		protected void OnPaint(object sender, wx.Event e)
-		{
-			Graphics dc = Graphics.FromHwnd(this.GetHandle());
-			dc.FillRectangle(Brushes.Orange, new Rectangle(0, 0, this.Width, this.Height));
-		}
-		
-		protected void OnSize(object sender, wx.Event e)
-		{
-			Graphics dc = Graphics.FromHwnd(this.GetHandle());
-			dc.FillRectangle(Brushes.Orange, new Rectangle(0, 0, this.Width, this.Height));
-		}		
-	}
-	
+/*	
 	public class wifInnerTitleBar : wx.Panel
 	{		
 		protected uint m_style;
@@ -68,7 +47,6 @@ namespace mkdb
 			m_col2 = Color.FromArgb(255, r, g, b);
 			this.MinSize = new Size(100, 20);	
 			// 		
-			/* .... */
 			// Bitmap
 			ResourceManager rs = new ResourceManager("mkdb.MainForm", Assembly.GetExecutingAssembly());
 			m_close = (Image)rs.GetObject("close");
@@ -77,7 +55,6 @@ namespace mkdb
 			m_minimize_dis = (Image)rs.GetObject("minimize_disabled");
 			m_maximize = (Image)rs.GetObject("maximize");
 			m_maximize_dis = (Image)rs.GetObject("maximize_disabled");
-			/* .... */			
 			this.EVT_PAINT(new wx.EventListener(OnPaint));
 			this.EVT_SIZE(new wx.EventListener(OnSize));
 			// !!!
@@ -89,19 +66,7 @@ namespace mkdb
 			// Double buffering
 			offScreenBmp = new Bitmap(w, h);
 			offScreenDC = Graphics.FromImage(offScreenBmp);
-			
-			/*
-			// Double buffering
-			memBmp = new Bitmap(w, h); 
-			Graphics clientDC = Graphics.FromHwnd(this.GetHandle());
-			IntPtr hdc = clientDC.GetHdc(); 
-			memdc = Win32Utils.CreateCompatibleDC(hdc); 
-			Win32Utils.SelectObject(memdc, memBmp.GetHbitmap()); 
-			memDC = Graphics.FromHdc(memdc); 
-			clientDC.ReleaseHdc(hdc);					
-			*/
-			// Win32Utils.DeleteObject(memdc);
-		}
+		}*//*
 				
 		protected void OnPaint(object sender, wx.Event e)
 		{
@@ -109,18 +74,6 @@ namespace mkdb
 			offScreenDC.FillRectangle(Brushes.Black, 0, 0, this.Width, this.Height);
 			DrawTitleBar(offScreenDC);									
 			clientDC.DrawImage(offScreenBmp, this.Left, this.Top);
-			e.Skip();
-			/*
-			Graphics clientDC = Graphics.FromHwnd(this.GetHandle());
-			memDC.FillRectangle(Brushes.Black, 0, 0, this.Width, this.Height);
-			DrawTitleBar(memDC);						
-			IntPtr hdc = clientDC.GetHdc();
-			IntPtr hMemdc = memDC.GetHdc();
-			Win32Utils.BitBlt(hdc, 0, 0, this.Width, this.Height, 
-				hMemdc, 0, 0, Win32Utils.TernaryRasterOperations.SRCCOPY);
-			clientDC.ReleaseHdc(hdc);
-			memDC.ReleaseHdc(hMemdc);
-			*/
 		}
 		
 		protected void OnSize(object sender, wx.Event e)
@@ -130,19 +83,6 @@ namespace mkdb
 			offScreenDC.FillRectangle(Brushes.Black, 0, 0, this.Width, this.Height);
 			DrawTitleBar(offScreenDC);									
 			clientDC.DrawImage(offScreenBmp, this.Left, this.Top);
-			e.Skip();
-			/*
-			SetBufferSize(this.Width, this.Height);
-			Graphics clientDC = Graphics.FromHwnd(this.GetHandle());
-			memDC.FillRectangle(Brushes.Black, 0, 0, this.Width, this.Height);
-			DrawTitleBar(memDC);						
-			IntPtr hdc = clientDC.GetHdc();
-			IntPtr hMemdc = memDC.GetHdc();
-			Win32Utils.BitBlt(hdc, 0, 0, this.Width, this.Height, 
-				hMemdc, 0, 0, Win32Utils.TernaryRasterOperations.SRCCOPY);
-			clientDC.ReleaseHdc(hdc);
-			memDC.ReleaseHdc(hMemdc);
-			*/
 		}				
 		
 		protected void DrawTitleBar(Graphics dc)
@@ -174,7 +114,7 @@ namespace mkdb
 			Brush _brush = new LinearGradientBrush(new Rectangle(tbPosX,  tbPosY, tbPosX + tbWidth, tbPosY + tbHeight),
 			                                          m_col1, m_col2, LinearGradientMode.Horizontal);
 			Pen _pen = new Pen(_brush);
-			Font _font = new Font(Parent.Font.FaceName, Parent.Font.PointSize, FontStyle.Bold);
+			Font _font = new Font(this.Font.FaceName, this.Font.PointSize, FontStyle.Bold);
 			Brush _font_brush = new SolidBrush(Color.White);
 			
 			// Pen pen = new Pen(Brushes.Black, 10);
@@ -214,12 +154,12 @@ namespace mkdb
 			}
 		}		
 	}
-
+	*/
 	
 	/// <summary>
 	/// Description of InnerFrame.
 	/// </summary>
-	public class wifInnerFrame : wx.Panel
+	public class wifSimpleFrame : wx.Panel
 	{
     	private enum mSizing {
       		NONE,
@@ -230,45 +170,34 @@ namespace mkdb
 		private	mSizing m_sizing;
     	protected int m_resizeBorder;	
     	protected int m_curX, m_curY, m_difX, m_difY;    	
-		protected wifInnerTitleBar title_bar;
-		protected wx.Panel frame_content;
-		protected string wintitle;
-		protected uint style;
+		protected string m_wintitle;
+		protected uint m_style;
 		protected Size m_minSize;
 		protected Size m_baseMinSize;
 		protected IntPtr m_parent_hwnd;
 		protected Color m_parent_back;
+		private Bitmap offScreenBmp;
+		private Graphics offScreenDC;		
 		
-		public wifInnerFrame(wx.Window _parent, int _id, string _title, Point _pos, Size _size, uint _style) :
+		
+		public wifSimpleFrame(wx.Window _parent, int _id, string _title, Point _pos, Size _size, uint _style) :
 				base(_parent, _id, _pos, _size, wx.Panel.wxRAISED_BORDER | wx.Panel.wxFULL_REPAINT_ON_RESIZE)
 		{
-			wintitle = _title;
-			style = _style;
+			m_wintitle = _title;
+			m_style = _style;
 			m_sizing = mSizing.NONE;
 			m_resizeBorder = 10;
-			//
-			title_bar = new wifInnerTitleBar(this, -1, _title, new Point(0, 0), new Size(this.Width, 20), _style);
-			// frame_content = new wifInnerFrameContent(this, -1, new Point(0, 0), wx.Panel.wxDefaultSize);			
-			frame_content = new wx.Panel(this, -1, new Point(0, 0), wx.Panel.wxDefaultSize, 0);
-			//
-			wx.BoxSizer sizer = new wx.BoxSizer(wx.Orientation.wxVERTICAL);
-			sizer.Add(title_bar, 0, wx.Stretch.wxGROW | wx.Direction.wxRIGHT, 2);
-			wx.BoxSizer horiSizer = new wx.BoxSizer(wx.Orientation.wxHORIZONTAL);
-			horiSizer.Add(frame_content, 1, wx.Stretch.wxGROW);
-			sizer.Add(horiSizer, 1, wx.Stretch.wxGROW | wx.Direction.wxBOTTOM | wx.Direction.wxRIGHT, 2);
-			SetSizer(sizer);
 			this.AutoLayout = true;
-			Layout();
-			
-			m_minSize = title_bar.MinSize;
-			m_minSize.Width += 8;
-			m_minSize.Height += 10;
-			m_baseMinSize = m_minSize;
-			
+			Layout();			
+			m_minSize = new Size(100, 30);			
+			// !!!
+			// SetBufferSize(_parent.Width, _parent.Height);
+			// !!!			
 			this.EVT_MOTION(new wx.EventListener(OnMouseMotion));
 			this.EVT_LEFT_DOWN(new wx.EventListener(OnLeftDown));
-			this.EVT_LEFT_UP(new wx.EventListener(OnLeftUp));		
-			this.EVT_UPDATE_UI(this.ID, new wx.EventListener(OnUpdateUI));
+			this.EVT_LEFT_UP(new wx.EventListener(OnLeftUp));			
+			this.EVT_PAINT(new wx.EventListener(OnPaint));		
+			this.EVT_SIZE(new wx.EventListener(OnSize));
 		}		
 		
 		public IntPtr ParentHandle
@@ -283,16 +212,21 @@ namespace mkdb
 			set	{	m_parent_back = value;	}
 		}				
 		
+		public void SetBufferSize(int w, int h)
+		{
+			// Double buffering
+			offScreenBmp = new Bitmap(w, h);
+			offScreenDC = Graphics.FromImage(offScreenBmp);
+		}
+		
 		protected void OnMouseMotion(object sender, wx.Event evt)
 		{		
 			wx.MouseEvent e = (wx.MouseEvent)evt;
 			if (m_sizing != mSizing.NONE)
 			{
 				Graphics dc = Graphics.FromHwnd((IntPtr)m_parent_hwnd);
-				Brush _brush = new HatchBrush(HatchStyle.Cross, Color.White, Color.Black);
-				// Brush _brush = new SolidBrush(Color.Orange);
-				Pen _pen = new Pen(_brush, 2.0f);
-				// Point _pos = Parent.ClientToScreen(Position);
+				Pen _pen = new Pen(Color.Black, 2.0f);
+				_pen.DashStyle = DashStyle.Dash;
 				Point _pos = Parent.ClientAreaOrigin;
 				dc.Clear(m_parent_back);
 				if ( m_curX >= 0 && m_curY >= 0 )
@@ -352,8 +286,8 @@ namespace mkdb
 				{
 					this.Cursor = new wx.Cursor(wx.StockCursor.wxCURSOR_ARROW);
 				}
-				title_bar.Cursor = new wx.Cursor(wx.StockCursor.wxCURSOR_ARROW);				
-				frame_content.Cursor = new wx.Cursor(wx.StockCursor.wxCURSOR_ARROW);
+				// title_bar.Cursor = new wx.Cursor(wx.StockCursor.wxCURSOR_ARROW);				
+				// frame_content.Cursor = new wx.Cursor(wx.StockCursor.wxCURSOR_ARROW);
 			}			
 		}
 		
@@ -393,7 +327,7 @@ namespace mkdb
 				Graphics dc = Graphics.FromHwnd((IntPtr)m_parent_hwnd);
 				dc.Clear(m_parent_back);
 				SetSize(0, 0, m_curX, m_curY);
-				title_bar.SetSize(0, 0, m_curX - 8, 20);
+				// title_bar.SetSize(0, 0, m_curX - 8, 20);
 				
 				/*
 				if (m_inner_frame_resized != null)
@@ -410,13 +344,20 @@ namespace mkdb
 				m_curX = m_curY = -1;
 			}
 		}				
-
-		protected void OnUpdateUI(object sender, wx.Event e)
-		{		
-			title_bar.Title = this.Title;
+		
+		protected void OnPaint(object sender, wx.Event e)
+		{
+			Graphics clientDC = Graphics.FromHwnd(m_parent_hwnd);
+			clientDC.Clear(m_parent_back);
 			e.Skip();
-			// e.Skip();
 		}
+		
+		protected void OnSize(object sender, wx.Event e)
+		{
+			Graphics clientDC = Graphics.FromHwnd(m_parent_hwnd);
+			clientDC.Clear(m_parent_back);
+			e.Skip();
+		}				
 	}
 	
 /*	

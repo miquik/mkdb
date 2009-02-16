@@ -29,6 +29,7 @@ namespace mkdb
 		protected WidgetProps _props;
 		protected bool _is_sizer;
 		protected int _widget_id;
+		protected bool _selected;
 		
 		public WidgetElem(int _id)
 		{

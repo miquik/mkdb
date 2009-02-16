@@ -201,6 +201,7 @@ namespace mkdb
 			this.objtree.Size = new System.Drawing.Size(214, 311);
 			this.objtree.TabIndex = 1;
 			this.objtree.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.ObjtreeAfterSelect);
+			this.objtree.BeforeSelect += new System.Windows.Forms.TreeViewCancelEventHandler(this.ObjtreeBeforeSelect);
 			// 
 			// label1
 			// 
@@ -265,6 +266,7 @@ namespace mkdb
 			this.canvas.Name = "canvas";
 			this.canvas.Size = new System.Drawing.Size(310, 229);
 			this.canvas.TabIndex = 0;
+			this.canvas.Paint += new System.Windows.Forms.PaintEventHandler(this.CanvasPaint);
 			// 
 			// tabPage2
 			// 

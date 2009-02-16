@@ -33,6 +33,7 @@ namespace mkdb
 			
 		public WidgetProps()
 		{
+			_enable_not = true;
 		}
 		
 		public void NotifyPropertyChanged(String propertyName)

@@ -12,6 +12,7 @@ using System.ComponentModel;
 using System.Windows.Forms.Design;
 using System.Windows.Forms;
 using System.Drawing.Design;
+using System.Drawing;
 
 
 
@@ -133,14 +134,21 @@ namespace mkdb.Widgets
 		public override bool InsertWidget(WidgetElem parent)
 		{
 			uint _cstyle = 0;
+			Panel pan = Common.Instance().Canvas;			
 			wdbFrameProps winProps = (wdbFrameProps)_props;
 			_frame_cur_index++;
 			SetDefaultProps("Frame" + _frame_cur_index.ToString());			
 			// _elem = new wx.MDIChildFrame((wx.MDIParentFrame)parent.Element, winProps.ID, winProps.Title, winProps.Pos, winProps.Size, _cstyle);
 			_cstyle = wx.Frame.wxDEFAULT_FRAME_STYLE;
-			_elem = new wifInnerFrame(parent.Element, -1, winProps.Pos, winProps.Size, _cstyle);
-			wifInnerFrame wif = (wifInnerFrame)_elem;
-			wif.BarTitle = winProps.Title;
+			wx.Frame fr = new wx.Frame(null, -1, "");
+			// _elem = new wifInnerFrame(fr, -1, winProps.Title, winProps.Pos, winProps.Size, _cstyle);
+			_elem = new wifSimpleFrame(fr, -1, winProps.Title, winProps.Pos, winProps.Size, _cstyle);
+			Win32Utils.SetParent(_elem.GetHandle(), pan.Handle);
+			wifSimpleFrame wiff = (wifSimpleFrame)_elem;
+			// wifInnerFrame wiff = (wifInnerFrame)_elem;
+			wiff.ParentColor = pan.BackColor;
+			wiff.ParentHandle = pan.Handle;
+			// _elem = new wifInnerFrame(parent.Element, -1, winProps.Title, winProps.Pos, winProps.Size, _cstyle);
 			// _elem.EVT_MOUSE_EVENTS(new wx.EventListener(OnMouseEvent));
 			_elem.EVT_CLOSE(new wx.EventListener(OnClose));
 			SetWidgetProps();
@@ -175,18 +183,26 @@ namespace mkdb.Widgets
 		}
 		
 		public override void PaintOnSelection()
-		{			
-			wx.WindowDC wdc = new wx.WindowDC(_elem);
-			// wdc.SetLogicalFunction((int)wx.Logic.wxNOR);
-			if (wdc != null)
+		{		
+			if (this.IsSelected) 
 			{
-				wdc.Pen = new wx.Pen(new wx.Colour(255, 0, 0), 3);
-				wdc.DrawLine(0, 0, _elem.Width - 1, 0);
-				wdc.DrawLine(_elem.Width - 1, 1, _elem.Width - 1, _elem.Height - 1);
-				wdc.DrawLine(0, _elem.Height - 1, _elem.Width - 1, _elem.Height - 1);
-				wdc.DrawLine(0, 0, 0, _elem.Height - 1);
+				Graphics dc = Graphics.FromHwnd(_elem.GetHandle());
+				Pen _pen = new Pen(Color.Red, 2);
+				dc.DrawRectangle(_pen, 0, 0, _elem.ClientSize.Width, _elem.ClientSize.Height);
+				/*
+				wx.WindowDC wdc = new wx.WindowDC(_elem);
+				// wdc.SetLogicalFunction((int)wx.Logic.wxNOR);
+				if (wdc != null)
+				{
+					wdc.Pen = new wx.Pen(new wx.Colour(255, 0, 0), 3);
+					wdc.DrawLine(0, 0, _elem.Width - 1, 0);
+					wdc.DrawLine(_elem.Width - 1, 1, _elem.Width - 1, _elem.Height - 1);
+					wdc.DrawLine(0, _elem.Height - 1, _elem.Width - 1, _elem.Height - 1);
+					wdc.DrawLine(0, 0, 0, _elem.Height - 1);
+				}
+				wdc.Dispose();
+				*/
 			}
-			wdc.Dispose();
 		}
 		
 		protected void OnMouseEvent(object sender, wx.Event evt)
@@ -262,12 +278,7 @@ namespace mkdb.Widgets
             	case "Alignment":
             		break;            		            		
             }            
-       		/** Che ci tocca inventare... **/
-       		_elem.SetSize(0, 0, _elem.Width+1, _elem.Height+1);
-       		_elem.SetSize(0, 0, _elem.Width-1, _elem.Height-1);
-       		/** Che ci tocca inventare... **/
-       		_elem.Refresh();
-   	   		wx.App.SafeYield(_elem);
+            _elem.UpdateWindowUI();
         }
 				
 		public void SetWidgetProps()

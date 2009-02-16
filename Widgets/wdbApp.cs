@@ -15,7 +15,7 @@ using System.Drawing.Design;
 
 namespace mkdb.Widgets
 {
-	public class wdbAppProps : wxWindowProps
+	public class wdbAppProps : wxAlignProps
 	{
 		// * wxFrame props : name, title, style, wxWindow, toParent
 		protected string _appname;
@@ -94,8 +94,8 @@ namespace mkdb.Widgets
 			                              */
 			_elem = new wx.Frame(null, -1, "", new System.Drawing.Point(0, 0),
 			                     new System.Drawing.Size(panel.Width, panel.Height), _cstyle);
-			Win32Utils.SetParent(_elem.GetHandle(), panel.Handle);
-			_elem.Show();
+			// Win32Utils.SetParent(_elem.GetHandle(), panel.Handle);
+			// _elem.Show();
 			SetWidgetProps();
 			this.Text = winProps.AppName;
 			return true;
