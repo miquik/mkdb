@@ -47,6 +47,9 @@
     <Compile Include="DrawUtils.cs" />
     <Compile Include="FlagEditor.cs" />
     <Compile Include="FontEditor.cs" />
+    <Compile Include="InnerWidget\wiwApp.cs" />
+    <Compile Include="InnerWidget\wiwBoxSizer.cs" />
+    <Compile Include="InnerWidget\wiwFrame.cs" />
     <Compile Include="MainForm.cs" />
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
@@ -57,8 +60,6 @@
     <Compile Include="Widgets\wdbApp.cs" />
     <Compile Include="Widgets\wdbBoxSizer.cs" />
     <Compile Include="Widgets\wdbFrame.cs" />
-    <Compile Include="Widgets\wifInnerFrame.cs" />
-    <Compile Include="Widgets\wifSimpleFrame.cs" />
     <Compile Include="Win32Utils.cs" />
     <Compile Include="wxApp.cs" />
     <EmbeddedResource Include="MainForm.resx">
@@ -66,6 +67,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="InnerWidget" />
     <Folder Include="Widgets" />
   </ItemGroup>
 </Project>

@@ -36,6 +36,7 @@ namespace mkdb
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
 			this.statusStrip1 = new System.Windows.Forms.StatusStrip();
 			this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -64,6 +65,7 @@ namespace mkdb
 			this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
 			this.label2 = new System.Windows.Forms.Label();
+			this.objtreeimages = new System.Windows.Forms.ImageList(this.components);
 			this.menuStrip1.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
 			this.splitContainer1.Panel1.SuspendLayout();
@@ -196,8 +198,11 @@ namespace mkdb
 			// objtree
 			// 
 			this.objtree.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.objtree.ImageIndex = 0;
+			this.objtree.ImageList = this.objtreeimages;
 			this.objtree.Location = new System.Drawing.Point(0, 21);
 			this.objtree.Name = "objtree";
+			this.objtree.SelectedImageIndex = 0;
 			this.objtree.Size = new System.Drawing.Size(214, 311);
 			this.objtree.TabIndex = 1;
 			this.objtree.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.ObjtreeAfterSelect);
@@ -350,6 +355,25 @@ namespace mkdb
 			this.label2.Text = "Palette";
 			this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
+			// objtreeimages
+			// 
+			this.objtreeimages.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("objtreeimages.ImageStream")));
+			this.objtreeimages.TransparentColor = System.Drawing.Color.Transparent;
+			this.objtreeimages.Images.SetKeyName(0, "button.jpg");
+			this.objtreeimages.Images.SetKeyName(1, "choice.jpg");
+			this.objtreeimages.Images.SetKeyName(2, "combo_box.jpg");
+			this.objtreeimages.Images.SetKeyName(3, "dialog.jpg");
+			this.objtreeimages.Images.SetKeyName(4, "flex_grid_sizer.jpg");
+			this.objtreeimages.Images.SetKeyName(5, "frame.jpg");
+			this.objtreeimages.Images.SetKeyName(6, "grid_bag_sizer.jpg");
+			this.objtreeimages.Images.SetKeyName(7, "grid_sizer.jpg");
+			this.objtreeimages.Images.SetKeyName(8, "panel.jpg");
+			this.objtreeimages.Images.SetKeyName(9, "sizer.jpg");
+			this.objtreeimages.Images.SetKeyName(10, "sizer16x16.jpg");
+			this.objtreeimages.Images.SetKeyName(11, "spacer.jpg");
+			this.objtreeimages.Images.SetKeyName(12, "staticbox_sizer.jpg");
+			this.objtreeimages.Images.SetKeyName(13, "stddialogbuttonsizer.jpg");
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -381,6 +405,7 @@ namespace mkdb
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.ImageList objtreeimages;
 		private System.Windows.Forms.ToolStripButton toolStripButton4;
 		private System.Windows.Forms.ToolStripButton toolStripButton3;
 		private System.Windows.Forms.ToolStripButton toolStripButton2;

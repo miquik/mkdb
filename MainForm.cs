@@ -22,23 +22,21 @@ namespace mkdb
 	{					
 		public MainForm()
 		{
-			//
-			// The InitializeComponent() call is required for Windows Forms designer support.
-			//
 			InitializeComponent();
 			Common.Instance().ObjPropsPanel = objprops;
-			Common.Instance().Canvas = this.canvas;
-			// objtree.Nodes.Add("Application");
-			objtree.Nodes.Add(new wdbApp());
-			wdbApp _tapp = (wdbApp)objtree.Nodes[0];
-			_tapp.InsertWidget(null);
+			Common.Instance().ObjTree = objtree;
+			Common.Instance().Canvas = this.canvas;			
+			int idx = objtree.Nodes.Add(new wdbApp());
+			wdbApp wdba = (wdbApp)objtree.Nodes[idx];
+			wdba.CreateWidget(null);			
+			objtree.SelectedNode = wdba;
 		}
 		
 		WidgetElem FindBestParent(WidgetElem curNode)
 		{
 			WidgetElem parent;
 			// Find an available Sizer starting from current node
-			if (curNode.CanAcceptChildren())
+			if (curNode.WDBBase.CanAcceptChildren())
 				return curNode;
 			parent = (WidgetElem)curNode.Parent;
 			if (parent == null)
@@ -47,18 +45,14 @@ namespace mkdb
 		}
 		
 		void ToolStripButton3Click(object sender, EventArgs e)
-		{
-			// Create a wxWindow on the top of canvas panel.
+		{	
 			wdbApp _tapp = (wdbApp)objtree.Nodes[0];			
-			wdbFrame frame = new wdbFrame();
-			frame.InsertWidget(_tapp);
-			// frame.InsertWidget(null);
-			// IntPtr wxh = Win32Utils.FindWindow("wxWindowClassNR", frame.Element.Title);
-			// Win32Utils.SetParent(frame.Element.GetHandle(), canvas.Handle);
-			Common.Instance().ChangeCurrentWindow(frame);
-			objtree.SelectedNode.Nodes.Add(frame);
-			objtree.SelectedNode = frame;
-			frame.PaintOnSelection();			
+			wdbFrame wdbf = new wdbFrame();
+			wdbf.CreateWidget(_tapp.WDBBase);
+			ChangeCurrentWindow(wdbf);
+			objtree.SelectedNode = _tapp;
+			objtree.SelectedNode.Nodes.Add(wdbf);			
+			objtree.SelectedNode = wdbf;
 		}
 		
 		void ToolStripButton4Click(object sender, EventArgs e)
@@ -72,54 +66,88 @@ namespace mkdb
 			} else {
 				// Add this sizer
 				wdbBoxSizer bsizer = new wdbBoxSizer();
-				bsizer.InsertWidget(parent);
-				parent.Nodes.Add(bsizer);
+				bsizer.CreateWidget(parent.WDBBase);
+				objtree.SelectedNode.Nodes.Add(bsizer);
 				objtree.SelectedNode = bsizer;
-				bsizer.PaintOnSelection();			
 			}
 		}
 		
 		void ObjtreeBeforeSelect(object sender, TreeViewCancelEventArgs e)
-		{
-			WidgetElem elem = (WidgetElem)e.Node;
+		{			
+			IWDBBase elem = (IWDBBase)Common.Instance().CurrentElement;
+			if (elem != null)
+			{
+				elem.IsSelected = false;
+				elem.PaintOnSelection();
+			}
 		}		
 		
 		void ObjtreeAfterSelect(object sender, TreeViewEventArgs e)
 		{
-			if (e.Action == TreeViewAction.ByMouse)
+			WidgetElem elem = (WidgetElem)objtree.SelectedNode;
+			if (elem != null)
 			{
-				// WidgetElem elem = (WidgetElem)Common.Instance().WidgetList[e.Node.Text];
-				// WidgetElem elem = (WidgetElem)objtree.Nodes.Find(e.Node.Text, true);
-				WidgetElem elem = (WidgetElem)objtree.SelectedNode;
-				if (elem != null)
+				ChangeCurrentWindow(elem);
+				objprops.SelectedObject = elem.WDBBase.Properties;
+				elem.WDBBase.IsSelected = true;
+				elem.WDBBase.PaintOnSelection();
+				Common.Instance().CurrentElement = elem.WDBBase;
+			}
+		}
+		
+		public void ChangeCurrentWindow(WidgetElem neww)
+    	{
+			if (neww.WDBBase.WidgetID == (int)StandardWidgetID.WID_APP)
+			{
+				// Hide, when we select the application.
+ 	  			if (Common.Instance().CurrentWindow != null)
+   					Common.Instance().CurrentWindow.Hide();				
+			}
+ 	  		IWDBBase _cur = FindTopMostFrame(neww);
+  			if (_cur != null)
+  			{
+ 	  			if (Common.Instance().CurrentWindow != null)
+   					Common.Instance().CurrentWindow.Hide();
+  				Common.Instance().CurrentWindow = _cur.WxWindow;
+				Common.Instance().CurrentWindow.Show();
+  			} 	  		
+    	}
+
+		public IWDBBase FindTopMostFrame(WidgetElem node)
+		{
+			if (node.Level == 1)
+			{
+				if (node.WDBBase.WidgetID == (int)StandardWidgetID.WID_FRAME)
 				{
-					objprops.SelectedObject = elem.Properties;
-					elem.PaintOnSelection();
-					// Common.Instance().ChangeCurrentWindow();
+					return node.WDBBase;
+				}
+				else
+				{
+					return null;
 				}
 			}
+			if (node.Parent != null)
+			{
+				return FindTopMostFrame((WidgetElem)node.Parent);
+			}
+			return null;
 		}
 		
 		void CanvasPaint(object sender, PaintEventArgs e)
 		{
-			// Redraw all widgets and paint selection.
-    		TreeNodeCollection nodes = objtree.Nodes;
-    		foreach (TreeNode n in nodes)
-    		{
-        		CanvasPaintRecursive(n);
-    		}			
+			CanvasPaintRecursive((WidgetElem)objtree.Nodes[0]);
 		}
 		
-		// recursively move through the treeview nodes
-		// and reset backcolors to white
-		private void CanvasPaintRecursive(TreeNode treeNode)
+		void CanvasPaintRecursive(WidgetElem elem)
 		{
-    		foreach (TreeNode tn in treeNode.Nodes)
-    		{
-    			WidgetElem _e = (WidgetElem)tn;
-    			_e.PaintOnSelection();
-        		CanvasPaintRecursive(tn);
-    		}
-		}		
+			foreach (WidgetElem e in elem.Nodes)
+			{
+				CanvasPaintRecursive(e);
+			}
+			if (elem.WDBBase.IsSelected)
+			{
+				elem.WDBBase.PaintOnSelection();
+			}
+		}
 	}
 }

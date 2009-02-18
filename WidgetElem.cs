@@ -9,6 +9,7 @@
 using System;
 using wx;
 using System.Windows.Forms;
+using System.Drawing;
 
 namespace mkdb
 {
@@ -17,59 +18,45 @@ namespace mkdb
 		WID_UNKNOWN = 0,
 		WID_FRAME = 1,
 		WID_BOXSIZER = 2,
+		WID_APP = 3,
 	}
 	
-	/// <summary>
-	/// Description of WidgetElem.
-	/// </summary>
+	public interface IWDBBase
+	{
+		wx.Window	WxWindow	{	get; 	}
+		wx.Sizer	WxSizer		{	get;	}
+		bool		IsSizer		{	get;	}
+		bool		IsSelected	{	get; set;	}
+		WidgetProps	Properties	{	get;	}		
+		int			WidgetID	{	get;	}
+		
+		// Drawing props
+		IWDBBase	ClientParent	{	get;	}
+		Point		AreaOrigin	{	get;	}
+		Size		AreaSize		{	get;	}
+		
+		void 		PaintOnSelection();		
+		bool 		InsertWidget(IWDBBase parent);
+		bool 		DeleteWidget();		
+		long 		FindBlockInText();		
+		bool 		CanAcceptChildren();		
+	}
+	
+	
 	public abstract class WidgetElem : TreeNode
 	{
-		protected wx.Window _elem;
-		protected wx.Sizer _sizer;
-		protected WidgetProps _props;
-		protected bool _is_sizer;
-		protected int _widget_id;
-		protected bool _selected;
+		protected IWDBBase _elem;
 		
-		public WidgetElem(int _id)
+		public WidgetElem(string name) : base(name)
 		{
-			_widget_id = _id;
-			_elem = null;
-			_sizer = null;
-			_props = null;
-			_is_sizer = false;
 		}
 		
-		public abstract void PaintOnSelection();
-		
-		public abstract bool InsertWidget(WidgetElem parent);
-		public abstract bool DeleteWidget();		
-		public abstract long FindBlockInText();		
-		public abstract bool CanAcceptChildren();
-		
-		protected abstract bool InsertWidgetInText();	
-		protected abstract bool DeleteWidgetFromText();		
-		
-		public WidgetProps Properties
-		{
-			get	{	return _props;	}
-		}		
-		public wx.Window Element
+		public IWDBBase WDBBase
 		{
 			get	{	return _elem;	}
+			set	{	_elem = value;	}
 		}
-		public wx.Sizer Sizer
-		{
-			get	{	return _sizer;	}
-		}
-		public bool IsSizer
-		{
-			get	{	return _is_sizer;	}
-			set	{	_is_sizer = value;	}
-		}
-		public int WidgetID
-		{
-			get	{	return _widget_id;	}
-		}
+		
+		public abstract IWDBBase CreateWidget(IWDBBase parent);
 	}
 }

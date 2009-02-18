@@ -9,23 +9,27 @@
 using System;
 using System.Windows.Forms;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace mkdb
 {
   	public class Common
   	{
     	private static Common _instance;
-		private	WidgetElem	_cur_element;	
+		private	IWDBBase	_cur_element;	
+		private	wx.Window	_cur_window;	
 		private CommandFlags _cur_action;
+		private TreeView	_obj_tree;
 		private PropertyGrid _obj_props_panel;
-		private Hashtable _widget_list;
+		private List<IWDBBase> _widget_list;
 		private Panel _canvas;
 
 		// Constructor is 'protected'
     	protected Common()
     	{
 			_cur_element = null;
-			_widget_list = new Hashtable();
+			_cur_window = null;
+			_widget_list = new List<IWDBBase>();
 			_obj_props_panel = null;
 			_cur_action = CommandFlags.TB_NONE;
     	}
@@ -40,16 +44,26 @@ namespace mkdb
       		}
       		return _instance;
     	}
-    	
-    	public void ChangeCurrentWindow(WidgetElem neww)
+    	/*
+    	public void ChangeCurrentWindow(IWDBBase neww)
     	{
    			if (neww.IsSizer) return;
-   			if (_cur_element != null) _cur_element.Element.Hide();
-   			_cur_element = neww;
-   			_cur_element.Element.Show();
+ 			if (neww.WidgetID == (int)StandardWidgetID.WID_FRAME)
+ 			{
+ 	  			if (_cur_window != null)
+   					_cur_window.Hide();
+   				_cur_window = neww.WxWindow;
+   				_cur_window.Show();
+   			}
     	}
+    	*/
+		public wx.Window CurrentWindow
+		{
+			get	{	return _cur_window;	}
+			set	{	_cur_window = value;	}
+		}    	    	
     	
-		public WidgetElem CurrentElement
+		public IWDBBase CurrentElement
 		{
 			get	{	return _cur_element;	}
 			set	{	_cur_element = value;	}
@@ -67,7 +81,13 @@ namespace mkdb
 			set	{	_obj_props_panel = value;	}
 		}
 		
-		public Hashtable WidgetList
+		public TreeView ObjTree
+		{
+			get	{	return _obj_tree; 	}
+			set	{	_obj_tree = value;	}
+		}		
+		
+		public List<IWDBBase> WidgetList
 		{
 			get	{	return _widget_list;	}
 		}
