@@ -23,7 +23,7 @@ namespace mkdb.Widgets
 				
 		public wdbAppProps() : base()
 		{
-			_appname = "Noname";
+			_appname = "";
 		}
 		
 		[CategoryAttribute("Application"), DescriptionAttribute("Application Props")]
@@ -42,9 +42,8 @@ namespace mkdb.Widgets
 	{
 		protected wdbAppProps _props;
 		protected bool _is_selected;
-		protected IWDBBase _client_parent;
 			
-		public wiwApp() : base(null)
+		public wiwApp(wx.Window _pc, wx.Sizer _ps) : base(_pc)
 		{
 			_props = new wdbAppProps();
 			SetDefaultProps("Project");
@@ -56,11 +55,11 @@ namespace mkdb.Widgets
 		{	
 			get	{	return _props; }
 		}
-		public wx.Window WxWindow	
+		public wx.Window ParentContainer	
 		{	
-			get	{	return this;	}
+			get	{	return this.Parent;	}
 		}
-		public wx.Sizer	WxSizer		
+		public wx.Sizer	ParentSizer		
 		{	
 			get	{	return	null;	}
 		}
@@ -73,10 +72,6 @@ namespace mkdb.Widgets
 			get	{	return _is_selected;	}
 			set	{	_is_selected = value;	}
 		}		
-		public IWDBBase ClientParent
-		{
-			get	{	return _client_parent;	}
-		}
 		public Point AreaOrigin
 		{	
 			get {	return new Point(-1, -1);	}
@@ -85,11 +80,12 @@ namespace mkdb.Widgets
 		{	
 			get	{	return new Size(-1, -1);	}
 		}
-		public int WidgetID
+		public int WidgetType
 		{
-			get	{	return (int)StandardWidgetID.WID_APP; }
+			get	{	return (int)StandardWidgetType.WID_APP; }
 		}
 		#endregion
+		
 		
 		private void SetDefaultProps(string name)
 		{
@@ -101,18 +97,7 @@ namespace mkdb.Widgets
 				
 		public bool InsertWidget(IWDBBase parent)
 		{
-			/*
-			Panel panel = Common.Instance().Canvas;
-			wdbAppProps winProps = (wdbAppProps)_props;		
-			uint _cstyle = wx.Frame.wxFRAME_TOOL_WINDOW|wx.Stretch.wxEXPAND;					
-			_elem = new wx.Frame(null, -1, "", new System.Drawing.Point(0, 0),
-			                     new System.Drawing.Size(panel.Width, panel.Height), _cstyle);
-			// Win32Utils.SetParent(_elem.GetHandle(), panel.Handle);
-			// _elem.Show();
-			SetWidgetProps();
-			this.Text = winProps.AppName;
-			*/
-			_client_parent = parent;
+			// _client_parent = parent;
 			return true;
 		}
 		public bool DeleteWidget()

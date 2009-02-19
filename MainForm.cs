@@ -26,14 +26,20 @@ namespace mkdb
 			Common.Instance().ObjPropsPanel = objprops;
 			Common.Instance().ObjTree = objtree;
 			Common.Instance().Canvas = this.canvas;			
-			int idx = objtree.Nodes.Add(new wdbApp());
+			int idx = objtree.Nodes.Add(new wdbApp(null, null));
 			wdbApp wdba = (wdbApp)objtree.Nodes[idx];
-			wdba.CreateWidget(null);			
+			// wdba.CreateWidget(null);			
 			objtree.SelectedNode = wdba;
 		}
 		
-		WidgetElem FindBestParent(WidgetElem curNode)
+		wx.Window FindBestParentContainer(WidgetElem curNode)
 		{
+			if (curNode.WDBBase.IsSizer == true)
+			{
+				return curNode.WDBBase.ParentContainer;
+			}
+			return (wx.Window)curNode.WDBBase;
+			/*
 			WidgetElem parent;
 			// Find an available Sizer starting from current node
 			if (curNode.WDBBase.CanAcceptChildren())
@@ -42,13 +48,36 @@ namespace mkdb
 			if (parent == null)
 				return null;		
 			return FindBestParent(parent);
+			*/
 		}
+		
+		WidgetElem FindBestParentSizer(WidgetElem curNode)
+		{
+			WidgetElem parent;
+			// Find an available Sizer starting from current node
+			if (curNode.WDBBase.CanAcceptChildren() && curNode.WDBBase.IsSizer)
+				return curNode;
+			parent = (WidgetElem)curNode.Parent;
+			if (parent == null)
+				return null;		
+			return FindBestParentSizer(parent);
+			/*
+			WidgetElem parent;
+			// Find an available Sizer starting from current node
+			if (curNode.WDBBase.CanAcceptChildren())
+				return curNode;
+			parent = (WidgetElem)curNode.Parent;
+			if (parent == null)
+				return null;		
+			return FindBestParentSizer(parent);
+			*/
+		}		
 		
 		void ToolStripButton3Click(object sender, EventArgs e)
 		{	
 			wdbApp _tapp = (wdbApp)objtree.Nodes[0];			
-			wdbFrame wdbf = new wdbFrame();
-			wdbf.CreateWidget(_tapp.WDBBase);
+			wdbFrame wdbf = new wdbFrame(null, null);
+			// wdbf.CreateWidget(_tapp.WDBBase);
 			ChangeCurrentWindow(wdbf);
 			objtree.SelectedNode = _tapp;
 			objtree.SelectedNode.Nodes.Add(wdbf);			
@@ -58,15 +87,21 @@ namespace mkdb
 		void ToolStripButton4Click(object sender, EventArgs e)
 		{
 			/* Create Sizer */
-			WidgetElem parent;
-			parent = FindBestParent((WidgetElem)objtree.SelectedNode);
-			if (parent == null)
+			WidgetElem ps;
+			wx.Window pc;
+			ps = FindBestParentSizer((WidgetElem)objtree.SelectedNode);
+			pc = FindBestParentContainer((WidgetElem)objtree.SelectedNode);
+			if (ps == null && pc == null)
 			{
 				// TODO : Error here!!
 			} else {
 				// Add this sizer
-				wdbBoxSizer bsizer = new wdbBoxSizer();
-				bsizer.CreateWidget(parent.WDBBase);
+				// !!!
+				wx.Sizer siz;
+				if (ps == null) siz = null;
+				else siz = (wx.Sizer)ps.WDBBase;
+				wdbBoxSizer bsizer = new wdbBoxSizer(pc, siz);
+				// bsizer.CreateWidget(parent.WDBBase);
 				objtree.SelectedNode.Nodes.Add(bsizer);
 				objtree.SelectedNode = bsizer;
 			}
@@ -97,7 +132,7 @@ namespace mkdb
 		
 		public void ChangeCurrentWindow(WidgetElem neww)
     	{
-			if (neww.WDBBase.WidgetID == (int)StandardWidgetID.WID_APP)
+			if (neww.WDBBase.WidgetType == (int)StandardWidgetType.WID_APP)
 			{
 				// Hide, when we select the application.
  	  			if (Common.Instance().CurrentWindow != null)
@@ -108,7 +143,7 @@ namespace mkdb
   			{
  	  			if (Common.Instance().CurrentWindow != null)
    					Common.Instance().CurrentWindow.Hide();
-  				Common.Instance().CurrentWindow = _cur.WxWindow;
+  				Common.Instance().CurrentWindow = _cur.ParentContainer;
 				Common.Instance().CurrentWindow.Show();
   			} 	  		
     	}
@@ -117,7 +152,7 @@ namespace mkdb
 		{
 			if (node.Level == 1)
 			{
-				if (node.WDBBase.WidgetID == (int)StandardWidgetID.WID_FRAME)
+				if (node.WDBBase.WidgetType == (int)StandardWidgetType.WID_FRAME)
 				{
 					return node.WDBBase;
 				}

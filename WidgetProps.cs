@@ -23,6 +23,7 @@ namespace mkdb
 	public abstract class WidgetProps : INotifyPropertyChanged
 	{
 		protected bool _enable_not;
+		protected string _name;
 		
 		[Browsable(false)]
 		public bool EnableNotification
@@ -30,6 +31,13 @@ namespace mkdb
 			get	{	return	_enable_not;	}
 			set	{	_enable_not = value;	}
 		}				
+		
+		[CategoryAttribute("Element Name"), DescriptionAttribute("The Name of this element")]
+		public string Name
+		{
+			get	{	return	_name;	}
+			set	{	_name = value;	NotifyPropertyChanged("Name"); }
+		}						
 			
 		public WidgetProps()
 		{
@@ -112,7 +120,6 @@ namespace mkdb
 	public class wxWindowProps : wxAlignProps
 	{
 		protected int _id;
-		protected string _wname;
 		protected Point _pos;
 		protected Size _size;
 		protected wxFont _font;
@@ -124,6 +131,8 @@ namespace mkdb
 		
 		public wxWindowProps()
 		{
+			_id = -1;
+			_name = "";
 			_fc = new wxColor(0, 0, 0);	
 			_bc = new wxColor(100, 100, 100);	
 			_font = new wxFont("Arial", 8);
@@ -147,12 +156,6 @@ namespace mkdb
 			get	{	return _id;	}
 			set	{	_id = value; NotifyPropertyChanged("ID"); }
 		}		
-		[CategoryAttribute("wxWindows"), DescriptionAttribute("wxWindows properties")]
-		public string WindowName
-		{
-			get	{	return _wname;	}
-			set	{	_wname = value; NotifyPropertyChanged("WindowName");	}
-		}
 		[CategoryAttribute("wxWindows"), DescriptionAttribute("wxWindows properties")]
 		[Editor(typeof(wxColorEditors), typeof(UITypeEditor))]
 		public wxColor FC

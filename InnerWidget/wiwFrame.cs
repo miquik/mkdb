@@ -22,7 +22,6 @@ namespace mkdb.Widgets
 	public class wdbFrameProps : wxWindowProps
 	{
 		// * wxFrame props : name, title, style, wxWindow, toParent
-		protected string _name;
 		protected string _title;
 		protected wxFlags _fstyle;
 		
@@ -55,13 +54,6 @@ namespace mkdb.Widgets
 		}
 		
 		[CategoryAttribute("Frame"), DescriptionAttribute("Frame props")]
-		public string Name
-		{
-			get	{	return _name;	}
-			set	{	_name = value;	NotifyPropertyChanged("Name");	}
-		}
-		
-		[CategoryAttribute("Frame"), DescriptionAttribute("Frame props")]
 		public string Title
 		{
 			get	{	return _title;	}
@@ -87,8 +79,7 @@ namespace mkdb.Widgets
 		protected wdbFrameProps _props;
 		protected bool _is_selected;		
 		protected Point _real_pos;
-		protected Size _real_size;		
-		protected IWDBBase _client_parent;		
+		protected Size _real_size;
 		
 		#region SimpleFrame Defs
     	private enum mSizing {
@@ -118,12 +109,8 @@ namespace mkdb.Widgets
 			m_resizeBorder = 10;
 			_real_pos = _pos;
 			_real_size = _size;
-			this.AutoLayout = true;
-			Layout();
-			// m_minSize = new Size(100, 30);			
-			// !!!
-			// SetBufferSize(_parent.Width, _parent.Height);
-			// !!!			
+			// this.AutoLayout = true;
+			// Layout();
 			this.EVT_MOTION(new wx.EventListener(OnMouseMotion));
 			this.EVT_LEFT_DOWN(new wx.EventListener(OnLeftDown));
 			this.EVT_LEFT_UP(new wx.EventListener(OnLeftUp));			
@@ -142,11 +129,11 @@ namespace mkdb.Widgets
 		{	
 			get	{	return _props; }
 		}
-		public wx.Window WxWindow	
+		public wx.Window ParentContainer	
 		{	
-			get	{	return this;	}
+			get	{	return this.Parent;	}
 		}
-		public wx.Sizer	WxSizer		
+		public wx.Sizer	ParentSizer		
 		{	
 			get	{	return	null;	}
 		}
@@ -159,10 +146,6 @@ namespace mkdb.Widgets
 			get	{	return _is_selected;	}
 			set	{	_is_selected = value;	}
 		}		
-		public IWDBBase ClientParent
-		{
-			get	{	return _client_parent;	}
-		}
 		public Point AreaOrigin
 		{	
 			get {	return this.ClientAreaOrigin;	}
@@ -171,16 +154,15 @@ namespace mkdb.Widgets
 		{	
 			get	{	return this.ClientSize;	}
 		}				
-		public int WidgetID
+		public int WidgetType
 		{
-			get	{	return (int)StandardWidgetID.WID_FRAME; }
+			get	{	return (int)StandardWidgetType.WID_FRAME; }
 		}
 		
 				
 		private void SetDefaultProps(string name)
 		{
 			_props.EnableNotification = false;
-			_props.WindowName = "wxFrameClass";			
 			_props.Name = name;
 			_props.Title = name;
 			_props.Pos = new Point(_real_pos.X, _real_pos.Y);
@@ -196,7 +178,6 @@ namespace mkdb.Widgets
 				
 		public bool InsertWidget(IWDBBase parent)
 		{
-			_client_parent = parent;
 			return true;
 		}
 		public bool DeleteWidget()
