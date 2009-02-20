@@ -65,6 +65,7 @@ namespace mkdb
 		
 		public int AddItem(string name, uint val, bool state)
 		{
+			if (state == true) _long_flag |= val;
 			return this.Add(new wxFlagsItem(name, val, state));
 		}
 		
@@ -72,6 +73,18 @@ namespace mkdb
 		{
 			get	{	return _long_flag;	}
 			set	{	_long_flag = value;	}
+		}
+		
+		public void Refresh()
+		{
+			_long_flag = 0;
+			foreach(wxFlagsItem item in this)
+			{	
+				if (item.Checked)	
+				{
+					_long_flag |= item.Value;
+				}
+			}							
 		}
 		
 		public override string ToString()

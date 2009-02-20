@@ -70,7 +70,7 @@ namespace mkdb
 		
 		public wxAlignProps()
 		{
-			_border = 1;
+			_border = 10;
 			_bflag = new wxFlags();
 			_bflag.AddItem("wxLEFT", wx.Direction.wxLEFT, false);
 			_bflag.AddItem("wxRIGHT", wx.Direction.wxRIGHT, false);
@@ -85,8 +85,8 @@ namespace mkdb
 			_aflag.AddItem("wxALIGN_CENTER", wx.Alignment.wxALIGN_CENTER, false);
 			_aflag.AddItem("wxALIGN_CENTER_HORIZONTAL", wx.Alignment.wxALIGN_CENTER_HORIZONTAL, false);
 			_aflag.AddItem("wxALIGN_CENTER_VERTICAL", wx.Alignment.wxALIGN_CENTER_VERTICAL, false);
-			_aflag.AddItem("wxEXPAND", wx.Stretch.wxEXPAND, false);
-			_aflag.AddItem("wxSHAPED", wx.Stretch.wxSHAPED, true);
+			_aflag.AddItem("wxEXPAND", wx.Stretch.wxGROW, true);
+			_aflag.AddItem("wxSHAPED", wx.Stretch.wxSHAPED, false);
 			_aflag.AddItem("wxFIXED_MINSIZE", wx.Stretch.wxFIXED_MINSIZE, false);
 		}
 		

@@ -32,80 +32,76 @@ namespace mkdb
 			objtree.SelectedNode = wdba;
 		}
 		
-		wx.Window FindBestParentContainer(WidgetElem curNode)
-		{
-			if (curNode.WDBBase.IsSizer == true)
-			{
-				return curNode.WDBBase.ParentContainer;
-			}
-			return (wx.Window)curNode.WDBBase;
-			/*
-			WidgetElem parent;
-			// Find an available Sizer starting from current node
-			if (curNode.WDBBase.CanAcceptChildren())
-				return curNode;
-			parent = (WidgetElem)curNode.Parent;
-			if (parent == null)
-				return null;		
-			return FindBestParent(parent);
-			*/
-		}
-		
-		WidgetElem FindBestParentSizer(WidgetElem curNode)
-		{
-			WidgetElem parent;
-			// Find an available Sizer starting from current node
-			if (curNode.WDBBase.CanAcceptChildren() && curNode.WDBBase.IsSizer)
-				return curNode;
-			parent = (WidgetElem)curNode.Parent;
-			if (parent == null)
-				return null;		
-			return FindBestParentSizer(parent);
-			/*
-			WidgetElem parent;
-			// Find an available Sizer starting from current node
-			if (curNode.WDBBase.CanAcceptChildren())
-				return curNode;
-			parent = (WidgetElem)curNode.Parent;
-			if (parent == null)
-				return null;		
-			return FindBestParentSizer(parent);
-			*/
-		}		
-		
+		// Frame
 		void ToolStripButton3Click(object sender, EventArgs e)
 		{	
-			wdbApp _tapp = (wdbApp)objtree.Nodes[0];			
+			wdbApp _tapp = (wdbApp)objtree.Nodes[0];						
 			wdbFrame wdbf = new wdbFrame(null, null);
 			// wdbf.CreateWidget(_tapp.WDBBase);
 			ChangeCurrentWindow(wdbf);
-			objtree.SelectedNode = _tapp;
-			objtree.SelectedNode.Nodes.Add(wdbf);			
+			_tapp.Nodes.Add(wdbf);
 			objtree.SelectedNode = wdbf;
 		}
 		
+		// BoxSizer
+		// Così per ogni sizer
 		void ToolStripButton4Click(object sender, EventArgs e)
 		{
 			/* Create Sizer */
-			WidgetElem ps;
-			wx.Window pc;
-			ps = FindBestParentSizer((WidgetElem)objtree.SelectedNode);
-			pc = FindBestParentContainer((WidgetElem)objtree.SelectedNode);
-			if (ps == null && pc == null)
-			{
-				// TODO : Error here!!
-			} else {
-				// Add this sizer
-				// !!!
-				wx.Sizer siz;
-				if (ps == null) siz = null;
-				else siz = (wx.Sizer)ps.WDBBase;
-				wdbBoxSizer bsizer = new wdbBoxSizer(pc, siz);
-				// bsizer.CreateWidget(parent.WDBBase);
-				objtree.SelectedNode.Nodes.Add(bsizer);
-				objtree.SelectedNode = bsizer;
-			}
+			WidgetElem ps = FindBestParentSizer((WidgetElem)objtree.SelectedNode, true);
+			WidgetElem pc = FindBestParentContainer((WidgetElem)objtree.SelectedNode, true);
+			if (pc == null && ps == null)	
+				return;
+			
+			// Add this sizer
+			wx.Sizer siz = null;
+			wx.Window win = null;
+			CheckParentForSizer(pc, ps, out win, out siz);
+			wdbBoxSizer bsizer = new wdbBoxSizer(win, siz);
+			if (ps != null)	
+				ps.Nodes.Add(bsizer);
+			else			
+				pc.Nodes.Add(bsizer);
+			objtree.SelectedNode = bsizer;
 		}
+		// Grid Sizer
+		void ToolStripButton6Click(object sender, EventArgs e)
+		{
+			/* Create Sizer */
+			WidgetElem ps = FindBestParentSizer((WidgetElem)objtree.SelectedNode, true);
+			WidgetElem pc = FindBestParentContainer((WidgetElem)objtree.SelectedNode, true);
+			if (pc == null && ps == null)	
+				return;
+			
+			// Add this sizer
+			wx.Sizer siz = null;
+			wx.Window win = null;
+			CheckParentForSizer(pc, ps, out win, out siz);
+			wdbGridSizer gsizer = new wdbGridSizer(win, siz);
+			if (ps != null)	
+				ps.Nodes.Add(gsizer);
+			else			
+				pc.Nodes.Add(gsizer);
+			objtree.SelectedNode = gsizer;			
+		}
+		
+		
+		// Button
+		// Così per ogni widget
+		void ToolStripButton5Click(object sender, EventArgs e)
+		{
+			/* Create Sizer */
+			WidgetElem ps = FindBestParentSizer((WidgetElem)objtree.SelectedNode, false);
+			WidgetElem pc = FindBestParentContainer((WidgetElem)objtree.SelectedNode, false);			
+			if (ps == null)
+				return;
+			
+			wx.Window win;
+			CheckParentForWidget(pc, ps, out win);
+			wdbButton btn = new wdbButton(win, (wx.Sizer)ps.WDBBase);
+			ps.Nodes.Add(btn);
+			objtree.SelectedNode = btn;
+		}		
 		
 		void ObjtreeBeforeSelect(object sender, TreeViewCancelEventArgs e)
 		{			
@@ -143,7 +139,7 @@ namespace mkdb
   			{
  	  			if (Common.Instance().CurrentWindow != null)
    					Common.Instance().CurrentWindow.Hide();
-  				Common.Instance().CurrentWindow = _cur.ParentContainer;
+  				Common.Instance().CurrentWindow = _cur.Me;
 				Common.Instance().CurrentWindow.Show();
   			} 	  		
     	}
@@ -184,5 +180,79 @@ namespace mkdb
 				elem.WDBBase.PaintOnSelection();
 			}
 		}
+		
+		WidgetElem FindBestParentContainer(WidgetElem curNode, bool sizerIsAsking)
+		{
+			if (sizerIsAsking == false)
+			{
+				return null;
+			}
+			if (curNode.WDBBase.IsSizer == false)
+			{
+				if (curNode.WDBBase.CanAcceptChildren())
+				{
+					return curNode;
+				} else 
+				{
+					return null;
+				}
+			} else
+			{
+				if (curNode.Parent == null)
+				{
+					return null;
+				} else
+				{
+					return FindBestParentContainer((WidgetElem)curNode.Parent, true);
+				}
+			}
+		}
+		
+		WidgetElem FindBestParentSizer(WidgetElem curNode, bool sizerIsAsking)
+		{
+			if (curNode.WDBBase.IsSizer == false)
+			{
+				return null;
+			}
+			if (curNode.WDBBase.CanAcceptChildren())
+			{
+				return curNode;
+			} else
+			{
+				if (curNode.Parent == null)
+				{
+					return null;
+				} else
+				{
+					return FindBestParentSizer((WidgetElem)curNode.Parent, false);
+				}
+			}
+		}						
+		
+		void CheckParentForSizer(WidgetElem _c, WidgetElem _s, out wx.Window _rc, out wx.Sizer _rs)
+		{
+			_rc = null;
+			_rs = null;
+			if (_c != null) _rc = (wx.Window)_c.WDBBase;
+			if (_s != null) 
+			{
+				_rs = (wx.Sizer)_s.WDBBase;
+				_rc = _s.WDBBase.ParentContainer;
+			}			
+		}
+		
+		void CheckParentForWidget(WidgetElem _c, WidgetElem _s, out wx.Window _rc)
+		{
+			_rc = null;
+			if (_c == null)
+			{
+				_rc = (wx.Window)_s.WDBBase.ParentContainer;
+			} else
+			{
+				_rc = (wx.Window)_c.WDBBase;
+			}
+		}
+		
+		
 	}
 }

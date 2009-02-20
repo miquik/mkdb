@@ -10,6 +10,7 @@ using System;
 using wx;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Collections;
 
 namespace mkdb
 {
@@ -22,17 +23,23 @@ namespace mkdb
 		WID_BUTTON = 4,
 	}
 	
+	public interface IWXSizer
+	{
+		ArrayList 	List	{	get;	}
+		void 		AddWDBBase(IWDBBase elem, int prop, int flag, int border);
+		void 		InsertWDBBase(int index, IWDBBase elem, int prop, int flag, int border);
+		void 		RemoveWDBBase(IWDBBase elem);		
+	}
+	
 	public interface IWDBBase
 	{
+		wx.Window   Me				{	get;	}
 		wx.Window 	ParentContainer	{	get;	}
 		wx.Sizer	ParentSizer		{	get;	}
 		bool		IsSizer			{	get;	}
 		bool		IsSelected		{	get; set;	}
 		WidgetProps	Properties		{	get;	}		
 		int			WidgetType		{	get;	}
-		
-		Point		AreaOrigin		{	get;	}
-		Size		AreaSize		{	get;	}
 		
 		void 		PaintOnSelection();		
 		bool 		InsertWidget(IWDBBase parent);
@@ -41,34 +48,12 @@ namespace mkdb
 		bool 		CanAcceptChildren();				
 	}
 	
-	/*
-	public interface IWDBBase
-	{
-		wx.Window	WxWindow	{	get; 	}
-		wx.Sizer	WxSizer		{	get;	}
-		bool		IsSizer		{	get;	}
-		bool		IsSelected	{	get; set;	}
-		WidgetProps	Properties	{	get;	}		
-		int			WidgetID	{	get;	}
-		
-		// Drawing props
-		IWDBBase	ClientParent	{	get;	}
-		Point		AreaOrigin	{	get;	}
-		Size		AreaSize		{	get;	}
-		
-		void 		PaintOnSelection();		
-		bool 		InsertWidget(IWDBBase parent);
-		bool 		DeleteWidget();		
-		long 		FindBlockInText();		
-		bool 		CanAcceptChildren();		
-	}
-	*/
 	
 	public abstract class WidgetElem : TreeNode
 	{
 		protected IWDBBase _elem;
 		
-		public WidgetElem(wx.Window _pc, wx.Sizer _ps, string name) : base(name)
+		public WidgetElem(string name) : base(name)
 		{
 		}
 		

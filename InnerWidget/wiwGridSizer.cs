@@ -1,8 +1,8 @@
 /*
  * Creato da SharpDevelop.
  * Utente: michele
- * Data: 06/02/2009
- * Ora: 16.07
+ * Data: 20/02/2009
+ * Ora: 16.37
  * 
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
@@ -19,78 +19,63 @@ using System.Drawing;
 namespace mkdb.Widgets
 {
 	
-	/* wxBoxSizer : name, orient, min_size, Align */	
-	public class wdbBoxSizerProps : wxAlignProps
+	/* wxGridSizer : name, rows, cols, vgap, hgap, min_size, Align */
+	/* wxFlexGridSizer : name, rows, cols, vgap, hgap, Align */	
+	public class wdbGridSizerProps : wxAlignProps
 	{
-		protected wxFlags _orient;
-		protected int _min_size;
+		protected int _rows;
+		protected int _cols;
+		protected int _vgap;
+		protected int _hgap;
 		
-		public wdbBoxSizerProps() : base()
+		public wdbGridSizerProps() : base()
 		{
-			_orient = new wxFlags();
-			_orient.AddItem("wxVERTICAL", wx.Orientation.wxVERTICAL, true);
-			_orient.AddItem("wxHORIZONTAL", wx.Orientation.wxHORIZONTAL, false);
-			_min_size = -1;
-		}
-				
-		[TypeConverter(typeof(wxFlagsTypeConverter))]
-        [Editor(typeof(wxFlagsEditor), typeof(UITypeEditor))]
-		[CategoryAttribute("Box Sizer"), DescriptionAttribute("Box Sizer")]
-		public wxFlags Orientation
+			_rows = 2;
+			_cols = 2;
+			_vgap = 0;
+			_hgap = 0;
+		}				
+		[CategoryAttribute("Grid Sizer"), DescriptionAttribute("Grid Sizer")]
+		public int Cols
 		{
-			get	{	return _orient;	}
-			set	{	_orient = value;	NotifyPropertyChanged("Orientation");	}
+			get	{	return _cols;	}
+			set	{	_cols = value;	NotifyPropertyChanged("Cols");	}
+		}				
+		[CategoryAttribute("Grid Sizer"), DescriptionAttribute("Grid Sizer")]
+		public int Rows
+		{
+			get	{	return _rows;	}
+			set	{	_rows = value;	NotifyPropertyChanged("Rows");	}
 		}		
-		
-		[CategoryAttribute("Box Sizer"), DescriptionAttribute("Box Sizer")]
-		public int MinSize
+		[CategoryAttribute("Grid Sizer"), DescriptionAttribute("Grid Sizer")]
+		public int VGap
 		{
-			get	{	return _min_size;	}
-			set	{	_min_size = value; NotifyPropertyChanged("MinSize");	}
-		}
+			get	{	return _vgap;	}
+			set	{	_vgap = value;	NotifyPropertyChanged("VGap");	}
+		}		
+		[CategoryAttribute("Grid Sizer"), DescriptionAttribute("Grid Sizer")]
+		public int HGap
+		{
+			get	{	return _hgap;	}
+			set	{	_hgap = value;	NotifyPropertyChanged("HGap");	}
+		}						
 	}
-	/*
-	public class wxBoxSizer : wx.BoxSizer
-	{
-		protected ArrayList _list;		
-		public wxBoxSizer(int or) : base(or)
-		{
-			_list = new ArrayList();
-		}
-		
-		public void AddWDBBase(IWDBBase elem, wx.Window win , int prop, int flag, int border)
-		{
-			this.Add(win, prop, flag, border);
-			this._list.Add(elem);
-		}
-		public void AddWDBBase(IWDBBase elem, wx.Sizer siz , int prop, int flag, int border)
-		{
-			this.Add(siz, prop, flag, border);
-			this._list.Add(elem);
-		}
-		
-			//	_p_sizer.Add(this, 0, (int)(_props.Alignment.ToLong|_props.Border.ToLong), _props.BorderWidth);
-		public ArrayList List
-		{
-			get	{	return _list;	}
-		}
-	}
-	*/
 	
-	public class wiwBoxSizer : wx.BoxSizer, IWDBBase, IWXSizer
+	public class wiwGridSizer : wx.GridSizer, IWDBBase, IWXSizer
 	{
-		protected static long _frame_cur_index=0;
-		protected wdbBoxSizerProps _props;
+		protected static long _grid_cur_index=0;
+		protected wdbGridSizerProps _props;
 		protected bool _is_selected;
 		protected wx.Window _p_container;
 		protected wx.Sizer _p_sizer;
 		protected ArrayList _list;		
 		
-		public wiwBoxSizer(wx.Window _pc, wx.Sizer _ps) : base(wx.Orientation.wxVERTICAL)
+		public wiwGridSizer(wx.Window _pc, wx.Sizer _ps, int _r, int _c, int _vg, int _hg) : 
+			base(_r, _c, _vg, _hg)
 		{
-			_props = new wdbBoxSizerProps();
-			_frame_cur_index++;			
-			string name = "BoxSizer" + _frame_cur_index.ToString();
+			_props = new wdbGridSizerProps();
+			_grid_cur_index++;			
+			string name = "GridSizer" + _grid_cur_index.ToString();
 			SetDefaultProps(name);
 			SetWidgetProps();
 			_p_container = _pc;
@@ -164,7 +149,10 @@ namespace mkdb.Widgets
 		{
 			_props.EnableNotification = false;
 			_props.Name = name;
-			_props.MinSize = 500;
+			_props.Cols = 2;
+			_props.Rows = 2;
+			_props.VGap = 0;
+			_props.HGap = 0;
 			_props.EnableNotification = true;
 		}
 				
@@ -196,7 +184,9 @@ namespace mkdb.Widgets
 		
 		public bool CanAcceptChildren()
 		{
-			return true;
+			if (List.Count < this.Cols * this.Rows)
+				return true;
+			return false;
 		}				
 				
 		public bool InsertWidgetInText()
@@ -219,27 +209,26 @@ namespace mkdb.Widgets
 			area.Clear(cl);
 			if (IsSelected)
 			{
-				Pen _pen = new Pen(Color.Red, 1);				
-				// Point _ps = Point.Add(this.Position, new Size(1, 1));
-				// Size _sz = Size.Subtract(this.Size, new Size(1, 1));
-				
-				Point _ps = Point.Subtract(this.Position, new Size(_props.BorderWidth, _props.BorderWidth));
-				Size _sz = this.Size;				
-				if (_sz.Width == 0) 
-				{
-					_sz.Width = _p_container.ClientSize.Width - _ps.X - _props.BorderWidth - 2;
-				} else
-				{
-					_sz.Width -= _props.BorderWidth*2-1;
-				}
-				if (_sz.Height == 0) 
-				{
-					_sz.Width = _p_container.ClientSize.Height - _ps.Y - _props.BorderWidth;
-				} else
-				{
-					_sz.Height -= _props.BorderWidth*2;
-				}
+				Pen _pen = new Pen(Color.Red, 2);
+				Point _ps = this.Position;
+				Size _sz = new Size(this.Size.Width, this.Size.Height);
+				if (_sz.Width == 0)					
+					_sz.Width = _p_container.Size.Width - _ps.X - 10;
+				if (_sz.Height == 0)					
+					_sz.Height = _p_container.Size.Height - _ps.Y - 10;
 				area.DrawRectangle(_pen, _ps.X, _ps.Y, _sz.Width, _sz.Height);
+				/*				
+				int wpart = _sz.Width / this.Cols;
+				int hpart = _sz.Height / this.Rows;
+				for (int i=0; i<this.Cols; i++)
+				{
+					for (int j=0; j<this.Rows; j++)
+					{
+						area.DrawRectangle(_pen, j*wpart, i*hpart, wpart, hpart);						
+					}
+				}
+				*/
+				// area.DrawRectangle(_pen, _ps.X, _ps.Y, _sz.Width, _sz.Height);
 			}						
 		}		
 		
@@ -250,11 +239,24 @@ namespace mkdb.Widgets
             	case "Name":
 					Common.Instance().ObjTree.SelectedNode.Text = _props.Name;	
             		break;
-            	case "Orientation":
-            		this.Orientation = (int)_props.Orientation.ToLong;
+            	case "Cols":
+            		this.Cols = _props.Cols;
+            		this.Layout();
+            		break;
+            	case "Rows":
+            		this.Rows = _props.Rows;
+            		this.Layout();
+            		break;
+            	case "VGap":
+            		this.VGap = _props.VGap;
+            		this.Layout();
+            		break;
+            	case "HGap":
+            		this.HGap = _props.HGap;
             		this.Layout();
             		break;
             }
+            this.PaintOnSelection();
         }
 				
 		public void SetWidgetProps()

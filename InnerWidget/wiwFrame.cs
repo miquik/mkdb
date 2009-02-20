@@ -106,7 +106,7 @@ namespace mkdb.Widgets
 				base(_parent, wx.Panel.wxID_ANY, new Point(5, 5), _size, wx.Panel.wxRAISED_BORDER | wx.Panel.wxFULL_REPAINT_ON_RESIZE)
 		{
 			m_sizing = mSizing.NONE;
-			m_resizeBorder = 10;
+			m_resizeBorder = 8;
 			_real_pos = _pos;
 			_real_size = _size;
 			// this.AutoLayout = true;
@@ -125,13 +125,17 @@ namespace mkdb.Widgets
 		}
 		
 		#region IWidgetElem Interface implementation
+		public wx.Window Me
+		{
+			get	{	return this;	}
+		}		
 		public WidgetProps Properties	
 		{	
 			get	{	return _props; }
 		}
 		public wx.Window ParentContainer	
 		{	
-			get	{	return this.Parent;	}
+			get	{	return null;	}
 		}
 		public wx.Sizer	ParentSizer		
 		{	
@@ -146,14 +150,6 @@ namespace mkdb.Widgets
 			get	{	return _is_selected;	}
 			set	{	_is_selected = value;	}
 		}		
-		public Point AreaOrigin
-		{	
-			get {	return this.ClientAreaOrigin;	}
-		}
-		public Size AreaSize
-		{	
-			get	{	return this.ClientSize;	}
-		}				
 		public int WidgetType
 		{
 			get	{	return (int)StandardWidgetType.WID_FRAME; }
@@ -216,12 +212,9 @@ namespace mkdb.Widgets
 			// clientDC.Clear(m_parent_back);
 			if (IsSelected)
 			{
-				Pen _pen = new Pen(Color.Red, 2);
-				Point ps = new Point(5, 5);
-				// Point ps = this.ClientAreaOrigin;
-				// area.DrawRectangle(_pen, 300, 0, 500, 500);
-				area.DrawRectangle(_pen, ps.X, ps.Y, Size.Width, Size.Height);
-				// area.DrawRectangle(_pen, Position.X, Position.Y, Size.Width, Size.Height);
+				Pen _pen = new Pen(Color.Red, 1);
+				Point ps = new Point(4, 4);
+				area.DrawRectangle(_pen, ps.X, ps.Y, Size.Width + 1, Size.Height + 1);
 			}			
 		}
 				
@@ -269,14 +262,12 @@ namespace mkdb.Widgets
             	case "Style":
             		// Only change in Python text
             		this.StyleFlags = wp.Style.ToLong;
+            		this.Refresh();
             		break;            		
             	case "WindowStyle":
             		// Only change in Python text
             		this.WindowStyle = wp.WindowStyle.ToLong;
-            		break;            		            		
-            	case "Border":
-            		break;            		            		
-            	case "Alignment":
+            		this.Refresh();
             		break;            		            		
             }            
             this.UpdateWindowUI();
@@ -423,41 +414,11 @@ namespace mkdb.Widgets
 		
 		protected void OnPaint(object sender, wx.Event e)
 		{
-			/*
-			Panel pan = Common.Instance().Canvas;
-			Graphics area = pan.CreateGraphics();
-			area.Clear(pan.BackColor);
-			// Graphics clientDC = Graphics.FromHwnd(m_parent_hwnd);
-			// clientDC.Clear(m_parent_back);
-			if (IsSelected)
-			{
-				Pen _pen = new Pen(Color.Red, 2);
-				Point ps = this.ClientAreaOrigin;
-				area.DrawRectangle(_pen, ps.X, ps.Y, Size.Width, Size.Height);
-				// area.DrawRectangle(_pen, Position.X, Position.Y, Size.Width, Size.Height);
-			}
-			*/
 			e.Skip();
 		}
 		
 		protected void OnSize(object sender, wx.Event e)
 		{
-			/*
-			Panel pan = Common.Instance().Canvas;
-			Graphics area = pan.CreateGraphics();
-			area.Clear(pan.BackColor);
-			// Graphics clientDC = Graphics.FromHwnd(m_parent_hwnd);
-			// clientDC.Clear(m_parent_back);
-			if (IsSelected)
-			{
-				Pen _pen = new Pen(Color.Red, 2);
-				Point ps = this.ClientAreaOrigin;
-				area.DrawRectangle(_pen, ps.X, ps.Y, Size.Width, Size.Height);
-				// area.DrawRectangle(_pen, Position.X, Position.Y, Size.Width, Size.Height);
-			}
-			// Graphics clientDC = Graphics.FromHwnd(m_parent_hwnd);
-			// clientDC.Clear(m_parent_back);
-			*/
 			e.Skip();
 		}						
 		#endregion		

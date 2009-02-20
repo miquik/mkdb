@@ -16,11 +16,12 @@ namespace mkdb.Widgets
 	/// 
 	public class wdbApp : WidgetElem
 	{
-		public wdbApp(wx.Window _pc, wx.Sizer _ps) : base(_pc, _ps, "Project")
+		public wdbApp(wx.Window _pc, wx.Sizer _ps) : base("Project")
 		{
-			this.ImageIndex = 1;
-			this.SelectedImageIndex = 1;			
+			this.ImageIndex = 14;
+			this.SelectedImageIndex = 14;			
 			_elem = new wiwApp(_pc, _ps);
+			_elem.InsertWidget(null);
 		}
 		/*
 		public override IWDBBase CreateWidget(IWDBBase parent)

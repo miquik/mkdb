@@ -43,7 +43,7 @@ namespace mkdb.Widgets
 		protected wdbAppProps _props;
 		protected bool _is_selected;
 			
-		public wiwApp(wx.Window _pc, wx.Sizer _ps) : base(_pc)
+		public wiwApp(wx.Window _pc, wx.Sizer _ps) : base(null)
 		{
 			_props = new wdbAppProps();
 			SetDefaultProps("Project");
@@ -51,6 +51,10 @@ namespace mkdb.Widgets
 		}
 		
 		#region IWidgetElem Interface implementation
+		public wx.Window Me
+		{
+			get	{	return this;	}
+		}
 		public WidgetProps Properties	
 		{	
 			get	{	return _props; }
@@ -72,14 +76,6 @@ namespace mkdb.Widgets
 			get	{	return _is_selected;	}
 			set	{	_is_selected = value;	}
 		}		
-		public Point AreaOrigin
-		{	
-			get {	return new Point(-1, -1);	}
-		}
-		public Size AreaSize
-		{	
-			get	{	return new Size(-1, -1);	}
-		}
 		public int WidgetType
 		{
 			get	{	return (int)StandardWidgetType.WID_APP; }
@@ -97,7 +93,6 @@ namespace mkdb.Widgets
 				
 		public bool InsertWidget(IWDBBase parent)
 		{
-			// _client_parent = parent;
 			return true;
 		}
 		public bool DeleteWidget()

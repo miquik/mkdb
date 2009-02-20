@@ -15,12 +15,12 @@ namespace mkdb.Widgets
 	/// </summary>
 	public class wdbBoxSizer : WidgetElem
 	{
-		public wdbBoxSizer(wx.Window _pc, wx.Sizer _ps) : base(_pc, _ps, "Sizer")
+		public wdbBoxSizer(wx.Window _pc, wx.Sizer _ps) : base("Sizer")
 		{
 			this.ImageIndex = 10;
 			this.SelectedImageIndex = 10;
 			_elem = new wiwBoxSizer(_pc, _ps);
-			// _elem.InsertWidget(parent);
+			_elem.InsertWidget(null);
 			wdbBoxSizerProps _p = (wdbBoxSizerProps)_elem.Properties;
 			this.Text = _p.Name;
 		}

@@ -52,6 +52,7 @@ namespace mkdb
 			this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
 			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
 			this.objtree = new System.Windows.Forms.TreeView();
+			this.objtreeimages = new System.Windows.Forms.ImageList(this.components);
 			this.label1 = new System.Windows.Forms.Label();
 			this.splitContainer2 = new System.Windows.Forms.SplitContainer();
 			this.tabControl1 = new System.Windows.Forms.TabControl();
@@ -64,8 +65,9 @@ namespace mkdb
 			this.palette = new System.Windows.Forms.ToolStrip();
 			this.toolStripButton3 = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
+			this.toolStripButton5 = new System.Windows.Forms.ToolStripButton();
 			this.label2 = new System.Windows.Forms.Label();
-			this.objtreeimages = new System.Windows.Forms.ImageList(this.components);
+			this.toolStripButton6 = new System.Windows.Forms.ToolStripButton();
 			this.menuStrip1.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
 			this.splitContainer1.Panel1.SuspendLayout();
@@ -208,6 +210,26 @@ namespace mkdb
 			this.objtree.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.ObjtreeAfterSelect);
 			this.objtree.BeforeSelect += new System.Windows.Forms.TreeViewCancelEventHandler(this.ObjtreeBeforeSelect);
 			// 
+			// objtreeimages
+			// 
+			this.objtreeimages.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("objtreeimages.ImageStream")));
+			this.objtreeimages.TransparentColor = System.Drawing.Color.Transparent;
+			this.objtreeimages.Images.SetKeyName(0, "button.jpg");
+			this.objtreeimages.Images.SetKeyName(1, "choice.jpg");
+			this.objtreeimages.Images.SetKeyName(2, "combo_box.jpg");
+			this.objtreeimages.Images.SetKeyName(3, "dialog.jpg");
+			this.objtreeimages.Images.SetKeyName(4, "flex_grid_sizer.jpg");
+			this.objtreeimages.Images.SetKeyName(5, "frame.jpg");
+			this.objtreeimages.Images.SetKeyName(6, "grid_bag_sizer.jpg");
+			this.objtreeimages.Images.SetKeyName(7, "grid_sizer.jpg");
+			this.objtreeimages.Images.SetKeyName(8, "panel.jpg");
+			this.objtreeimages.Images.SetKeyName(9, "sizer.jpg");
+			this.objtreeimages.Images.SetKeyName(10, "sizer16x16.jpg");
+			this.objtreeimages.Images.SetKeyName(11, "spacer.jpg");
+			this.objtreeimages.Images.SetKeyName(12, "staticbox_sizer.jpg");
+			this.objtreeimages.Images.SetKeyName(13, "stddialogbuttonsizer.jpg");
+			this.objtreeimages.Images.SetKeyName(14, "smile.png");
+			// 
 			// label1
 			// 
 			this.label1.BackColor = System.Drawing.SystemColors.HotTrack;
@@ -317,7 +339,9 @@ namespace mkdb
 			// 
 			this.palette.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
 									this.toolStripButton3,
-									this.toolStripButton4});
+									this.toolStripButton4,
+									this.toolStripButton5,
+									this.toolStripButton6});
 			this.palette.Location = new System.Drawing.Point(0, 23);
 			this.palette.Name = "palette";
 			this.palette.Size = new System.Drawing.Size(501, 25);
@@ -344,6 +368,16 @@ namespace mkdb
 			this.toolStripButton4.Text = "toolStripButton4";
 			this.toolStripButton4.Click += new System.EventHandler(this.ToolStripButton4Click);
 			// 
+			// toolStripButton5
+			// 
+			this.toolStripButton5.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.toolStripButton5.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton5.Image")));
+			this.toolStripButton5.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButton5.Name = "toolStripButton5";
+			this.toolStripButton5.Size = new System.Drawing.Size(23, 22);
+			this.toolStripButton5.Text = "toolStripButton5";
+			this.toolStripButton5.Click += new System.EventHandler(this.ToolStripButton5Click);
+			// 
 			// label2
 			// 
 			this.label2.BackColor = System.Drawing.SystemColors.HotTrack;
@@ -355,24 +389,15 @@ namespace mkdb
 			this.label2.Text = "Palette";
 			this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			// 
-			// objtreeimages
+			// toolStripButton6
 			// 
-			this.objtreeimages.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("objtreeimages.ImageStream")));
-			this.objtreeimages.TransparentColor = System.Drawing.Color.Transparent;
-			this.objtreeimages.Images.SetKeyName(0, "button.jpg");
-			this.objtreeimages.Images.SetKeyName(1, "choice.jpg");
-			this.objtreeimages.Images.SetKeyName(2, "combo_box.jpg");
-			this.objtreeimages.Images.SetKeyName(3, "dialog.jpg");
-			this.objtreeimages.Images.SetKeyName(4, "flex_grid_sizer.jpg");
-			this.objtreeimages.Images.SetKeyName(5, "frame.jpg");
-			this.objtreeimages.Images.SetKeyName(6, "grid_bag_sizer.jpg");
-			this.objtreeimages.Images.SetKeyName(7, "grid_sizer.jpg");
-			this.objtreeimages.Images.SetKeyName(8, "panel.jpg");
-			this.objtreeimages.Images.SetKeyName(9, "sizer.jpg");
-			this.objtreeimages.Images.SetKeyName(10, "sizer16x16.jpg");
-			this.objtreeimages.Images.SetKeyName(11, "spacer.jpg");
-			this.objtreeimages.Images.SetKeyName(12, "staticbox_sizer.jpg");
-			this.objtreeimages.Images.SetKeyName(13, "stddialogbuttonsizer.jpg");
+			this.toolStripButton6.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.toolStripButton6.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton6.Image")));
+			this.toolStripButton6.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.toolStripButton6.Name = "toolStripButton6";
+			this.toolStripButton6.Size = new System.Drawing.Size(23, 22);
+			this.toolStripButton6.Text = "toolStripButton6";
+			this.toolStripButton6.Click += new System.EventHandler(this.ToolStripButton6Click);
 			// 
 			// MainForm
 			// 
@@ -405,6 +430,8 @@ namespace mkdb
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.ToolStripButton toolStripButton6;
+		private System.Windows.Forms.ToolStripButton toolStripButton5;
 		private System.Windows.Forms.ImageList objtreeimages;
 		private System.Windows.Forms.ToolStripButton toolStripButton4;
 		private System.Windows.Forms.ToolStripButton toolStripButton3;

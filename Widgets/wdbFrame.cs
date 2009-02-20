@@ -14,41 +14,46 @@ namespace mkdb.Widgets
 	/// <summary>
 	/// Description of wdbFrame.
 	/// </summary>
-	public class wdbFrame : WidgetElem
+	public class wdbFrame : WidgetElem, IDisposable
 	{
-		public wdbFrame(wx.Window _pc, wx.Sizer _ps) : base(_pc, _ps, "Frame")
+		protected wx.Frame hfrm = null;
+		
+		#region IDisposable implementation		
+		// Track whether Dispose has been called.
+        private bool disposed = false;
+
+        // Implement IDisposable.
+        // Do not make this method virtual.
+        // A derived class should not be able to override this method.
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            // Check to see if Dispose has already been called.
+            if (this.disposed == false)
+            {
+                hfrm.Close();
+                hfrm.Dispose();
+                disposed = true;
+            }
+        }
+        #endregion
+				
+		public wdbFrame(wx.Window _pc, wx.Sizer _ps) : base("Frame")
 		{
 			this.ImageIndex = 5;
 			this.SelectedImageIndex = 5;			
 			// Create a wxWindow on the top of canvas panel.
-			wx.Frame hfrm = new wx.Frame(null);		
-			hfrm.Hide();
+			wx.Frame hfrm = new wx.Frame(null, -1, "");		
 			_elem = new wiwFrame(hfrm, "", new Point(0, 0), new Size(300, 300), wx.Frame.wxDEFAULT_FRAME_STYLE);
-			wx.Panel f = (wx.Panel)_elem;
-			Win32Utils.SetParent(f.GetHandle(), Common.Instance().Canvas.Handle);
-			// Win32Utils.SetParent(_elem.ParentContainer.GetHandle(), Common.Instance().Canvas.Handle);
-			// _elem.InsertWidget(null);
-			// Set Parent
-			// Common.Instance().WidgetList.Add(_elem);
-			// Common.Instance().ChangeCurrentWindow(_elem);
-			wiwFrame wf = (wiwFrame)_elem;
-			this.Text = wf.Name;
-		}
-		/*
-		public override IWDBBase CreateWidget(IWDBBase parent)
-		{
-			// Create a wxWindow on the top of canvas panel.
-			wx.Frame hfrm = new wx.Frame(null);			
-			_elem = new wiwFrame(hfrm, "", new Point(0, 0), new Size(300, 300), wx.Frame.wxDEFAULT_FRAME_STYLE);
-			Win32Utils.SetParent(_elem.WxWindow.GetHandle(), Common.Instance().Canvas.Handle);
 			_elem.InsertWidget(null);
-			// Set Parent
-			Common.Instance().WidgetList.Add(_elem);
-			// Common.Instance().ChangeCurrentWindow(_elem);
+			Win32Utils.SetParent(_elem.Me.GetHandle(), Common.Instance().Canvas.Handle);
 			wiwFrame wf = (wiwFrame)_elem;
 			this.Text = wf.Name;
-			return _elem;
 		}
-		*/
 	}
 }

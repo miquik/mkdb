@@ -49,7 +49,9 @@
     <Compile Include="FontEditor.cs" />
     <Compile Include="InnerWidget\wiwApp.cs" />
     <Compile Include="InnerWidget\wiwBoxSizer.cs" />
+    <Compile Include="InnerWidget\wiwButton.cs" />
     <Compile Include="InnerWidget\wiwFrame.cs" />
+    <Compile Include="InnerWidget\wiwGridSizer.cs" />
     <Compile Include="MainForm.cs" />
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
@@ -59,12 +61,15 @@
     <Compile Include="WidgetProps.cs" />
     <Compile Include="Widgets\wdbApp.cs" />
     <Compile Include="Widgets\wdbBoxSizer.cs" />
+    <Compile Include="Widgets\wdbButton.cs" />
     <Compile Include="Widgets\wdbFrame.cs" />
+    <Compile Include="Widgets\wdbGridSizer.cs" />
     <Compile Include="Win32Utils.cs" />
     <Compile Include="wxApp.cs" />
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="WidgetList.txt" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="InnerWidget" />
