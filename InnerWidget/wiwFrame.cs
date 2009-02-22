@@ -39,7 +39,7 @@ namespace mkdb.Widgets
 		
 		public wdbFrameProps() : base()
 		{
-			_name = "";
+			_name = "Frame";
 			_title = "Frame";
 			_fstyle = new wxFlags();
 			_fstyle.AddItem("wxFRAME_DEFAULT", wx.Frame.wxDEFAULT_FRAME_STYLE, true);
@@ -102,13 +102,15 @@ namespace mkdb.Widgets
 		#endregion
 		
 					
-		public wiwFrame(wx.Window _parent, string _title, Point _pos, Size _size, uint _style) :
-				base(_parent, wx.Panel.wxID_ANY, new Point(5, 5), _size, wx.Panel.wxRAISED_BORDER | wx.Panel.wxFULL_REPAINT_ON_RESIZE)
+		// public wiwFrame(wx.Window _parent, string _title, Point _pos, Size _size, uint _style) :
+		// 	base(_parent, wx.Panel.wxID_ANY, new Point(5, 5), new Size(300, 300), wx.Panel.wxRAISED_BORDER | wx.Panel.wxFULL_REPAINT_ON_RESIZE)
+		public wiwFrame(wx.Window _parent) :
+		 	base(_parent, -1, new Point(5, 5), new Size(300, 300), wx.Panel.wxRAISED_BORDER | wx.Panel.wxFULL_REPAINT_ON_RESIZE)
 		{
 			m_sizing = mSizing.NONE;
 			m_resizeBorder = 8;
-			_real_pos = _pos;
-			_real_size = _size;
+			_real_pos = new Point(0, 0);
+			_real_size = new Size(300, 300);
 			// this.AutoLayout = true;
 			// Layout();
 			this.EVT_MOTION(new wx.EventListener(OnMouseMotion));
@@ -125,9 +127,9 @@ namespace mkdb.Widgets
 		}
 		
 		#region IWidgetElem Interface implementation
-		public wx.Window Me
+		public wx.SizerItem SizerItem
 		{
-			get	{	return this;	}
+			get	{	return null;	}
 		}		
 		public WidgetProps Properties	
 		{	
@@ -161,18 +163,16 @@ namespace mkdb.Widgets
 			_props.EnableNotification = false;
 			_props.Name = name;
 			_props.Title = name;
-			_props.Pos = new Point(_real_pos.X, _real_pos.Y);
-			_props.Size = new Size(_real_size.Width, _real_size.Height);
 			_props.EnableNotification = true;
 			this.Name = name;
 			this.Title = name;
 			// this.Position = new Point(_props.Pos.X+1, _props.Pos.Y+1);
-			this.SetSize(5, 5, _real_size.Width, _real_size.Height);
-			this.BackgroundColour = (wx.Colour)_props.BC;
-			this.ForegroundColour = (wx.Colour)_props.FC;			
+			// this.SetSize(5, 5, _real_size.Width, _real_size.Height);
+			this.BackgroundColour = (wxColor)_props.BC;
+			this.ForegroundColour = (wxColor)_props.FC;
 		}
 				
-		public bool InsertWidget(IWDBBase parent)
+		public bool InsertWidget()
 		{
 			return true;
 		}
@@ -180,16 +180,6 @@ namespace mkdb.Widgets
 		{
 			return false;
 		}		
-		
-		public bool InsertWidgetInText()
-		{
-			return true;			
-		}
-		
-		public bool DeleteWidgetFromText()
-		{
-			return true;
-		}
 		
 		public long FindBlockInText()
 		{
@@ -203,19 +193,32 @@ namespace mkdb.Widgets
 			return false;
 		}
 		
-		public void PaintOnSelection()
+		public void HighlightSelection()
 		{
+			/*
+			Graphics screen_area = Graphics.FromHwnd(Win32Utils.GetDesktopWindow());
+			Panel pan = Common.Instance().Canvas;			
+			Point _start = pan.PointToScreen(new Point(0, 0));
+			screen_area.FillRectangle(new SolidBrush(Color.Orange), 
+			                          new Rectangle(_start.X, _start.Y, pan.Width, pan.Height));
+			if (IsSelected)
+			{
+				Pen _pen = new Pen(Color.Red, 10);
+				Point ps = pan.PointToScreen(new Point(4, 4));
+				screen_area.DrawRectangle(_pen, ps.X, ps.Y, Size.Width + 1, Size.Height + 1);
+			}			
+			// area.Clear(pan.BackColor);
+			// Graphics screen = Graphics.FromHwnd(
+			*/
 			Panel pan = Common.Instance().Canvas;
 			Graphics area = pan.CreateGraphics();
 			area.Clear(pan.BackColor);
-			// Graphics clientDC = Graphics.FromHwnd(m_parent_hwnd);
-			// clientDC.Clear(m_parent_back);
 			if (IsSelected)
 			{
 				Pen _pen = new Pen(Color.Red, 1);
 				Point ps = new Point(4, 4);
 				area.DrawRectangle(_pen, ps.X, ps.Y, Size.Width + 1, Size.Height + 1);
-			}			
+			}
 		}
 				
 		public void winProps_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -414,6 +417,19 @@ namespace mkdb.Widgets
 		
 		protected void OnPaint(object sender, wx.Event e)
 		{
+			/*
+			Graphics screen_area = Graphics.FromHwnd(Win32Utils.GetDesktopWindow());
+			Panel pan = Common.Instance().Canvas;			
+			Point _start = pan.PointToScreen(new Point(0, 0));
+			screen_area.FillRectangle(new SolidBrush(Color.Orange), 
+			                          new Rectangle(_start.X, _start.Y, pan.Width, pan.Height));
+			if (IsSelected)
+			{
+				Pen _pen = new Pen(Color.Red, 10);
+				Point ps = pan.PointToScreen(new Point(4, 4));
+				screen_area.DrawRectangle(_pen, ps.X, ps.Y, Size.Width + 1, Size.Height + 1);
+			}						
+			*/
 			e.Skip();
 		}
 		

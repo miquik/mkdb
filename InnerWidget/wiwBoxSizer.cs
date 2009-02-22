@@ -30,7 +30,10 @@ namespace mkdb.Widgets
 			_orient = new wxFlags();
 			_orient.AddItem("wxVERTICAL", wx.Orientation.wxVERTICAL, true);
 			_orient.AddItem("wxHORIZONTAL", wx.Orientation.wxHORIZONTAL, false);
-			_min_size = -1;
+			_min_size = 100;
+			this.EnableNotification = false;
+			this.BorderWidth = 0;
+			this.EnableNotification = true;
 		}
 				
 		[TypeConverter(typeof(wxFlagsTypeConverter))]
@@ -49,42 +52,15 @@ namespace mkdb.Widgets
 			set	{	_min_size = value; NotifyPropertyChanged("MinSize");	}
 		}
 	}
-	/*
-	public class wxBoxSizer : wx.BoxSizer
-	{
-		protected ArrayList _list;		
-		public wxBoxSizer(int or) : base(or)
-		{
-			_list = new ArrayList();
-		}
-		
-		public void AddWDBBase(IWDBBase elem, wx.Window win , int prop, int flag, int border)
-		{
-			this.Add(win, prop, flag, border);
-			this._list.Add(elem);
-		}
-		public void AddWDBBase(IWDBBase elem, wx.Sizer siz , int prop, int flag, int border)
-		{
-			this.Add(siz, prop, flag, border);
-			this._list.Add(elem);
-		}
-		
-			//	_p_sizer.Add(this, 0, (int)(_props.Alignment.ToLong|_props.Border.ToLong), _props.BorderWidth);
-		public ArrayList List
-		{
-			get	{	return _list;	}
-		}
-	}
-	*/
 	
-	public class wiwBoxSizer : wx.BoxSizer, IWDBBase, IWXSizer
+	public class wiwBoxSizer : wx.BoxSizer, IWDBBase
 	{
 		protected static long _frame_cur_index=0;
 		protected wdbBoxSizerProps _props;
 		protected bool _is_selected;
 		protected wx.Window _p_container;
 		protected wx.Sizer _p_sizer;
-		protected ArrayList _list;		
+		protected wx.SizerItem _sizer_item;		
 		
 		public wiwBoxSizer(wx.Window _pc, wx.Sizer _ps) : base(wx.Orientation.wxVERTICAL)
 		{
@@ -95,44 +71,14 @@ namespace mkdb.Widgets
 			SetWidgetProps();
 			_p_container = _pc;
 			_p_sizer = _ps;
-			_list = new ArrayList();
+			_sizer_item = null;
 		}
 		
-		#region IWXSizer Interface implementation
-		public void AddWDBBase(IWDBBase elem, int prop, int flag, int border)
-		{
-			if (elem.IsSizer == true)
-				this.Add((wx.Sizer)elem, prop, flag, border);
-			else
-				this.Add((wx.Window)elem, prop, flag, border);
-			this._list.Add(elem);
-		}
-		public void InsertWDBBase(int index, IWDBBase elem, int prop, int flag, int border)
-		{
-			if (elem.IsSizer == true)
-				this.Insert(index, (wx.Sizer)elem, prop, flag, border, null);
-			else
-				this.Insert(index, (wx.Window)elem, prop, flag, border, null);
-			this._list.Insert(index, elem);
-		}		
-		public void RemoveWDBBase(IWDBBase elem)
-		{
-			if (elem.IsSizer == true)
-				this.Detach((wx.Sizer)elem);
-			else
-				this.Detach((wx.Window)elem);
-			this._list.Remove(elem);
-		}				
-		public ArrayList List
-		{
-			get	{	return _list;	}
-		}		
-		#endregion
 		
 		#region IWidgetElem Interface implementation
-		public wx.Window Me
+		public wx.SizerItem SizerItem
 		{
-			get	{	return null;	}
+			get	{	return _sizer_item;	}
 		}		
 		public WidgetProps Properties	
 		{	
@@ -164,20 +110,20 @@ namespace mkdb.Widgets
 		{
 			_props.EnableNotification = false;
 			_props.Name = name;
-			_props.MinSize = 500;
 			_props.EnableNotification = true;
 		}
 				
-		public bool InsertWidget(IWDBBase parent)
+		public bool InsertWidget()
 		{			
 			if (_p_sizer == null)			
 			{				
 				_p_container.SetSizer(this, true);
 			} else
 			{
-				IWXSizer wxsizer = (IWXSizer)_p_sizer;
-				wxsizer.AddWDBBase((IWDBBase)this, 0, (int)(_props.Alignment.ToLong|_props.Border.ToLong), _props.BorderWidth);				
-				// _p_sizer.Add(this, 0, (int)(_props.Alignment.ToLong|_props.Border.ToLong), _props.BorderWidth);
+				// IWXSizer wxsizer = (IWXSizer)_p_sizer;
+				// wxsizer.AddWDBBase((IWDBBase)this, 0, (int)(_props.Alignment.ToLong|_props.Border.ToLong), _props.BorderWidth);				
+				_p_sizer.Add(this, 0, (int)(_props.Alignment.ToLong|_props.Border.ToLong), _props.BorderWidth);
+				_sizer_item = (wx.SizerItem)_p_sizer.GetItem(_p_sizer.GetItemCount() - 1);
 			}
 			_p_container.AutoLayout = true;
 			_p_container.Layout();
@@ -199,16 +145,7 @@ namespace mkdb.Widgets
 			return true;
 		}				
 				
-		public bool InsertWidgetInText()
-		{
-			return true;			
-		}		
-		public bool DeleteWidgetFromText()
-		{
-			return true;
-		}
-		
-		public void PaintOnSelection()
+		public void HighlightSelection()
 		{
 			Panel pan = Common.Instance().Canvas;
 			// Graphics area = Graphics.FromHwnd(this.GetHandle());
@@ -220,25 +157,14 @@ namespace mkdb.Widgets
 			if (IsSelected)
 			{
 				Pen _pen = new Pen(Color.Red, 1);				
-				// Point _ps = Point.Add(this.Position, new Size(1, 1));
-				// Size _sz = Size.Subtract(this.Size, new Size(1, 1));
-				
-				Point _ps = Point.Subtract(this.Position, new Size(_props.BorderWidth, _props.BorderWidth));
-				Size _sz = this.Size;				
-				if (_sz.Width == 0) 
+				Point _ps = Point.Add(this.Position, new Size(_props.BorderWidth, _props.BorderWidth));
+				Size _sz = this.Size;
+				if ((_sz.Width == 0) || (_sz.Height == 0))
 				{
-					_sz.Width = _p_container.ClientSize.Width - _ps.X - _props.BorderWidth - 2;
-				} else
-				{
-					_sz.Width -= _props.BorderWidth*2-1;
+					return;
 				}
-				if (_sz.Height == 0) 
-				{
-					_sz.Width = _p_container.ClientSize.Height - _ps.Y - _props.BorderWidth;
-				} else
-				{
-					_sz.Height -= _props.BorderWidth*2;
-				}
+				_sz.Width -= (_props.BorderWidth*2 + 2);
+				_sz.Height -= (_props.BorderWidth*2 + 2);
 				area.DrawRectangle(_pen, _ps.X, _ps.Y, _sz.Width, _sz.Height);
 			}						
 		}		
@@ -247,11 +173,15 @@ namespace mkdb.Widgets
         {
             switch (e.PropertyName)
             {
-            	case "Name":
+            	case "Name":            
 					Common.Instance().ObjTree.SelectedNode.Text = _props.Name;	
             		break;
             	case "Orientation":
             		this.Orientation = (int)_props.Orientation.ToLong;
+            		this.Layout();
+            		break;
+            	case "MinSize":   
+            		this.SetMinSize(new Size(_props.MinSize, _props.MinSize));
             		this.Layout();
             		break;
             }

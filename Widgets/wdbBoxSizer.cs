@@ -13,27 +13,16 @@ namespace mkdb.Widgets
 	/// <summary>
 	/// Description of wdbBoxSizer.
 	/// </summary>
-	public class wdbBoxSizer : WidgetElem
+	public class wdbBoxSizer : WidgetTreeNode
 	{
 		public wdbBoxSizer(wx.Window _pc, wx.Sizer _ps) : base("Sizer")
 		{
 			this.ImageIndex = 10;
 			this.SelectedImageIndex = 10;
 			_elem = new wiwBoxSizer(_pc, _ps);
-			_elem.InsertWidget(null);
-			wdbBoxSizerProps _p = (wdbBoxSizerProps)_elem.Properties;
-			this.Text = _p.Name;
+			_elem.InsertWidget();
+			this.Text = _elem.Properties.Name;
 		}
-		/*
-		public override IWDBBase CreateWidget(IWDBBase parent)
-		{
-			_elem = new wiwBoxSizer();
-			_elem.InsertWidget(parent);
-			wdbBoxSizerProps _p = (wdbBoxSizerProps)_elem.Properties;
-			this.Text = _p.Name;
-			return _elem;
-		}		
-		*/
 	}
 		
 }

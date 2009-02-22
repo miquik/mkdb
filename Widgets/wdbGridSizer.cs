@@ -13,14 +13,14 @@ namespace mkdb.Widgets
 	/// <summary>
 	/// Description of wdbBoxSizer.
 	/// </summary>
-	public class wdbGridSizer : WidgetElem
+	public class wdbGridSizer : WidgetTreeNode
 	{
 		public wdbGridSizer(wx.Window _pc, wx.Sizer _ps) : base("Sizer")
 		{
 			this.ImageIndex = 7;
 			this.SelectedImageIndex = 7;
-			_elem = new wiwGridSizer(_pc, _ps, 2, 2, 0, 0);
-			_elem.InsertWidget(null);
+			_elem = new wiwGridSizer(_pc, _ps);
+			_elem.InsertWidget();
 			this.Text = _elem.Properties.Name;
 		}
 	}

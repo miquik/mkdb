@@ -14,21 +14,15 @@ namespace mkdb.Widgets
 	/// Description of wdbApp.
 	/// </summary>
 	/// 
-	public class wdbApp : WidgetElem
+	public class wdbApp : WidgetTreeNode
 	{
 		public wdbApp(wx.Window _pc, wx.Sizer _ps) : base("Project")
 		{
 			this.ImageIndex = 14;
 			this.SelectedImageIndex = 14;			
 			_elem = new wiwApp(_pc, _ps);
-			_elem.InsertWidget(null);
+			_elem.InsertWidget();
+			this.Text = _elem.Properties.Name;
 		}
-		/*
-		public override IWDBBase CreateWidget(IWDBBase parent)
-		{
-			_elem = new wiwApp();
-			return _elem;
-		}
-		*/
 	}
 }

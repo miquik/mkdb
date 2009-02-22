@@ -14,7 +14,7 @@ namespace mkdb.Widgets
 	/// <summary>
 	/// Description of wdbFrame.
 	/// </summary>
-	public class wdbFrame : WidgetElem, IDisposable
+	public class wdbFrame : WidgetTreeNode, IDisposable
 	{
 		protected wx.Frame hfrm = null;
 		
@@ -49,9 +49,10 @@ namespace mkdb.Widgets
 			this.SelectedImageIndex = 5;			
 			// Create a wxWindow on the top of canvas panel.
 			wx.Frame hfrm = new wx.Frame(null, -1, "");		
-			_elem = new wiwFrame(hfrm, "", new Point(0, 0), new Size(300, 300), wx.Frame.wxDEFAULT_FRAME_STYLE);
-			_elem.InsertWidget(null);
-			Win32Utils.SetParent(_elem.Me.GetHandle(), Common.Instance().Canvas.Handle);
+			_elem = new wiwFrame(hfrm);
+			_elem.InsertWidget();
+			wx.Window win = (wx.Window)_elem;
+			Win32Utils.SetParent(win.GetHandle(), Common.Instance().Canvas.Handle);
 			wiwFrame wf = (wiwFrame)_elem;
 			this.Text = wf.Name;
 		}

@@ -63,9 +63,12 @@ namespace mkdb.Widgets
 		protected wdbButtonProps _props;
 		protected bool _is_selected;
 		protected wx.Sizer _p_sizer;
+		protected wx.SizerItem _sizer_item;
 			
-		public wiwButton(wx.Window _pc, wx.Sizer _ps, string _label, Point _pos, Size _sz, uint _style) 
-			: base(_pc, _label, _pos, _sz, _style)
+		// public wiwButton(wx.Window _pc, wx.Sizer _ps, string _label, Point _pos, Size _sz, uint _style) 
+		// 	: base(_pc, _label, _pos, _sz, _style)
+		public wiwButton(wx.Window _pc, wx.Sizer _ps) 
+		 	: base(_pc, "Button", wx.Button.wxDefaultPosition, wx.Button.wxDefaultSize, wx.Button.wxBU_EXACTFIT)
 		{
 			_props = new wdbButtonProps();
 			_btn_cur_index++;			
@@ -73,12 +76,13 @@ namespace mkdb.Widgets
 			SetDefaultProps(name);
 			SetWidgetProps();
 			_p_sizer = _ps;
+			_sizer_item = null;
 		}
 		
 		#region IWidgetElem Interface implementation
-		public wx.Window Me
+		public wx.SizerItem SizerItem
 		{
-			get	{	return this;	}
+			get	{	return _sizer_item;	}
 		}		
 		public WidgetProps Properties	
 		{	
@@ -116,12 +120,12 @@ namespace mkdb.Widgets
 			this.Label = name;
 		}
 				
-		public bool InsertWidget(IWDBBase parent)
+		public bool InsertWidget()
 		{
-			IWXSizer wxsizer = (IWXSizer)_p_sizer;
-			wxsizer.AddWDBBase((IWDBBase)this, 0, (int)(_props.Alignment.ToLong|_props.Border.ToLong), _props.BorderWidth);
-			// _p_sizer.Add(this, 0, (int)(_props.Alignment.ToLong|_props.Border.ToLong), _props.BorderWidth);
-			// _p_sizer.Add(this, 0, (int)_props.Alignment.ToLong, (int)_props.Border.ToLong);
+			// IWXSizer wxsizer = (IWXSizer)_p_sizer;
+			// wxsizer.AddWDBBase((IWDBBase)this, 0, (int)(_props.Alignment.ToLong|_props.Border.ToLong), _props.BorderWidth);
+			_p_sizer.Add(this, 0, (int)(_props.Alignment.ToLong|_props.Border.ToLong), _props.BorderWidth);
+			_sizer_item = (wx.SizerItem)_p_sizer.GetItem(_p_sizer.GetItemCount() - 1);
 			this.Parent.AutoLayout = true;
 			this.Parent.Layout();	
 			return true;
@@ -130,16 +134,6 @@ namespace mkdb.Widgets
 		{
 			return false;
 		}		
-		
-		public bool InsertWidgetInText()
-		{
-			return true;			
-		}
-		
-		public bool DeleteWidgetFromText()
-		{
-			return true;
-		}
 		
 		public long FindBlockInText()
 		{
@@ -151,7 +145,7 @@ namespace mkdb.Widgets
 			return false;
 		}
 		
-		public void PaintOnSelection()
+		public void HighlightSelection()
 		{			
 			Panel pan = Common.Instance().Canvas;
 			// Graphics area = Graphics.FromHwnd(this.GetHandle());
@@ -165,7 +159,7 @@ namespace mkdb.Widgets
 			{
 				Pen _pen = new Pen(Color.Red, 1);
 				Point _ps = Point.Subtract(this.Position, new Size(_props.BorderWidth, _props.BorderWidth));
-				Size _sz = Size.Add(this.Size, new Size(_props.BorderWidth * 2 - 1, _props.BorderWidth * 2));				
+				Size _sz = Size.Add(this.Size, new Size(_props.BorderWidth * 2 - 1, _props.BorderWidth * 2 - 1));				
 				area.DrawRectangle(_pen, _ps.X, _ps.Y, _sz.Width, _sz.Height);
 			}			
 		}
@@ -198,18 +192,16 @@ namespace mkdb.Widgets
             }
             if (baa)
             {
-           		// Is this the only way???           	
-				IWXSizer wxsizer = (IWXSizer)_p_sizer;
-				int idx = FindPositionInSizerList(this, wxsizer);
-           		wxsizer.RemoveWDBBase(this);
-				wxsizer.InsertWDBBase(idx, this, 0, (int)(_props.Alignment.ToLong|_props.Border.ToLong), _props.BorderWidth);
+           		// Is this the only way???           
+           		_sizer_item.Border = _props.BorderWidth;
+           		_sizer_item.Flag = (int)(_props.Alignment.ToLong|_props.Border.ToLong);
 				this.Parent.AutoLayout = true;
 				this.Parent.Layout();  
-				this.PaintOnSelection();
+				this.HighlightSelection();
             }
             this.UpdateWindowUI();            
         }
-		
+		/*
 		int FindPositionInSizerList(IWDBBase node, IWXSizer sizer)
 		{
 			int i=0;
@@ -221,7 +213,7 @@ namespace mkdb.Widgets
 			}
 			return -1;
 		}
-				
+		*/		
 		public void SetWidgetProps()
 		{
 			_props.PropertyChanged += new PropertyChangedEventHandler(winProps_PropertyChanged);

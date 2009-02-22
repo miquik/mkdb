@@ -30,7 +30,16 @@ namespace mkdb
 		public static extern bool InvalidateRect(IntPtr hWnd, ref System.Drawing.Rectangle lpRect, bool bErase); 		
 		
     	[DllImport("user32.dll",EntryPoint="GetDC")]
-    	public static extern IntPtr GetDC(IntPtr ptr);		
+    	public static extern IntPtr GetDC(IntPtr ptr);	
+    	
+    	[DllImport("user32.dll", EntryPoint="GetDesktopWindow")]
+    	public static extern IntPtr GetDesktopWindow(); 
+    	
+        [DllImport("User32.dll", CharSet=CharSet.Auto)]
+        public static extern bool ClientToScreen(IntPtr hWnd, ref System.Drawing.Point pt);
+
+        [DllImport("User32.dll", CharSet=CharSet.Auto)]
+        public static extern bool ScreenToClient(IntPtr hWnd, ref System.Drawing.Point pt);    	
 				
 		public Win32Utils()
 		{

@@ -37,7 +37,7 @@ namespace mkdb
 		{	
 			wdbApp _tapp = (wdbApp)objtree.Nodes[0];						
 			wdbFrame wdbf = new wdbFrame(null, null);
-			// wdbf.CreateWidget(_tapp.WDBBase);
+			// wdbf.CreateWidget(_tapp.Widget);
 			ChangeCurrentWindow(wdbf);
 			_tapp.Nodes.Add(wdbf);
 			objtree.SelectedNode = wdbf;
@@ -48,8 +48,8 @@ namespace mkdb
 		void ToolStripButton4Click(object sender, EventArgs e)
 		{
 			/* Create Sizer */
-			WidgetElem ps = FindBestParentSizer((WidgetElem)objtree.SelectedNode, true);
-			WidgetElem pc = FindBestParentContainer((WidgetElem)objtree.SelectedNode, true);
+			WidgetTreeNode ps = FindBestParentSizer((WidgetTreeNode)objtree.SelectedNode, true);
+			WidgetTreeNode pc = FindBestParentContainer((WidgetTreeNode)objtree.SelectedNode, true);
 			if (pc == null && ps == null)	
 				return;
 			
@@ -68,8 +68,8 @@ namespace mkdb
 		void ToolStripButton6Click(object sender, EventArgs e)
 		{
 			/* Create Sizer */
-			WidgetElem ps = FindBestParentSizer((WidgetElem)objtree.SelectedNode, true);
-			WidgetElem pc = FindBestParentContainer((WidgetElem)objtree.SelectedNode, true);
+			WidgetTreeNode ps = FindBestParentSizer((WidgetTreeNode)objtree.SelectedNode, true);
+			WidgetTreeNode pc = FindBestParentContainer((WidgetTreeNode)objtree.SelectedNode, true);
 			if (pc == null && ps == null)	
 				return;
 			
@@ -91,14 +91,14 @@ namespace mkdb
 		void ToolStripButton5Click(object sender, EventArgs e)
 		{
 			/* Create Sizer */
-			WidgetElem ps = FindBestParentSizer((WidgetElem)objtree.SelectedNode, false);
-			WidgetElem pc = FindBestParentContainer((WidgetElem)objtree.SelectedNode, false);			
+			WidgetTreeNode ps = FindBestParentSizer((WidgetTreeNode)objtree.SelectedNode, false);
+			WidgetTreeNode pc = FindBestParentContainer((WidgetTreeNode)objtree.SelectedNode, false);			
 			if (ps == null)
 				return;
 			
 			wx.Window win;
 			CheckParentForWidget(pc, ps, out win);
-			wdbButton btn = new wdbButton(win, (wx.Sizer)ps.WDBBase);
+			wdbButton btn = new wdbButton(win, (wx.Sizer)ps.Widget);
 			ps.Nodes.Add(btn);
 			objtree.SelectedNode = btn;
 		}		
@@ -109,26 +109,26 @@ namespace mkdb
 			if (elem != null)
 			{
 				elem.IsSelected = false;
-				elem.PaintOnSelection();
+				elem.HighlightSelection();
 			}
 		}		
 		
 		void ObjtreeAfterSelect(object sender, TreeViewEventArgs e)
 		{
-			WidgetElem elem = (WidgetElem)objtree.SelectedNode;
+			WidgetTreeNode elem = (WidgetTreeNode)objtree.SelectedNode;
 			if (elem != null)
 			{
 				ChangeCurrentWindow(elem);
-				objprops.SelectedObject = elem.WDBBase.Properties;
-				elem.WDBBase.IsSelected = true;
-				elem.WDBBase.PaintOnSelection();
-				Common.Instance().CurrentElement = elem.WDBBase;
+				objprops.SelectedObject = elem.Widget.Properties;
+				elem.Widget.IsSelected = true;
+				elem.Widget.HighlightSelection();
+				Common.Instance().CurrentElement = elem.Widget;
 			}
 		}
 		
-		public void ChangeCurrentWindow(WidgetElem neww)
+		public void ChangeCurrentWindow(WidgetTreeNode neww)
     	{
-			if (neww.WDBBase.WidgetType == (int)StandardWidgetType.WID_APP)
+			if (neww.Widget.WidgetType == (int)StandardWidgetType.WID_APP)
 			{
 				// Hide, when we select the application.
  	  			if (Common.Instance().CurrentWindow != null)
@@ -139,18 +139,18 @@ namespace mkdb
   			{
  	  			if (Common.Instance().CurrentWindow != null)
    					Common.Instance().CurrentWindow.Hide();
-  				Common.Instance().CurrentWindow = _cur.Me;
+ 	  			Common.Instance().CurrentWindow = (wx.Window)_cur;
 				Common.Instance().CurrentWindow.Show();
   			} 	  		
     	}
 
-		public IWDBBase FindTopMostFrame(WidgetElem node)
+		public IWDBBase FindTopMostFrame(WidgetTreeNode node)
 		{
 			if (node.Level == 1)
 			{
-				if (node.WDBBase.WidgetType == (int)StandardWidgetType.WID_FRAME)
+				if (node.Widget.WidgetType == (int)StandardWidgetType.WID_FRAME)
 				{
-					return node.WDBBase;
+					return node.Widget;
 				}
 				else
 				{
@@ -159,37 +159,37 @@ namespace mkdb
 			}
 			if (node.Parent != null)
 			{
-				return FindTopMostFrame((WidgetElem)node.Parent);
+				return FindTopMostFrame((WidgetTreeNode)node.Parent);
 			}
 			return null;
 		}
 		
 		void CanvasPaint(object sender, PaintEventArgs e)
 		{
-			CanvasPaintRecursive((WidgetElem)objtree.Nodes[0]);
+			CanvasPaintRecursive((WidgetTreeNode)objtree.Nodes[0]);
 		}
 		
-		void CanvasPaintRecursive(WidgetElem elem)
+		void CanvasPaintRecursive(WidgetTreeNode elem)
 		{
-			foreach (WidgetElem e in elem.Nodes)
+			foreach (WidgetTreeNode e in elem.Nodes)
 			{
 				CanvasPaintRecursive(e);
 			}
-			if (elem.WDBBase.IsSelected)
+			if (elem.Widget.IsSelected)
 			{
-				elem.WDBBase.PaintOnSelection();
+				elem.Widget.HighlightSelection();
 			}
 		}
 		
-		WidgetElem FindBestParentContainer(WidgetElem curNode, bool sizerIsAsking)
+		WidgetTreeNode FindBestParentContainer(WidgetTreeNode curNode, bool sizerIsAsking)
 		{
 			if (sizerIsAsking == false)
 			{
 				return null;
 			}
-			if (curNode.WDBBase.IsSizer == false)
+			if (curNode.Widget.IsSizer == false)
 			{
-				if (curNode.WDBBase.CanAcceptChildren())
+				if (curNode.Widget.CanAcceptChildren())
 				{
 					return curNode;
 				} else 
@@ -203,18 +203,18 @@ namespace mkdb
 					return null;
 				} else
 				{
-					return FindBestParentContainer((WidgetElem)curNode.Parent, true);
+					return FindBestParentContainer((WidgetTreeNode)curNode.Parent, true);
 				}
 			}
 		}
 		
-		WidgetElem FindBestParentSizer(WidgetElem curNode, bool sizerIsAsking)
+		WidgetTreeNode FindBestParentSizer(WidgetTreeNode curNode, bool sizerIsAsking)
 		{
-			if (curNode.WDBBase.IsSizer == false)
+			if (curNode.Widget.IsSizer == false)
 			{
 				return null;
 			}
-			if (curNode.WDBBase.CanAcceptChildren())
+			if (curNode.Widget.CanAcceptChildren())
 			{
 				return curNode;
 			} else
@@ -224,32 +224,32 @@ namespace mkdb
 					return null;
 				} else
 				{
-					return FindBestParentSizer((WidgetElem)curNode.Parent, false);
+					return FindBestParentSizer((WidgetTreeNode)curNode.Parent, false);
 				}
 			}
 		}						
 		
-		void CheckParentForSizer(WidgetElem _c, WidgetElem _s, out wx.Window _rc, out wx.Sizer _rs)
+		void CheckParentForSizer(WidgetTreeNode _c, WidgetTreeNode _s, out wx.Window _rc, out wx.Sizer _rs)
 		{
 			_rc = null;
 			_rs = null;
-			if (_c != null) _rc = (wx.Window)_c.WDBBase;
+			if (_c != null) _rc = (wx.Window)_c.Widget;
 			if (_s != null) 
 			{
-				_rs = (wx.Sizer)_s.WDBBase;
-				_rc = _s.WDBBase.ParentContainer;
+				_rs = (wx.Sizer)_s.Widget;
+				_rc = _s.Widget.ParentContainer;
 			}			
 		}
 		
-		void CheckParentForWidget(WidgetElem _c, WidgetElem _s, out wx.Window _rc)
+		void CheckParentForWidget(WidgetTreeNode _c, WidgetTreeNode _s, out wx.Window _rc)
 		{
 			_rc = null;
 			if (_c == null)
 			{
-				_rc = (wx.Window)_s.WDBBase.ParentContainer;
+				_rc = (wx.Window)_s.Widget.ParentContainer;
 			} else
 			{
-				_rc = (wx.Window)_c.WDBBase;
+				_rc = (wx.Window)_c.Widget;
 			}
 		}
 		

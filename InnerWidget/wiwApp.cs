@@ -23,7 +23,7 @@ namespace mkdb.Widgets
 				
 		public wdbAppProps() : base()
 		{
-			_appname = "";
+			_appname = "Project";
 		}
 		
 		[CategoryAttribute("Application"), DescriptionAttribute("Application Props")]
@@ -35,9 +35,7 @@ namespace mkdb.Widgets
 		
 	}
 
-	/// <summary>
-	/// Description of wdbApp.
-	/// </summary>
+	
 	public class wiwApp : wx.Window, IWDBBase
 	{
 		protected wdbAppProps _props;
@@ -51,9 +49,9 @@ namespace mkdb.Widgets
 		}
 		
 		#region IWidgetElem Interface implementation
-		public wx.Window Me
+		public wx.SizerItem SizerItem
 		{
-			get	{	return this;	}
+			get	{	return null;	}
 		}
 		public WidgetProps Properties	
 		{	
@@ -86,12 +84,11 @@ namespace mkdb.Widgets
 		private void SetDefaultProps(string name)
 		{
 			_props.EnableNotification = false;
-			_props.AppName = name;
-			// Common.Instance().ObjTree.SelectedNode.Text = name;
+			_props.Name = name;
 			_props.EnableNotification = true;
 		}
 				
-		public bool InsertWidget(IWDBBase parent)
+		public bool InsertWidget()
 		{
 			return true;
 		}
@@ -120,7 +117,7 @@ namespace mkdb.Widgets
 			return false;
 		}
 		
-		public void PaintOnSelection()
+		public void HighlightSelection()
 		{			
 		}
 								
@@ -128,9 +125,9 @@ namespace mkdb.Widgets
         {
             switch (e.PropertyName)
             {
-            	case "AppName":
-            		this.Name = _props.AppName;
-					Common.Instance().ObjTree.SelectedNode.Text = _props.AppName;		
+            	case "Name":
+            		this.Name = _props.Name;
+					Common.Instance().ObjTree.SelectedNode.Text = _props.Name;		
             		break;
             }
             this.UpdateWindowUI();            
