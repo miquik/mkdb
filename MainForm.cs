@@ -7,6 +7,7 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
@@ -19,19 +20,28 @@ namespace mkdb
 	/// Description of MainForm.
 	/// </summary>
 	public partial class MainForm : Form
-	{					
+	{	
+		protected ArrayList _layout;
+		
 		public MainForm()
 		{
 			InitializeComponent();
+			_layout = new ArrayList();
 			Common.Instance().ObjPropsPanel = objprops;
 			Common.Instance().ObjTree = objtree;
 			Common.Instance().Canvas = this.canvas;			
+			Common.Instance().ObjTreeImageList = this.objtreeimages;
+			
 			int idx = objtree.Nodes.Add(new wdbApp(null, null));
 			wdbApp wdba = (wdbApp)objtree.Nodes[idx];
-			// wdba.CreateWidget(null);			
 			objtree.SelectedNode = wdba;
+			AddToToolStrip(new Widgets.Frame.wtbFrame("Frame", ""));
+			AddToToolStrip(new Widgets.BoxSizer.wtbBoxSizer("BoxSizer", ""));
+			AddToToolStrip(new Widgets.GridSizer.wtbGridSizer("GridSizer", ""));			
+			AddToToolStrip(new Widgets.Button.wtbButton("Button", ""));			
+			AddToToolStrip(new Widgets.Label.wtbLabel("Label", ""));			
 		}
-		
+		/*
 		// Frame
 		void ToolStripButton3Click(object sender, EventArgs e)
 		{	
@@ -47,7 +57,6 @@ namespace mkdb
 		// Così per ogni sizer
 		void ToolStripButton4Click(object sender, EventArgs e)
 		{
-			/* Create Sizer */
 			WidgetTreeNode ps = FindBestParentSizer((WidgetTreeNode)objtree.SelectedNode, true);
 			WidgetTreeNode pc = FindBestParentContainer((WidgetTreeNode)objtree.SelectedNode, true);
 			if (pc == null && ps == null)	
@@ -67,7 +76,6 @@ namespace mkdb
 		// Grid Sizer
 		void ToolStripButton6Click(object sender, EventArgs e)
 		{
-			/* Create Sizer */
 			WidgetTreeNode ps = FindBestParentSizer((WidgetTreeNode)objtree.SelectedNode, true);
 			WidgetTreeNode pc = FindBestParentContainer((WidgetTreeNode)objtree.SelectedNode, true);
 			if (pc == null && ps == null)	
@@ -90,7 +98,6 @@ namespace mkdb
 		// Così per ogni widget
 		void ToolStripButton5Click(object sender, EventArgs e)
 		{
-			/* Create Sizer */
 			WidgetTreeNode ps = FindBestParentSizer((WidgetTreeNode)objtree.SelectedNode, false);
 			WidgetTreeNode pc = FindBestParentContainer((WidgetTreeNode)objtree.SelectedNode, false);			
 			if (ps == null)
@@ -102,6 +109,7 @@ namespace mkdb
 			ps.Nodes.Add(btn);
 			objtree.SelectedNode = btn;
 		}		
+		*/
 		
 		void ObjtreeBeforeSelect(object sender, TreeViewCancelEventArgs e)
 		{			
@@ -253,6 +261,12 @@ namespace mkdb
 			}
 		}
 		
+		// Menu Layout
+		void AddToToolStrip(ToolStripButton button)
+		{		
+			_layout.Add(button);
+			palette.Items.Add(button);
+		}
 		
 	}
 }

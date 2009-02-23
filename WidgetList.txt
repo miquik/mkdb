@@ -2,7 +2,7 @@
 wxFrame
 wxButton
 wxLabel
-wxTextEdit
+wxTextLabel
 wxComboBox
 wxCheckBox
 wxRadioBox

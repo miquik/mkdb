@@ -1,8 +1,8 @@
 /*
  * Creato da SharpDevelop.
  * Utente: michele
- * Data: 17/02/2009
- * Ora: 14.52
+ * Data: 20/02/2009
+ * Ora: 16.54
  * 
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
@@ -11,25 +11,15 @@ using System;
 namespace mkdb.Widgets
 {
 	/// <summary>
-	/// Description of wdbApp.
+	/// Description of wdbBoxSizer.
 	/// </summary>
-	/// 
-	public class wdbApp : WidgetTreeNode
+	public class wdbGridSizer : WidgetTreeNode
 	{
-		protected int _app_begin;
-		protected int _app_end;
-		// protected int _decl_begin;
-		// protected int _decl_end;
-		protected int _creation_begin;
-		protected int _creation_end;
-		protected int _layout_begin;
-		protected int _layout_end;
-		
-		public wdbApp(wx.Window _pc, wx.Sizer _ps) : base("Project")
+		public wdbGridSizer(wx.Window _pc, wx.Sizer _ps) : base("Sizer")
 		{
-			this.ImageIndex = 14;
-			this.SelectedImageIndex = 14;			
-			_elem = new wiwApp(_pc, _ps);
+			this.ImageIndex = 7;
+			this.SelectedImageIndex = 7;
+			_elem = new wiwGridSizer(_pc, _ps);
 			_elem.InsertWidget();
 			this.Text = _elem.Properties.Name;
 		}

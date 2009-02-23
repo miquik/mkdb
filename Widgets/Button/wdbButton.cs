@@ -14,24 +14,15 @@ namespace mkdb.Widgets
 	/// Description of wdbApp.
 	/// </summary>
 	/// 
-	public class wdbApp : WidgetTreeNode
+	public class wdbButton : WidgetTreeNode
 	{
-		protected int _app_begin;
-		protected int _app_end;
-		// protected int _decl_begin;
-		// protected int _decl_end;
-		protected int _creation_begin;
-		protected int _creation_end;
-		protected int _layout_begin;
-		protected int _layout_end;
-		
-		public wdbApp(wx.Window _pc, wx.Sizer _ps) : base("Project")
+		public wdbButton(wx.Window _pc, wx.Sizer _ps) : base("Button")
 		{
-			this.ImageIndex = 14;
-			this.SelectedImageIndex = 14;			
-			_elem = new wiwApp(_pc, _ps);
+			this.ImageIndex = 1;
+			this.SelectedImageIndex = 1;			
+			_elem = new wiwButton(_pc, _ps);
 			_elem.InsertWidget();
-			this.Text = _elem.Properties.Name;
+			this.Text = _elem.Properties.Name;			
 		}
 		
 		public override void OnCut()		{}

@@ -47,11 +47,19 @@ namespace mkdb
 		
 		public WidgetTreeNode(string treenodename) : base(treenodename)
 		{
-		}		
+		}
+		
 		public IWDBBase Widget
 		{
 			get	{	return _elem;	}
 			set	{	_elem = value;	}
 		}
+		
+		public abstract void OnCut();		
+		public abstract void OnCopy();
+		public abstract void OnPaste();
+		public abstract void OnDelete();
+		public abstract void OnMoveUp();
+		public abstract void OnMoveDown();
 	}
 }
