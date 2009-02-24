@@ -30,7 +30,8 @@ namespace mkdb.Widgets.BoxSizer
 			this.Text = name;
 			this.Click += new System.EventHandler(this.ToolStripButtonClick);	
 			Common.Instance().ObjTreeImageList.Images.Add(name, this.Image);						
-			_img_index = Common.Instance().ObjTreeImageList.Images.IndexOf(this.Image);
+			_img_index = Common.Instance().ObjTreeImageList.Images.Count - 1;					
+			// _img_index = Common.Instance().ObjTreeImageList.Images.IndexOf(this.Image);
 		}
 		
 		// BoxSizer
@@ -52,6 +53,8 @@ namespace mkdb.Widgets.BoxSizer
 				ps.Nodes.Add(bsizer);
 			else			
 				pc.Nodes.Add(bsizer);
+			bsizer.ImageIndex = _img_index;
+			bsizer.SelectedImageIndex = _img_index;			
 			objtree.SelectedNode = bsizer;
 		}
 

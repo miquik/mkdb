@@ -27,8 +27,8 @@ namespace mkdb.Widgets
 		
 		public wdbApp(wx.Window _pc, wx.Sizer _ps) : base("Project")
 		{
-			this.ImageIndex = 14;
-			this.SelectedImageIndex = 14;			
+			this.ImageIndex = 0;
+			this.SelectedImageIndex = 0;			
 			_elem = new wiwApp(_pc, _ps);
 			_elem.InsertWidget();
 			this.Text = _elem.Properties.Name;
@@ -37,7 +37,6 @@ namespace mkdb.Widgets
 		public override void OnCut()		{}
 		public override void OnCopy()		{}
 		public override void OnPaste()		{}
-		public override void OnDelete()		{}
 		public override void OnMoveUp()		{}
 		public override void OnMoveDown()	{}		
 	}

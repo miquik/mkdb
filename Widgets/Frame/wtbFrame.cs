@@ -38,9 +38,16 @@ namespace mkdb.Widgets.Frame
 			this.Name = name;
 			this.Size = new System.Drawing.Size(23, 22);
 			this.Text = name;
-			this.Click += new System.EventHandler(this.ToolStripButtonClick);	
-			Common.Instance().ObjTreeImageList.Images.Add(name, this.Image);						
-			_img_index = Common.Instance().ObjTreeImageList.Images.IndexOf(this.Image);
+			this.Click += new System.EventHandler(this.ToolStripButtonClick);
+			/*
+			if (Common.Instance().ObjTreeImageList.Images.IndexOfKey(name) == -1)
+			{
+				Common.Instance().ObjTreeImageList.Images.Add(name, this.Image);	
+			}
+			*/
+			Common.Instance().ObjTreeImageList.Images.Add(name, this.Image);									
+			_img_index = Common.Instance().ObjTreeImageList.Images.Count - 1;		
+			// _img_index = Common.Instance().ObjTreeImageList.Images.IndexOf(this.Image);
 		}
 		
 		void ToolStripButtonClick(object sender, EventArgs e)

@@ -28,7 +28,6 @@ namespace mkdb.Widgets
 		public override void OnCut()		{}
 		public override void OnCopy()		{}
 		public override void OnPaste()		{}
-		public override void OnDelete()		{}
 		public override void OnMoveUp()		{}
 		public override void OnMoveDown()	{}		
 	}

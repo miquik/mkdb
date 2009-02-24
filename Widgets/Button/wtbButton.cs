@@ -31,7 +31,8 @@ namespace mkdb.Widgets.Button
 			this.Text = name;
 			this.Click += new System.EventHandler(this.ToolStripButtonClick);	
 			Common.Instance().ObjTreeImageList.Images.Add(name, this.Image);						
-			_img_index = Common.Instance().ObjTreeImageList.Images.IndexOf(this.Image);
+			_img_index = Common.Instance().ObjTreeImageList.Images.Count - 1;					
+			// _img_index = Common.Instance().ObjTreeImageList.Images.IndexOf(this.Image);
 		}
 		
 		// Button
@@ -48,6 +49,8 @@ namespace mkdb.Widgets.Button
 			Common.Instance().CheckParentForWidget(pc, ps, out win);
 			wdbButton btn = new wdbButton(win, (wx.Sizer)ps.Widget);
 			ps.Nodes.Add(btn);
+			btn.ImageIndex = _img_index;
+			btn.SelectedImageIndex = _img_index;			
 			objtree.SelectedNode = btn;
 		}
 

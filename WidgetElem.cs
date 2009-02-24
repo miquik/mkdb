@@ -58,7 +58,23 @@ namespace mkdb
 		public abstract void OnCut();		
 		public abstract void OnCopy();
 		public abstract void OnPaste();
-		public abstract void OnDelete();
+		public void OnDelete()
+		{
+			// Delete this widget and
+			// all his children, if any.
+			// Remove as Node.
+			Remove();
+			_elem.DeleteWidget();
+			if (_elem.IsSizer == true)
+			{
+				wx.Sizer sizer = (wx.Sizer)_elem;
+				sizer.Dispose();
+			} else {
+				wx.Window win = (wx.Window)_elem;
+				win.Close();
+				win.Dispose();				
+			}
+		}
 		public abstract void OnMoveUp();
 		public abstract void OnMoveDown();
 	}

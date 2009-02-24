@@ -268,5 +268,11 @@ namespace mkdb
 			palette.Items.Add(button);
 		}
 		
+		
+		void DeleteToolStripMenuItemClick(object sender, EventArgs e)
+		{
+			WidgetTreeNode node = (WidgetTreeNode)Common.Instance().ObjTree.SelectedNode;
+			node.OnDelete();
+		}
 	}
 }

@@ -178,6 +178,22 @@ namespace mkdb.Widgets
 		}
 		public bool DeleteWidget()
 		{
+			/*
+			for (int i=0; i<this.GetItemCount(); i++)
+			{
+				wx.SizerItem item = (wx.SizerItem)this.GetItem(i);
+				if (item.IsSizer == true)
+				{
+					IWDBBase bs = (IWDBBase)item.Sizer;
+					bs.DeleteWidget();
+				} else {
+					IWDBBase bs = (IWDBBase)item.Window;
+					bs.DeleteWidget();					
+				}									
+			}
+			*/
+			IWDBBase bs = (IWDBBase)this.Sizer;
+			bs.DeleteWidget();
 			return false;
 		}		
 		

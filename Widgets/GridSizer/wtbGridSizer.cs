@@ -30,7 +30,8 @@ namespace mkdb.Widgets.GridSizer
 			this.Text = name;
 			this.Click += new System.EventHandler(this.ToolStripButtonClick);	
 			Common.Instance().ObjTreeImageList.Images.Add(name, this.Image);						
-			_img_index = Common.Instance().ObjTreeImageList.Images.IndexOf(this.Image);
+			_img_index = Common.Instance().ObjTreeImageList.Images.Count - 1;					
+			// _img_index = Common.Instance().ObjTreeImageList.Images.IndexOf(this.Image);
 		}
 		
 		// Grid Sizer
@@ -51,6 +52,8 @@ namespace mkdb.Widgets.GridSizer
 				ps.Nodes.Add(gsizer);
 			else			
 				pc.Nodes.Add(gsizer);
+			gsizer.ImageIndex = _img_index;
+			gsizer.SelectedImageIndex = _img_index;			
 			objtree.SelectedNode = gsizer;			
 		}
 

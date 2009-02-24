@@ -31,7 +31,8 @@ namespace mkdb.Widgets.Label
 			this.Text = name;
 			this.Click += new System.EventHandler(this.ToolStripButtonClick);	
 			Common.Instance().ObjTreeImageList.Images.Add(name, this.Image);						
-			_img_index = Common.Instance().ObjTreeImageList.Images.IndexOf(this.Image);
+			_img_index = Common.Instance().ObjTreeImageList.Images.Count - 1;					
+			// _img_index = Common.Instance().ObjTreeImageList.Images.IndexOf(this.Image);
 		}
 		
 		void ToolStripButtonClick(object sender, EventArgs e)
@@ -44,9 +45,11 @@ namespace mkdb.Widgets.Label
 			
 			wx.Window win;
 			Common.Instance().CheckParentForWidget(pc, ps, out win);
-			wdbLabel btn = new wdbLabel(win, (wx.Sizer)ps.Widget);
-			ps.Nodes.Add(btn);
-			objtree.SelectedNode = btn;			
+			wdbLabel lab = new wdbLabel(win, (wx.Sizer)ps.Widget);
+			ps.Nodes.Add(lab);
+			lab.ImageIndex = _img_index;
+			lab.SelectedImageIndex = _img_index;			
+			objtree.SelectedNode = lab;			
 		}
 
 		public Image GetEmbeddedImage()
