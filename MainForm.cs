@@ -40,6 +40,7 @@ namespace mkdb
 			AddToToolStrip(new Widgets.GridSizer.wtbGridSizer("GridSizer", ""));			
 			AddToToolStrip(new Widgets.Button.wtbButton("Button", ""));			
 			AddToToolStrip(new Widgets.Label.wtbLabel("Label", ""));			
+			AddToToolStrip(new Widgets.TextEdit.wtbTextEdit("TextEdit", ""));			
 		}
 		/*
 		// Frame

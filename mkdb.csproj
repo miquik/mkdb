@@ -59,6 +59,9 @@
     <Compile Include="Widgets\Label\wdbLabel.cs" />
     <Compile Include="Widgets\Label\wiwLabel.cs" />
     <Compile Include="Widgets\Label\wtbLabel.cs" />
+    <Compile Include="Widgets\TextEdit\wdbTextEdit.cs" />
+    <Compile Include="Widgets\TextEdit\wiwTextEdit.cs" />
+    <Compile Include="Widgets\TextEdit\wtbTextEdit.cs" />
     <Compile Include="wxToolStripButton.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="WidgetElem.cs" />
@@ -83,6 +86,7 @@
     <EmbeddedResource Include="Widgets\Button\button.png" />
     <EmbeddedResource Include="Widgets\GridSizer\gridsizer.jpg" />
     <EmbeddedResource Include="Widgets\Label\label.png" />
+    <EmbeddedResource Include="Widgets\TextEdit\textctrl.png" />
     <None Include="wxpython.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -92,5 +96,6 @@
     <Folder Include="Widgets\Frame" />
     <Folder Include="Widgets\GridSizer" />
     <Folder Include="Widgets\Label" />
+    <Folder Include="Widgets\TextEdit" />
   </ItemGroup>
 </Project>

@@ -144,7 +144,10 @@ namespace mkdb.Widgets
 		public bool DeleteWidget()
 		{
 			this.Clear(true);
-			_p_sizer.Remove(this);				
+			if (_p_sizer != null)
+			{
+				_p_sizer.Remove(this);				
+			}
 			return false;
 		}
 		
