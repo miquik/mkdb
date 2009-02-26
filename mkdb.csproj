@@ -51,14 +51,23 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Widgets\Ado\wdbAdo.cs" />
+    <Compile Include="Widgets\Ado\wiwAdo.cs" />
+    <Compile Include="Widgets\Ado\wtbAdo.cs" />
     <Compile Include="Widgets\BoxSizer\wtbBoxSizer.cs" />
     <Compile Include="Widgets\Button\wtbButton.cs" />
+    <Compile Include="Widgets\ComboBox\wdbComboBox.cs" />
+    <Compile Include="Widgets\ComboBox\wiwComboBox.cs" />
+    <Compile Include="Widgets\ComboBox\wtbComboBox.cs" />
     <Compile Include="Widgets\Frame\wiwFrame.cs" />
     <Compile Include="Widgets\Frame\wtbFrame.cs" />
     <Compile Include="Widgets\GridSizer\wtbGridSizer.cs" />
     <Compile Include="Widgets\Label\wdbLabel.cs" />
     <Compile Include="Widgets\Label\wiwLabel.cs" />
     <Compile Include="Widgets\Label\wtbLabel.cs" />
+    <Compile Include="Widgets\Listbox\wdbListbox.cs" />
+    <Compile Include="Widgets\Listbox\wiwListbox.cs" />
+    <Compile Include="Widgets\Listbox\wtbListbox.cs" />
     <Compile Include="Widgets\TextEdit\wdbTextEdit.cs" />
     <Compile Include="Widgets\TextEdit\wiwTextEdit.cs" />
     <Compile Include="Widgets\TextEdit\wtbTextEdit.cs" />
@@ -87,15 +96,28 @@
     <EmbeddedResource Include="Widgets\GridSizer\gridsizer.jpg" />
     <EmbeddedResource Include="Widgets\Label\label.png" />
     <EmbeddedResource Include="Widgets\TextEdit\textctrl.png" />
+    <EmbeddedResource Include="Widgets\ComboBox\choice.png" />
+    <EmbeddedResource Include="Widgets\Listbox\list_box.png" />
+    <EmbeddedResource Include="Widgets\Ado\ado.png" />
+    <EmbeddedResource Include="Widgets\Ado\cancel.PNG" />
+    <EmbeddedResource Include="Widgets\Ado\firstrec.PNG" />
+    <EmbeddedResource Include="Widgets\Ado\lastrec.PNG" />
+    <EmbeddedResource Include="Widgets\Ado\newrec.PNG" />
+    <EmbeddedResource Include="Widgets\Ado\nextrec.PNG" />
+    <EmbeddedResource Include="Widgets\Ado\prevrec.PNG" />
+    <EmbeddedResource Include="Widgets\Ado\refresh.png" />
     <None Include="wxpython.txt" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Widgets" />
+    <Folder Include="Widgets\Ado" />
     <Folder Include="Widgets\BoxSizer" />
     <Folder Include="Widgets\Button" />
+    <Folder Include="Widgets\ComboBox" />
     <Folder Include="Widgets\Frame" />
     <Folder Include="Widgets\GridSizer" />
     <Folder Include="Widgets\Label" />
+    <Folder Include="Widgets\Listbox" />
     <Folder Include="Widgets\TextEdit" />
   </ItemGroup>
 </Project>

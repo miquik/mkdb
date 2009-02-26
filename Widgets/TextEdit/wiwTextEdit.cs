@@ -260,6 +260,9 @@ namespace mkdb.Widgets
 					_p_container.Layout();
 					this.HighlightSelection();					
             		break;
+            	case "Proportion":
+            		baa = true;
+            		break;            		            		
             	case "Border":
             		baa = true;
             		break;
@@ -272,7 +275,7 @@ namespace mkdb.Widgets
             }
             if (baa)
             {
-           		// Is this the only way???         
+            	_sizer_item.Proportion = _props.Proportion;
            		_sizer_item.Border = _props.BorderWidth;
            		_sizer_item.Flag = (int)(_props.Alignment.ToLong|_props.Border.ToLong);
            		// Recalc minsize

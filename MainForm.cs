@@ -41,76 +41,10 @@ namespace mkdb
 			AddToToolStrip(new Widgets.Button.wtbButton("Button", ""));			
 			AddToToolStrip(new Widgets.Label.wtbLabel("Label", ""));			
 			AddToToolStrip(new Widgets.TextEdit.wtbTextEdit("TextEdit", ""));			
+			AddToToolStrip(new Widgets.Combobox.wtbCombobox("ComboBox", ""));
+			AddToToolStrip(new Widgets.Listbox.wtbListbox("ListBox", ""));						
+			AddToToolStrip(new Widgets.Ado.wtbAdo("Ado", ""));						
 		}
-		/*
-		// Frame
-		void ToolStripButton3Click(object sender, EventArgs e)
-		{	
-			wdbApp _tapp = (wdbApp)objtree.Nodes[0];						
-			wdbFrame wdbf = new wdbFrame(null, null);
-			// wdbf.CreateWidget(_tapp.Widget);
-			ChangeCurrentWindow(wdbf);
-			_tapp.Nodes.Add(wdbf);
-			objtree.SelectedNode = wdbf;
-		}
-		
-		// BoxSizer
-		// Così per ogni sizer
-		void ToolStripButton4Click(object sender, EventArgs e)
-		{
-			WidgetTreeNode ps = FindBestParentSizer((WidgetTreeNode)objtree.SelectedNode, true);
-			WidgetTreeNode pc = FindBestParentContainer((WidgetTreeNode)objtree.SelectedNode, true);
-			if (pc == null && ps == null)	
-				return;
-			
-			// Add this sizer
-			wx.Sizer siz = null;
-			wx.Window win = null;
-			CheckParentForSizer(pc, ps, out win, out siz);
-			wdbBoxSizer bsizer = new wdbBoxSizer(win, siz);
-			if (ps != null)	
-				ps.Nodes.Add(bsizer);
-			else			
-				pc.Nodes.Add(bsizer);
-			objtree.SelectedNode = bsizer;
-		}
-		// Grid Sizer
-		void ToolStripButton6Click(object sender, EventArgs e)
-		{
-			WidgetTreeNode ps = FindBestParentSizer((WidgetTreeNode)objtree.SelectedNode, true);
-			WidgetTreeNode pc = FindBestParentContainer((WidgetTreeNode)objtree.SelectedNode, true);
-			if (pc == null && ps == null)	
-				return;
-			
-			// Add this sizer
-			wx.Sizer siz = null;
-			wx.Window win = null;
-			CheckParentForSizer(pc, ps, out win, out siz);
-			wdbGridSizer gsizer = new wdbGridSizer(win, siz);
-			if (ps != null)	
-				ps.Nodes.Add(gsizer);
-			else			
-				pc.Nodes.Add(gsizer);
-			objtree.SelectedNode = gsizer;			
-		}
-		
-		
-		// Button
-		// Così per ogni widget
-		void ToolStripButton5Click(object sender, EventArgs e)
-		{
-			WidgetTreeNode ps = FindBestParentSizer((WidgetTreeNode)objtree.SelectedNode, false);
-			WidgetTreeNode pc = FindBestParentContainer((WidgetTreeNode)objtree.SelectedNode, false);			
-			if (ps == null)
-				return;
-			
-			wx.Window win;
-			CheckParentForWidget(pc, ps, out win);
-			wdbButton btn = new wdbButton(win, (wx.Sizer)ps.Widget);
-			ps.Nodes.Add(btn);
-			objtree.SelectedNode = btn;
-		}		
-		*/
 		
 		void ObjtreeBeforeSelect(object sender, TreeViewCancelEventArgs e)
 		{			

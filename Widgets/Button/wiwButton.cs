@@ -122,8 +122,6 @@ namespace mkdb.Widgets
 				
 		public bool InsertWidget()
 		{
-			// IWXSizer wxsizer = (IWXSizer)_p_sizer;
-			// wxsizer.AddWDBBase((IWDBBase)this, 0, (int)(_props.Alignment.ToLong|_props.Border.ToLong), _props.BorderWidth);
 			_p_sizer.Add(this, 0, (int)(_props.Alignment.ToLong|_props.Border.ToLong), _props.BorderWidth);
 			_sizer_item = (wx.SizerItem)_p_sizer.GetItem(_p_sizer.GetItemCount() - 1);
 			this.Parent.AutoLayout = true;
@@ -182,6 +180,9 @@ namespace mkdb.Widgets
             		this.StyleFlags = _props.ButtonStyle.ToLong;
             		this.Refresh();
             		break;
+            	case "Proportion":
+            		baa = true;
+            		break;            		
             	case "Border":
             		baa = true;
             		break;
@@ -195,6 +196,7 @@ namespace mkdb.Widgets
             if (baa)
             {
            		// Is this the only way???           
+           		_sizer_item.Proportion = _props.Proportion;
            		_sizer_item.Border = _props.BorderWidth;
            		_sizer_item.Flag = (int)(_props.Alignment.ToLong|_props.Border.ToLong);
 				this.Parent.AutoLayout = true;

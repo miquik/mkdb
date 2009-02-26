@@ -13,64 +13,67 @@ using System.Windows.Forms;
 using System.Drawing.Design;
 using System.Drawing;
 using System.Collections;
+using System.Collections.Specialized;
+
 
 namespace mkdb.Widgets
 {
 
-	public class wdbLabelProps : wxWindowProps
+	public class wdbListboxProps : wxWindowProps
 	{
-		// * wxButton props : name, style, label, default, wxWindow, Align
-		protected wxFlags _lstyle;
-		protected string _text;
+		protected StringCollection _items;
+		protected wxFlags _lbstyle;
 		
-		public wdbLabelProps() : base()
+		public wdbListboxProps() : base()
 		{
-			_name = "Label";
-			_text = "Static Text";
-			_lstyle = new wxFlags();
-			_lstyle.AddItem("wxALIGN_LEFT", wx.Alignment.wxALIGN_LEFT, false);
-			_lstyle.AddItem("wxALIGN_RIGHT", wx.Alignment.wxALIGN_RIGHT, false);
-			_lstyle.AddItem("wxALIGN_CENTER", wx.Alignment.wxALIGN_CENTRE, true);
-			_lstyle.AddItem("wxST_NO_AUTORESIZE", wx.StaticText.wxST_NO_AUTORESIZE, false);
+			_name = "ComboBox";
+			_items = new StringCollection();
+			_lbstyle = new wxFlags();
+			_lbstyle.AddItem("wxLB_ALWAYS_SB", wx.ListBox.wxLB_ALWAYS_SB, false);
+			_lbstyle.AddItem("wxLB_EXTENDED", wx.ListBox.wxLB_EXTENDED, false);
+			_lbstyle.AddItem("wxLB_HSCROLL", wx.ListBox.wxLB_HSCROLL, false);
+			_lbstyle.AddItem("wxLB_MULTIPLE", wx.ListBox.wxLB_MULTIPLE, false);
+			_lbstyle.AddItem("wxLB_NEED_SB", wx.ListBox.wxLB_NEED_SB, false);
+			_lbstyle.AddItem("wxLB_SINGLE", wx.ListBox.wxLB_SINGLE, false);
+			_lbstyle.AddItem("wxLB_SORT", wx.ListBox.wxLB_SORT, false);
 		}
 		
-		[CategoryAttribute("Label"), DescriptionAttribute("Label Props")]
-		public string Text
+		[Editor("System.Windows.Forms.Design.StringCollectionEditor, System.Design, Version=2.0.0.0, " +
+		        "Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(UITypeEditor))]		
+		[CategoryAttribute("Listbox"), DescriptionAttribute("Listbox Props")]
+		public StringCollection Items
 		{
-			get	{	return _text;	}
-			set	{	_text = value;	NotifyPropertyChanged("Text");	}
-		}
+			get	{	return _items;	}
+			set	{	_items = value;	NotifyPropertyChanged("Items");	}
+		}		
 		
 		[TypeConverter(typeof(wxFlagsTypeConverter))]
 		[Editor(typeof(wxFlagsEditor), typeof(UITypeEditor))]
-		[CategoryAttribute("Label"), DescriptionAttribute("Label Props")]
-		public wxFlags TextStyle
+		[CategoryAttribute("Listbox"), DescriptionAttribute("Listbox Props")]
+		public wxFlags ListboxStyle
 		{
-			get	{	return _lstyle;	}
-			set	{	_lstyle = value;	NotifyPropertyChanged("TextStyle");	}
-		}
-		
+			get	{	return _lbstyle;	}
+			set	{	_lbstyle = value;	NotifyPropertyChanged("ListboxStyle");	}
+		}		
 	}
 
 	/// <summary>
 	/// Description of wdbApp.
 	/// </summary>
-	public class wiwLabel : wx.StaticText, IWDBBase
+	public class wiwListbox : wx.ListBox, IWDBBase
 	{
-		protected static long _label_cur_index=0;		
-		protected wdbLabelProps _props;
+		protected static long _lbox_cur_index=0;		
+		protected wdbListboxProps _props;
 		protected bool _is_selected;
 		protected wx.Sizer _p_sizer;
 		protected wx.SizerItem _sizer_item;
 			
-		// public wiwButton(wx.Window _pc, wx.Sizer _ps, string _label, Point _pos, Size _sz, uint _style) 
-		// 	: base(_pc, _label, _pos, _sz, _style)
-		public wiwLabel(wx.Window _pc, wx.Sizer _ps)
-		 	: base(_pc, "Label", wx.Button.wxDefaultPosition, wx.Button.wxDefaultSize, wx.Button.wxBU_EXACTFIT)
+		public wiwListbox(wx.Window _pc, wx.Sizer _ps) 
+		 	: base(_pc, wx.ListBox.wxDefaultPosition, wx.ListBox.wxDefaultSize, null)
 		{
-			_props = new wdbLabelProps();
-			_label_cur_index++;			
-			string name = "Label" + _label_cur_index.ToString();			
+			_props = new wdbListboxProps();
+			_lbox_cur_index++;			
+			string name = "ListBox" + _lbox_cur_index.ToString();			
 			SetDefaultProps(name);
 			SetWidgetProps();
 			_p_sizer = _ps;
@@ -112,10 +115,12 @@ namespace mkdb.Widgets
 		private void SetDefaultProps(string name)
 		{
 			_props.EnableNotification = false;	
-			_props.Text = name;
 			_props.Name = name;
 			_props.EnableNotification = true;
 			this.Label = name;
+			string[] tmp = new string[_props.Items.Count];
+			_props.Items.CopyTo(tmp, 0);
+			this.Append(tmp);			
 		}
 				
 		public bool InsertWidget()
@@ -129,7 +134,7 @@ namespace mkdb.Widgets
 		public bool DeleteWidget()
 		{
 			// _p_sizer.Detach(this);
-			_p_sizer.Remove(this);
+			_p_sizer.Remove(this);			
 			return false;
 		}		
 		
@@ -170,12 +175,16 @@ namespace mkdb.Widgets
             	case "Name":
 					Common.Instance().ObjTree.SelectedNode.Text = _props.Name;	
             		break;            		
-            	case "Label":
-            		this.Label = _props.Text;
-            		this.Refresh();
+            	case "Items":
+					string[] tmp = new string[_props.Items.Count];
+					_props.Items.CopyTo(tmp, 0);
+					this.Clear();
+					// this.Append(tmp);            		
+					this.InsertItems(tmp, 0);
+					this.Refresh();
             		break;
-            	case "LabelStyle":
-            		this.StyleFlags = _props.TextStyle.ToLong;
+            	case "ListboxStyle":
+            		this.StyleFlags = _props.ListboxStyle.ToLong;
             		this.Refresh();
             		break;
             	case "Proportion":
@@ -193,7 +202,7 @@ namespace mkdb.Widgets
             }
             if (baa)
             {
-           		_sizer_item.Proportion = _props.Proportion;      
+            	_sizer_item.Proportion = _props.Proportion;
            		_sizer_item.Border = _props.BorderWidth;
            		_sizer_item.Flag = (int)(_props.Alignment.ToLong|_props.Border.ToLong);
 				this.Parent.AutoLayout = true;

@@ -64,6 +64,7 @@ namespace mkdb
 	/// </summary>
 	public class wxAlignProps : WidgetProps
 	{
+		private int _proportion;
 		private int _border;
 		private wxFlags _aflag;
 		private wxFlags _bflag;
@@ -89,6 +90,13 @@ namespace mkdb
 			_aflag.AddItem("wxSHAPED", wx.Stretch.wxSHAPED, false);
 			_aflag.AddItem("wxFIXED_MINSIZE", wx.Stretch.wxFIXED_MINSIZE, false);
 		}
+		
+		[CategoryAttribute("Alignment & Border"), DescriptionAttribute("Alignment and Border flags")]
+		public int Proportion
+		{
+			get	{	return _proportion;		}
+			set	{	_proportion = value; NotifyPropertyChanged("Proportion");}
+		}		
 		
 		[CategoryAttribute("Alignment & Border"), DescriptionAttribute("Alignment and Border flags")]
 		public int BorderWidth

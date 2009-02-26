@@ -108,7 +108,7 @@ namespace mkdb.Widgets
 		 	base(_parent, -1, new Point(5, 5), new Size(300, 300), wx.Panel.wxRAISED_BORDER | wx.Panel.wxFULL_REPAINT_ON_RESIZE)
 		{
 			m_sizing = mSizing.NONE;
-			m_resizeBorder = 8;
+			m_resizeBorder = 12;
 			_real_pos = new Point(0, 0);
 			_real_size = new Size(300, 300);
 			// this.AutoLayout = true;
@@ -178,20 +178,6 @@ namespace mkdb.Widgets
 		}
 		public bool DeleteWidget()
 		{
-			/*
-			for (int i=0; i<this.GetItemCount(); i++)
-			{
-				wx.SizerItem item = (wx.SizerItem)this.GetItem(i);
-				if (item.IsSizer == true)
-				{
-					IWDBBase bs = (IWDBBase)item.Sizer;
-					bs.DeleteWidget();
-				} else {
-					IWDBBase bs = (IWDBBase)item.Window;
-					bs.DeleteWidget();					
-				}									
-			}
-			*/
 			IWDBBase bs = (IWDBBase)this.Sizer;
 			bs.DeleteWidget();
 			return false;

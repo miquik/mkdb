@@ -13,64 +13,59 @@ using System.Windows.Forms;
 using System.Drawing.Design;
 using System.Drawing;
 using System.Collections;
+using System.Collections.Specialized;
 
 namespace mkdb.Widgets
 {
 
-	public class wdbLabelProps : wxWindowProps
+	public class wdbComboBoxProps : wxWindowProps
 	{
 		// * wxButton props : name, style, label, default, wxWindow, Align
-		protected wxFlags _lstyle;
-		protected string _text;
+		protected int _select;
+		protected StringCollection _items;
 		
-		public wdbLabelProps() : base()
+		public wdbComboBoxProps() : base()
 		{
-			_name = "Label";
-			_text = "Static Text";
-			_lstyle = new wxFlags();
-			_lstyle.AddItem("wxALIGN_LEFT", wx.Alignment.wxALIGN_LEFT, false);
-			_lstyle.AddItem("wxALIGN_RIGHT", wx.Alignment.wxALIGN_RIGHT, false);
-			_lstyle.AddItem("wxALIGN_CENTER", wx.Alignment.wxALIGN_CENTRE, true);
-			_lstyle.AddItem("wxST_NO_AUTORESIZE", wx.StaticText.wxST_NO_AUTORESIZE, false);
+			_name = "ComboBox";
+			_select = 0;
+			_items = new StringCollection();
+			_items.Add("ComboBox");
 		}
 		
-		[CategoryAttribute("Label"), DescriptionAttribute("Label Props")]
-		public string Text
+		[CategoryAttribute("ComboBox"), DescriptionAttribute("ComboBox Props")]
+		public int Select
 		{
-			get	{	return _text;	}
-			set	{	_text = value;	NotifyPropertyChanged("Text");	}
+			get	{	return _select;	}
+			set	{	_select = value;	NotifyPropertyChanged("Select");	}
 		}
 		
-		[TypeConverter(typeof(wxFlagsTypeConverter))]
-		[Editor(typeof(wxFlagsEditor), typeof(UITypeEditor))]
-		[CategoryAttribute("Label"), DescriptionAttribute("Label Props")]
-		public wxFlags TextStyle
+		[Editor("System.Windows.Forms.Design.StringCollectionEditor, System.Design, Version=2.0.0.0, " +
+		        "Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(UITypeEditor))]
+		[CategoryAttribute("ComboBox"), DescriptionAttribute("ComboBox Props")]
+		public StringCollection Items
 		{
-			get	{	return _lstyle;	}
-			set	{	_lstyle = value;	NotifyPropertyChanged("TextStyle");	}
-		}
-		
+			get	{	return _items;	}
+			set	{	_items = value;	NotifyPropertyChanged("Items");	}
+		}		
 	}
 
 	/// <summary>
 	/// Description of wdbApp.
 	/// </summary>
-	public class wiwLabel : wx.StaticText, IWDBBase
+	public class wiwCombobox : wx.Choice, IWDBBase
 	{
-		protected static long _label_cur_index=0;		
-		protected wdbLabelProps _props;
+		protected static long _cmb_cur_index=0;		
+		protected wdbComboBoxProps _props;
 		protected bool _is_selected;
 		protected wx.Sizer _p_sizer;
 		protected wx.SizerItem _sizer_item;
 			
-		// public wiwButton(wx.Window _pc, wx.Sizer _ps, string _label, Point _pos, Size _sz, uint _style) 
-		// 	: base(_pc, _label, _pos, _sz, _style)
-		public wiwLabel(wx.Window _pc, wx.Sizer _ps)
-		 	: base(_pc, "Label", wx.Button.wxDefaultPosition, wx.Button.wxDefaultSize, wx.Button.wxBU_EXACTFIT)
+		public wiwCombobox(wx.Window _pc, wx.Sizer _ps) 
+		 	: base(_pc, wx.Choice.wxDefaultPosition, wx.Choice.wxDefaultSize, null)
 		{
-			_props = new wdbLabelProps();
-			_label_cur_index++;			
-			string name = "Label" + _label_cur_index.ToString();			
+			_props = new wdbComboBoxProps();
+			_cmb_cur_index++;
+			string name = "ComboBox" + _cmb_cur_index.ToString();			
 			SetDefaultProps(name);
 			SetWidgetProps();
 			_p_sizer = _ps;
@@ -112,10 +107,12 @@ namespace mkdb.Widgets
 		private void SetDefaultProps(string name)
 		{
 			_props.EnableNotification = false;	
-			_props.Text = name;
 			_props.Name = name;
 			_props.EnableNotification = true;
 			this.Label = name;
+			string[] tmp = new string[_props.Items.Count];
+			_props.Items.CopyTo(tmp, 0);
+			this.Append(tmp);
 		}
 				
 		public bool InsertWidget()
@@ -128,8 +125,7 @@ namespace mkdb.Widgets
 		}
 		public bool DeleteWidget()
 		{
-			// _p_sizer.Detach(this);
-			_p_sizer.Remove(this);
+			_p_sizer.Remove(this);			
 			return false;
 		}		
 		
@@ -170,12 +166,15 @@ namespace mkdb.Widgets
             	case "Name":
 					Common.Instance().ObjTree.SelectedNode.Text = _props.Name;	
             		break;            		
-            	case "Label":
-            		this.Label = _props.Text;
+            	case "Select":
+            		this.Selection = _props.Select;
             		this.Refresh();
             		break;
-            	case "LabelStyle":
-            		this.StyleFlags = _props.TextStyle.ToLong;
+            	case "Items":
+					string[] tmp = new string[_props.Items.Count];
+					_props.Items.CopyTo(tmp, 0);
+					this.Clear();
+					this.Append(tmp);            		
             		this.Refresh();
             		break;
             	case "Proportion":
@@ -193,7 +192,7 @@ namespace mkdb.Widgets
             }
             if (baa)
             {
-           		_sizer_item.Proportion = _props.Proportion;      
+            	_sizer_item.Proportion = _props.Proportion;
            		_sizer_item.Border = _props.BorderWidth;
            		_sizer_item.Flag = (int)(_props.Alignment.ToLong|_props.Border.ToLong);
 				this.Parent.AutoLayout = true;
@@ -202,19 +201,7 @@ namespace mkdb.Widgets
             }
             this.UpdateWindowUI();            
         }
-		/*
-		int FindPositionInSizerList(IWDBBase node, IWXSizer sizer)
-		{
-			int i=0;
-			foreach (IWDBBase e in sizer.List)
-			{
-				if (node.Equals(e))
-					return i;
-				i++;
-			}
-			return -1;
-		}
-		*/		
+		
 		public void SetWidgetProps()
 		{
 			_props.PropertyChanged += new PropertyChangedEventHandler(winProps_PropertyChanged);
