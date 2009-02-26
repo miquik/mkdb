@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created with Liquid XML Studio - FREE Community Edition 7.0.5.906 (http://www.liquid-technologies.com) -->
-<Container xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file:///C:/Documents%20and%20Settings/Michele/Documenti/SharpDevelop%20Projects/mkdb/wxprops.xsd" Name="string" BaseContainer="string">
+<Container xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file:///C:/Documents%20and%20Settings/Michele/Documenti/SharpDevelop%20Projects/mkdb/wxprops.xsd" Name="Conty" BaseContainer="">
   <Properties Name="string">
-    <Type>string</Type>
-    <Category>string</Category>
+    <Type>SizeF</Type>
+    <Category>String</Category>
     <Description>string</Description>
     <InitialValue>string</InitialValue>
     <Browsable>0</Browsable>
