@@ -51,6 +51,8 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Properties\GenericPropertyWrapper.cs" />
+    <Compile Include="Properties\WidgetProps.cs" />
     <Compile Include="Widgets\Ado\wdbAdo.cs" />
     <Compile Include="Widgets\Ado\wiwAdo.cs" />
     <Compile Include="Widgets\Ado\wtbAdo.cs" />
@@ -74,7 +76,6 @@
     <Compile Include="wxToolStripButton.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="WidgetElem.cs" />
-    <Compile Include="WidgetProps.cs" />
     <Compile Include="Widgets\BoxSizer\wdbBoxSizer.cs" />
     <Compile Include="Widgets\BoxSizer\wiwBoxSizer.cs" />
     <Compile Include="Widgets\Button\wdbButton.cs" />
@@ -89,6 +90,8 @@
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\wxprops.xsd" />
+    <None Include="Properties\wxalignment.xml" />
     <None Include="WidgetList.txt" />
     <EmbeddedResource Include="Widgets\Frame\frame.jpg" />
     <EmbeddedResource Include="Widgets\BoxSizer\sizer.jpg" />
@@ -109,6 +112,7 @@
     <None Include="wxpython.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Properties" />
     <Folder Include="Widgets" />
     <Folder Include="Widgets\Ado" />
     <Folder Include="Widgets\BoxSizer" />

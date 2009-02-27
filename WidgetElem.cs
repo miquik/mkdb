@@ -11,6 +11,7 @@ using wx;
 using System.Windows.Forms;
 using System.Drawing;
 using System.Collections;
+using mkdb.Properties;
 
 namespace mkdb
 {

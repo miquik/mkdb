@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Created with Liquid XML Studio - FREE Community Edition 7.0.5.906 (http://www.liquid-technologies.com) -->
+<Catalog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file:///C:/Documents%20and%20Settings/Michele/Documenti/SharpDevelop%20Projects/mkdb/Properties/wxprops.xsd" Name="string" Base="string">
+  <Category Name="string">
+    <Property Name="string">
+      <Type>string</Type>
+      <Description>string</Description>
+      <TypeConverter>string</TypeConverter>
+    </Property>
+  </Category>
+</Catalog>

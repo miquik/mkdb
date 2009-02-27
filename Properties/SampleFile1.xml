@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- Created with Liquid XML Studio - FREE Community Edition 7.0.5.906 (http://www.liquid-technologies.com) -->
+<Catalog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file:///C:/Documents%20and%20Settings/Michele/Documenti/SharpDevelop%20Projects/mkdb/Properties/wxprops.xsd" Name="string" Base="string">
+  <Category Name="string">
+    <Property Name="string">
+      <Type>string</Type>
+      <DefValue>string</DefValue>
+      <DefValue>string</DefValue>
+      <DefValue>string</DefValue>
+      <Description>string</Description>
+    </Property>
+    <Property Name="string">
+      <Type>string</Type>
+      <DefValue>string</DefValue>
+      <Description>string</Description>
+      <TypeConverter>string</TypeConverter>
+    </Property>
+    <Property Name="string">
+      <Type>string</Type>
+      <DefValue>string</DefValue>
+      <DefValue>string</DefValue>
+      <DefValue>string</DefValue>
+      <DefValue>string</DefValue>
+      <Description>string</Description>
+      <Editor>string</Editor>
+      <TypeConverter>string</TypeConverter>
+    </Property>
+  </Category>
+</Catalog>
