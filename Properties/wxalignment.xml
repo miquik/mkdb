@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Created with Liquid XML Studio - FREE Community Edition 7.0.5.906 (http://www.liquid-technologies.com) -->
+<Catalog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file:///C:/Documents%20and%20Settings/Michele/Documenti/SharpDevelop%20Projects/mkdb/wxprops.xsd" Name="wxAlignment" Base="">
+  <Category Name="Alignment And Borders">
+    <Property Name="Proportion">
+  	  <Type>int</Type>
+      <Value>0</Value>
+      <Description>Proportion</Description>
+    </Property>
+    <Property Name="Border Width">
+  	  <Type>int</Type>
+      <Value>5</Value>    	
+      <Description>Border Width</Description>
+    </Property>
+    <Property Name="Border Flag">
+  	  <Type>wxFlags</Type>
+      <Value>wxLEFT,0,false</Value>
+      <Value>wxRIGHT,0,false</Value>
+      <Value>wxTOP,0,false</Value>
+      <Value>wxBOTTOM,0,false</Value>
+      <Value>wxALL,0,true</Value>
+      <Description>Border Flags</Description>
+  	  <Editor>wxFlagsEditor</Editor>
+  	  <TypeConverter>wxFlagsTypeConverter</TypeConverter>
+    </Property>
+  </Category>
+</Catalog>
