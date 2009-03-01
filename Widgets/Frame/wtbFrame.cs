@@ -12,15 +12,6 @@ using System.Drawing;
 
 namespace mkdb.Widgets.Frame
 {
-	/*
-	this.toolStripButton3.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-	this.toolStripButton3.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton3.Image")));
-	this.toolStripButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
-	this.toolStripButton3.Name = "toolStripButton3";
-	this.toolStripButton3.Size = new System.Drawing.Size(23, 22);
-	this.toolStripButton3.Text = "toolStripButton3";
-	this.toolStripButton3.Click += new System.EventHandler(this.ToolStripButton3Click);
-	*/
 	
 	/// <summary>
 	/// Tool Button wdbFrame
@@ -39,12 +30,6 @@ namespace mkdb.Widgets.Frame
 			this.Size = new System.Drawing.Size(23, 22);
 			this.Text = name;
 			this.Click += new System.EventHandler(this.ToolStripButtonClick);
-			/*
-			if (Common.Instance().ObjTreeImageList.Images.IndexOfKey(name) == -1)
-			{
-				Common.Instance().ObjTreeImageList.Images.Add(name, this.Image);	
-			}
-			*/
 			Common.Instance().ObjTreeImageList.Images.Add(name, this.Image);									
 			_img_index = Common.Instance().ObjTreeImageList.Images.Count - 1;		
 			// _img_index = Common.Instance().ObjTreeImageList.Images.IndexOf(this.Image);
@@ -52,12 +37,19 @@ namespace mkdb.Widgets.Frame
 		
 		void ToolStripButtonClick(object sender, EventArgs e)
 		{	
-			wdbApp _tapp = (wdbApp)Common.Instance().ObjTree.Nodes[0];
-			wdbFrame wdbf = new wdbFrame(null, null);
-			wdbf.ImageIndex = _img_index;
-			wdbf.SelectedImageIndex = _img_index;
-			_tapp.Nodes.Add(wdbf);			
-			Common.Instance().ObjTree.SelectedNode = wdbf;
+			TreeView objtree = Common.Instance().ObjTree;
+			WidgetTreeNode node = new WidgetTreeNode("Frame");
+			//
+			wx.Frame hfrm = new wx.Frame(null, -1, "");		
+			node.Widget = new wiwFrame(hfrm);
+			wx.Window win = (wx.Window)_elem;
+			Win32Utils.SetParent(win.GetHandle(), Common.Instance().Canvas.Handle);
+			// wdbFrame wdbf = new wdbFrame(null, null);
+			node.ImageIndex = _img_index;
+			node.SelectedImageIndex = _img_index;
+			objtree.SelectedNode = node;
+			// _tapp.Nodes.Add(wdbf);			
+			// Common.Instance().ObjTree.SelectedNode = wdbf;
 		}
 
 		public Image GetEmbeddedImage()

@@ -48,14 +48,16 @@ namespace mkdb.Widgets.BoxSizer
 			wx.Sizer siz = null;
 			wx.Window win = null;
 			Common.Instance().CheckParentForSizer(pc, ps, out win, out siz);
-			wdbBoxSizer bsizer = new wdbBoxSizer(win, siz);
+			WidgetTreeNode node = new WidgetTreeNode("BoxSizer");
+			node.Widget = new wiwBoxSizer(win, siz);
+			// wdbBoxSizer bsizer = new wdbBoxSizer(win, siz);
 			if (ps != null)	
-				ps.Nodes.Add(bsizer);
+				ps.Nodes.Add(node);
 			else			
-				pc.Nodes.Add(bsizer);
-			bsizer.ImageIndex = _img_index;
-			bsizer.SelectedImageIndex = _img_index;			
-			objtree.SelectedNode = bsizer;
+				pc.Nodes.Add(node);
+			node.ImageIndex = _img_index;
+			node.SelectedImageIndex = _img_index;			
+			objtree.SelectedNode = node;
 		}
 
 		public Image GetEmbeddedImage()

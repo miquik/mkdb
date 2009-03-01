@@ -37,7 +37,7 @@ namespace mkdb
 	}
 	
 
-	public class wxColorEditors : UITypeEditor
+	public class wxColorEditor : UITypeEditor
 	{
 		
 		public override UITypeEditorEditStyle GetEditStyle(System.ComponentModel.ITypeDescriptorContext context)

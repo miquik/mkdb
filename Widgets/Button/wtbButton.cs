@@ -47,11 +47,13 @@ namespace mkdb.Widgets.Button
 			
 			wx.Window win;
 			Common.Instance().CheckParentForWidget(pc, ps, out win);
-			wdbButton btn = new wdbButton(win, (wx.Sizer)ps.Widget);
-			ps.Nodes.Add(btn);
-			btn.ImageIndex = _img_index;
-			btn.SelectedImageIndex = _img_index;			
-			objtree.SelectedNode = btn;
+			WidgetTreeNode node = new WidgetTreeNode("Button");
+			node.Widget = new wiwButton(win, (wx.Sizer)ps.Widget);
+			// wdbButton btn = new wdbButton(win, (wx.Sizer)ps.Widget);
+			ps.Nodes.Add(node);
+			node.ImageIndex = _img_index;
+			node.SelectedImageIndex = _img_index;			
+			objtree.SelectedNode = node;
 		}
 
 		public Image GetEmbeddedImage()

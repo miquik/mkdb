@@ -16,43 +16,6 @@ using System.Drawing;
 
 namespace mkdb.Widgets
 {
-	public class wdbAppProps : wxAlignProps
-	{
-		// * wxFrame props : name, title, style, wxWindow, toParent
-		protected string _appname;
-		protected string _dirname;
-		protected string _appfilename;
-				
-		public wdbAppProps() : base()
-		{
-			_appname = "Project";
-			_dirname = ".";
-			_appfilename = "project.py";
-		}
-		
-		[CategoryAttribute("Application"), DescriptionAttribute("Application Props")]
-		public string AppName
-		{
-			get	{	return _appname;	}
-			set	{	_appname = value;	NotifyPropertyChanged("AppName");	}
-		}
-		
-		[CategoryAttribute("Application"), DescriptionAttribute("Application Props")]
-		public string Directory
-		{
-			get	{	return _dirname;	}
-			set	{	_dirname = value;	NotifyPropertyChanged("Directory");	}
-		}
-		
-		[CategoryAttribute("Application"), DescriptionAttribute("Application Props")]
-		public string FileName
-		{
-			get	{	return _appfilename;	}
-			set	{	_appfilename = value;	NotifyPropertyChanged("FileName");	}
-		}		
-	}
-
-	
 	public class wiwApp : wx.Window, IWDBBase
 	{
 		protected wdbAppProps _props;
@@ -70,7 +33,7 @@ namespace mkdb.Widgets
 		{
 			get	{	return null;	}
 		}
-		public WidgetProps Properties	
+		public Properties.WidgetProps Properties	
 		{	
 			get	{	return _props; }
 		}
@@ -155,6 +118,5 @@ namespace mkdb.Widgets
 			_props.PropertyChanged += new PropertyChangedEventHandler(winProps_PropertyChanged);
 			Common.Instance().ObjPropsPanel.SelectedObject = _props;
 		}		
-				
 	}
 }

@@ -39,7 +39,7 @@ namespace mkdb
 	}
 	
 
-	public class wxFontEditors : UITypeEditor
+	public class wxFontEditor : UITypeEditor
 	{
 		
 		public override UITypeEditorEditStyle GetEditStyle(System.ComponentModel.ITypeDescriptorContext context)

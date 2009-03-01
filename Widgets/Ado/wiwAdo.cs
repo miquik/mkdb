@@ -17,7 +17,7 @@ using System.Reflection;
 
 namespace mkdb.Widgets
 {
-
+	/*
 	public class wdbAdoProps : wxWindowProps
 	{
 		protected string _label;
@@ -35,7 +35,7 @@ namespace mkdb.Widgets
 			set	{	_label = value;	NotifyPropertyChanged("Label");	}
 		}		
 	}
-
+	*/
 	public class wiwAdo : wx.BoxSizer, IWDBBase
 	{
 		protected static long _ado_cur_index=0;

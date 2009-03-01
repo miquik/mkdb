@@ -47,11 +47,13 @@ namespace mkdb.Widgets.TextEdit
 			
 			wx.Window win;
 			Common.Instance().CheckParentForWidget(pc, ps, out win);
-			wdbTextEdit btn = new wdbTextEdit(win, (wx.Sizer)ps.Widget);
-			ps.Nodes.Add(btn);
-			btn.ImageIndex = _img_index;
-			btn.SelectedImageIndex = _img_index;			
-			objtree.SelectedNode = btn;
+			WidgetTreeNode node = new WidgetTreeNode("TextEdit");
+			node.Widget = new wiwTextEdit(win, (wx.Sizer)ps.Widget);
+			// wdbTextEdit btn = new wdbTextEdit(win, (wx.Sizer)ps.Widget);
+			ps.Nodes.Add(node);
+			node.ImageIndex = _img_index;
+			node.SelectedImageIndex = _img_index;			
+			objtree.SelectedNode = node;
 		}
 
 		public Image GetEmbeddedImage()

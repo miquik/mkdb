@@ -45,11 +45,13 @@ namespace mkdb.Widgets.Label
 			
 			wx.Window win;
 			Common.Instance().CheckParentForWidget(pc, ps, out win);
-			wdbLabel lab = new wdbLabel(win, (wx.Sizer)ps.Widget);
-			ps.Nodes.Add(lab);
-			lab.ImageIndex = _img_index;
-			lab.SelectedImageIndex = _img_index;			
-			objtree.SelectedNode = lab;			
+			WidgetTreeNode node = new WidgetTreeNode("Label");
+			node.Widget = new wiwLabel(win, (wx.Sizer)ps.Widget);
+			// wdbLabel lab = new wdbLabel(win, (wx.Sizer)ps.Widget);
+			ps.Nodes.Add(node);
+			node.ImageIndex = _img_index;
+			node.SelectedImageIndex = _img_index;			
+			objtree.SelectedNode = node;			
 		}
 
 		public Image GetEmbeddedImage()

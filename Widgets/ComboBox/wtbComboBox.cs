@@ -47,11 +47,13 @@ namespace mkdb.Widgets.Combobox
 			
 			wx.Window win;
 			Common.Instance().CheckParentForWidget(pc, ps, out win);
-			wdbCombobox item = new wdbCombobox(win, (wx.Sizer)ps.Widget);
-			ps.Nodes.Add(item);
-			item.ImageIndex = _img_index;
-			item.SelectedImageIndex = _img_index;			
-			objtree.SelectedNode = item;
+			WidgetTreeNode node = new WidgetTreeNode("ComboBox");
+			node.Widget = new wiwCombobox(win, (wx.Sizer)ps.Widget);
+			// wdbCombobox item = new wdbCombobox(win, (wx.Sizer)ps.Widget);
+			ps.Nodes.Add(node);
+			node.ImageIndex = _img_index;
+			node.SelectedImageIndex = _img_index;			
+			objtree.SelectedNode = node;
 		}
 
 		public Image GetEmbeddedImage()

@@ -23,6 +23,7 @@ namespace mkdb
 		private PropertyGrid _obj_props_panel;
 		private ImageList	_obj_tree_il;
 		private Panel _canvas;
+		// private Properties.WidgetPropsManager _prop_man;
 
 		// Constructor is 'protected'
     	protected Common()
@@ -32,6 +33,7 @@ namespace mkdb
 			_obj_props_panel = null;
 			_cur_action = CommandFlags.TB_NONE;
 			_obj_tree_il = null;
+			// _prop_man = new mkdb.Properties.WidgetPropsManager();
     	}
 
     	public static Common Instance()
@@ -79,8 +81,13 @@ namespace mkdb
 		{
 			get	{	return _obj_tree_il;	}
 			set	{	_obj_tree_il = value;	}
-		}    	    	
-    			
+		}    
+		/*
+		public Properties.WidgetPropsManager PropsManager
+		{
+			get	{	return _prop_man;	}
+		}
+    	*/	
 		
 		public void ChangeCurrentWindow(WidgetTreeNode neww)
     	{

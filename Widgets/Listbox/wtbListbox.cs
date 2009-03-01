@@ -47,11 +47,13 @@ namespace mkdb.Widgets.Listbox
 			
 			wx.Window win;
 			Common.Instance().CheckParentForWidget(pc, ps, out win);
-			wdbListbox btn = new wdbListbox(win, (wx.Sizer)ps.Widget);
-			ps.Nodes.Add(btn);
-			btn.ImageIndex = _img_index;
-			btn.SelectedImageIndex = _img_index;			
-			objtree.SelectedNode = btn;
+			WidgetTreeNode node = new WidgetTreeNode("ListBox");
+			node.Widget = new wiwListbox(win, (wx.Sizer)ps.Widget);
+			// wdbListbox btn = new wdbListbox(win, (wx.Sizer)ps.Widget);
+			ps.Nodes.Add(node);
+			node.ImageIndex = _img_index;
+			node.SelectedImageIndex = _img_index;			
+			objtree.SelectedNode = node;
 		}
 
 		public Image GetEmbeddedImage()

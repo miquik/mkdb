@@ -47,14 +47,16 @@ namespace mkdb.Widgets.GridSizer
 			wx.Sizer siz = null;
 			wx.Window win = null;
 			Common.Instance().CheckParentForSizer(pc, ps, out win, out siz);
-			wdbGridSizer gsizer = new wdbGridSizer(win, siz);
+			WidgetTreeNode node = new WidgetTreeNode("GridSizer");
+			node.Widget = new wiwGridSizer(win, siz);
+			// wdbGridSizer gsizer = new wdbGridSizer(win, siz);
 			if (ps != null)	
-				ps.Nodes.Add(gsizer);
+				ps.Nodes.Add(node);
 			else			
-				pc.Nodes.Add(gsizer);
-			gsizer.ImageIndex = _img_index;
-			gsizer.SelectedImageIndex = _img_index;			
-			objtree.SelectedNode = gsizer;			
+				pc.Nodes.Add(node);
+			node.ImageIndex = _img_index;
+			node.SelectedImageIndex = _img_index;			
+			objtree.SelectedNode = node;			
 		}
 
 		public Image GetEmbeddedImage()
