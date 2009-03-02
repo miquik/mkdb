@@ -44,32 +44,40 @@
     <Compile Include="ColorEditor.cs" />
     <Compile Include="Command.cs" />
     <Compile Include="Common.cs" />
-    <Compile Include="DrawUtils.cs" />
     <Compile Include="FlagEditor.cs" />
     <Compile Include="FontEditor.cs" />
     <Compile Include="MainForm.cs" />
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Python\PyFileEditor.cs" />
     <Compile Include="WidgetProps.cs" />
     <Compile Include="Widgets\Ado\wiwAdo.cs" />
+    <Compile Include="Widgets\Ado\wiwAdoProps.cs" />
     <Compile Include="Widgets\Ado\wtbAdo.cs" />
+    <Compile Include="Widgets\BoxSizer\wiwBoxSizerProps.cs" />
     <Compile Include="Widgets\BoxSizer\wtbBoxSizer.cs" />
+    <Compile Include="Widgets\Button\wiwButtonProps.cs" />
     <Compile Include="Widgets\Button\wtbButton.cs" />
     <Compile Include="Widgets\ComboBox\wiwComboBox.cs" />
+    <Compile Include="Widgets\ComboBox\wiwComboBoxProps.cs" />
     <Compile Include="Widgets\ComboBox\wtbComboBox.cs" />
     <Compile Include="Widgets\Frame\wiwFrame.cs" />
+    <Compile Include="Widgets\Frame\wiwFrameProps.cs" />
     <Compile Include="Widgets\Frame\wtbFrame.cs" />
+    <Compile Include="Widgets\GridSizer\wiwGridSizerProps.cs" />
     <Compile Include="Widgets\GridSizer\wtbGridSizer.cs" />
     <Compile Include="Widgets\Label\wiwLabel.cs" />
+    <Compile Include="Widgets\Label\wiwLabelProps.cs" />
     <Compile Include="Widgets\Label\wtbLabel.cs" />
     <Compile Include="Widgets\Listbox\wiwListbox.cs" />
+    <Compile Include="Widgets\Listbox\wiwListBoxProps.cs" />
     <Compile Include="Widgets\Listbox\wtbListbox.cs" />
     <Compile Include="Widgets\TextEdit\wiwTextEdit.cs" />
+    <Compile Include="Widgets\TextEdit\wiwTextEditProps.cs" />
     <Compile Include="Widgets\TextEdit\wtbTextEdit.cs" />
-    <Compile Include="Widgets\wdbApp.cs" />
     <Compile Include="Widgets\wiwApp.cs" />
-    <Compile Include="Widgets\wpApp.cs" />
+    <Compile Include="Widgets\wiwAppProps.cs" />
     <Compile Include="wxToolStripButton.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="WidgetElem.cs" />
@@ -81,6 +89,8 @@
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="app.py" />
+    <None Include="app_struct.py" />
     <None Include="WidgetList.txt" />
     <EmbeddedResource Include="Widgets\Frame\frame.jpg" />
     <EmbeddedResource Include="Widgets\BoxSizer\sizer.jpg" />
@@ -101,6 +111,7 @@
     <None Include="wxpython.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Python" />
     <Folder Include="Widgets" />
     <Folder Include="Widgets\Ado" />
     <Folder Include="Widgets\BoxSizer" />

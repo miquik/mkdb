@@ -11,7 +11,6 @@ using wx;
 using System.Windows.Forms;
 using System.Drawing;
 using System.Collections;
-using mkdb.Properties;
 
 namespace mkdb
 {
@@ -42,7 +41,7 @@ namespace mkdb
 	}
 	
 	
-	public abstract class WidgetTreeNode : TreeNode
+	public class WidgetTreeNode : TreeNode
 	{
 		protected IWDBBase _elem;
 		
@@ -56,9 +55,9 @@ namespace mkdb
 			set	{	_elem = value;	}
 		}
 		
-		public abstract void OnCut();		
-		public abstract void OnCopy();
-		public abstract void OnPaste();
+		public void OnCut()		{}
+		public void OnCopy()	{}
+		public void OnPaste()	{}
 		public void OnDelete()
 		{
 			// Delete this widget and
@@ -76,7 +75,7 @@ namespace mkdb
 				win.Dispose();				
 			}
 		}
-		public abstract void OnMoveUp();
-		public abstract void OnMoveDown();
+		public void OnMoveUp()		{}
+		public void OnMoveDown()	{}
 	}
 }

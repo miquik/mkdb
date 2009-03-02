@@ -77,6 +77,7 @@ namespace mkdb
 			this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButton5 = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButton6 = new System.Windows.Forms.ToolStripButton();
+			this.richTextBox1 = new System.Windows.Forms.RichTextBox();
 			this.menuStrip1.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
 			this.splitContainer1.Panel1.SuspendLayout();
@@ -88,6 +89,7 @@ namespace mkdb
 			this.splitContainer2.SuspendLayout();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
+			this.tabPage2.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// statusStrip1
@@ -232,53 +234,53 @@ namespace mkdb
 									this.moveUpToolStripMenuItem,
 									this.moveDownToolStripMenuItem});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(153, 170);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(142, 148);
 			// 
 			// CutMenu
 			// 
 			this.CutMenu.Name = "CutMenu";
-			this.CutMenu.Size = new System.Drawing.Size(152, 22);
+			this.CutMenu.Size = new System.Drawing.Size(141, 22);
 			this.CutMenu.Text = "Cut";
 			// 
 			// copyToolStripMenuItem
 			// 
 			this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
-			this.copyToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.copyToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
 			this.copyToolStripMenuItem.Text = "Copy";
 			// 
 			// pasteToolStripMenuItem
 			// 
 			this.pasteToolStripMenuItem.Name = "pasteToolStripMenuItem";
-			this.pasteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.pasteToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
 			this.pasteToolStripMenuItem.Text = "Paste";
 			// 
 			// toolStripSeparator1
 			// 
 			this.toolStripSeparator1.Name = "toolStripSeparator1";
-			this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator1.Size = new System.Drawing.Size(138, 6);
 			// 
 			// deleteToolStripMenuItem
 			// 
 			this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-			this.deleteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.deleteToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
 			this.deleteToolStripMenuItem.Text = "Delete";
 			this.deleteToolStripMenuItem.Click += new System.EventHandler(this.DeleteToolStripMenuItemClick);
 			// 
 			// toolStripSeparator2
 			// 
 			this.toolStripSeparator2.Name = "toolStripSeparator2";
-			this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator2.Size = new System.Drawing.Size(138, 6);
 			// 
 			// moveUpToolStripMenuItem
 			// 
 			this.moveUpToolStripMenuItem.Name = "moveUpToolStripMenuItem";
-			this.moveUpToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.moveUpToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
 			this.moveUpToolStripMenuItem.Text = "Move Up";
 			// 
 			// moveDownToolStripMenuItem
 			// 
 			this.moveDownToolStripMenuItem.Name = "moveDownToolStripMenuItem";
-			this.moveDownToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.moveDownToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
 			this.moveDownToolStripMenuItem.Text = "Move Down";
 			// 
 			// objtreeimages
@@ -354,6 +356,7 @@ namespace mkdb
 			// 
 			// tabPage2
 			// 
+			this.tabPage2.Controls.Add(this.richTextBox1);
 			this.tabPage2.Location = new System.Drawing.Point(4, 4);
 			this.tabPage2.Name = "tabPage2";
 			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
@@ -431,6 +434,15 @@ namespace mkdb
 			this.toolStripButton6.Name = "toolStripButton6";
 			this.toolStripButton6.Size = new System.Drawing.Size(23, 23);
 			// 
+			// richTextBox1
+			// 
+			this.richTextBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.richTextBox1.Location = new System.Drawing.Point(3, 3);
+			this.richTextBox1.Name = "richTextBox1";
+			this.richTextBox1.Size = new System.Drawing.Size(310, 229);
+			this.richTextBox1.TabIndex = 0;
+			this.richTextBox1.Text = "";
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -458,9 +470,11 @@ namespace mkdb
 			this.splitContainer2.ResumeLayout(false);
 			this.tabControl1.ResumeLayout(false);
 			this.tabPage1.ResumeLayout(false);
+			this.tabPage2.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
+		private System.Windows.Forms.RichTextBox richTextBox1;
 		private System.Windows.Forms.ToolStripMenuItem moveDownToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem moveUpToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;

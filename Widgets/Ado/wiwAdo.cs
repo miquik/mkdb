@@ -17,25 +17,6 @@ using System.Reflection;
 
 namespace mkdb.Widgets
 {
-	/*
-	public class wdbAdoProps : wxWindowProps
-	{
-		protected string _label;
-		
-		public wdbAdoProps() : base()
-		{
-			_name = "Ado";
-			_label = "Ado";
-		}
-		
-		[CategoryAttribute("Ado"), DescriptionAttribute("Ado Props")]
-		public string Label
-		{
-			get	{	return _label;	}
-			set	{	_label = value;	NotifyPropertyChanged("Label");	}
-		}		
-	}
-	*/
 	public class wiwAdo : wx.BoxSizer, IWDBBase
 	{
 		protected static long _ado_cur_index=0;

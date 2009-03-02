@@ -18,60 +18,18 @@ using System.Collections.Specialized;
 
 namespace mkdb.Widgets
 {
-
-	public class wdbListboxProps : wxWindowProps
-	{
-		protected StringCollection _items;
-		protected wxFlags _lbstyle;
-		
-		public wdbListboxProps() : base()
-		{
-			_name = "ComboBox";
-			_items = new StringCollection();
-			_lbstyle = new wxFlags();
-			_lbstyle.AddItem("wxLB_ALWAYS_SB", wx.ListBox.wxLB_ALWAYS_SB, false);
-			_lbstyle.AddItem("wxLB_EXTENDED", wx.ListBox.wxLB_EXTENDED, false);
-			_lbstyle.AddItem("wxLB_HSCROLL", wx.ListBox.wxLB_HSCROLL, false);
-			_lbstyle.AddItem("wxLB_MULTIPLE", wx.ListBox.wxLB_MULTIPLE, false);
-			_lbstyle.AddItem("wxLB_NEED_SB", wx.ListBox.wxLB_NEED_SB, false);
-			_lbstyle.AddItem("wxLB_SINGLE", wx.ListBox.wxLB_SINGLE, false);
-			_lbstyle.AddItem("wxLB_SORT", wx.ListBox.wxLB_SORT, false);
-		}
-		
-		[Editor("System.Windows.Forms.Design.StringCollectionEditor, System.Design, Version=2.0.0.0, " +
-		        "Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(UITypeEditor))]		
-		[CategoryAttribute("Listbox"), DescriptionAttribute("Listbox Props")]
-		public StringCollection Items
-		{
-			get	{	return _items;	}
-			set	{	_items = value;	NotifyPropertyChanged("Items");	}
-		}		
-		
-		[TypeConverter(typeof(wxFlagsTypeConverter))]
-		[Editor(typeof(wxFlagsEditor), typeof(UITypeEditor))]
-		[CategoryAttribute("Listbox"), DescriptionAttribute("Listbox Props")]
-		public wxFlags ListboxStyle
-		{
-			get	{	return _lbstyle;	}
-			set	{	_lbstyle = value;	NotifyPropertyChanged("ListboxStyle");	}
-		}		
-	}
-
-	/// <summary>
-	/// Description of wdbApp.
-	/// </summary>
-	public class wiwListbox : wx.ListBox, IWDBBase
+	public class wiwListBox : wx.ListBox, IWDBBase
 	{
 		protected static long _lbox_cur_index=0;		
-		protected wdbListboxProps _props;
+		protected wdbListBoxProps _props;
 		protected bool _is_selected;
 		protected wx.Sizer _p_sizer;
 		protected wx.SizerItem _sizer_item;
 			
-		public wiwListbox(wx.Window _pc, wx.Sizer _ps) 
+		public wiwListBox(wx.Window _pc, wx.Sizer _ps) 
 		 	: base(_pc, wx.ListBox.wxDefaultPosition, wx.ListBox.wxDefaultSize, null)
 		{
-			_props = new wdbListboxProps();
+			_props = new wdbListBoxProps();
 			_lbox_cur_index++;			
 			string name = "ListBox" + _lbox_cur_index.ToString();			
 			SetDefaultProps(name);

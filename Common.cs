@@ -22,6 +22,7 @@ namespace mkdb
 		private TreeView	_obj_tree;
 		private PropertyGrid _obj_props_panel;
 		private ImageList	_obj_tree_il;
+		private Python.PyFileEditor	_py_editor;
 		private Panel _canvas;
 		// private Properties.WidgetPropsManager _prop_man;
 
@@ -33,6 +34,7 @@ namespace mkdb
 			_obj_props_panel = null;
 			_cur_action = CommandFlags.TB_NONE;
 			_obj_tree_il = null;
+			_py_editor = new mkdb.Python.PyFileEditor();
 			// _prop_man = new mkdb.Properties.WidgetPropsManager();
     	}
 
@@ -82,12 +84,10 @@ namespace mkdb
 			get	{	return _obj_tree_il;	}
 			set	{	_obj_tree_il = value;	}
 		}    
-		/*
-		public Properties.WidgetPropsManager PropsManager
+		public Python.PyFileEditor PyEditor
 		{
-			get	{	return _prop_man;	}
+			get	{	return _py_editor;	}
 		}
-    	*/	
 		
 		public void ChangeCurrentWindow(WidgetTreeNode neww)
     	{

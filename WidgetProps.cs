@@ -71,7 +71,8 @@ namespace mkdb
 		
 		public wxAlignProps()
 		{
-			_border = 10;
+			_proportion = 0;
+			_border = 5;
 			_bflag = new wxFlags();
 			_bflag.AddItem("wxLEFT", wx.Direction.wxLEFT, false);
 			_bflag.AddItem("wxRIGHT", wx.Direction.wxRIGHT, false);
@@ -165,21 +166,21 @@ namespace mkdb
 			set	{	_id = value; NotifyPropertyChanged("ID"); }
 		}		
 		[CategoryAttribute("wxWindows"), DescriptionAttribute("wxWindows properties")]
-		[Editor(typeof(wxColorEditors), typeof(UITypeEditor))]
+		[Editor(typeof(wxColorEditor), typeof(UITypeEditor))]
 		public wxColor FC
 		{
 			get	{	return _fc;	}
 			set	{	_fc = value; NotifyPropertyChanged("FC");	}
 		}
 		[CategoryAttribute("wxWindows"), DescriptionAttribute("wxWindows properties")]
-		[Editor(typeof(wxColorEditors), typeof(UITypeEditor))]
+		[Editor(typeof(wxColorEditor), typeof(UITypeEditor))]
 		public wxColor BC
 		{
 			get	{	return _bc;	}
 			set	{	_bc = value; NotifyPropertyChanged("BC");	}
 		}		
 		[CategoryAttribute("wxWindows"), DescriptionAttribute("wxWindows properties")]
-		[Editor(typeof(wxFontEditors), typeof(UITypeEditor))]
+		[Editor(typeof(wxFontEditor), typeof(UITypeEditor))]
 		public wxFont Font
 		{
 			get	{	return _font;	}

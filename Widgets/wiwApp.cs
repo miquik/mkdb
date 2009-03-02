@@ -33,7 +33,7 @@ namespace mkdb.Widgets
 		{
 			get	{	return null;	}
 		}
-		public Properties.WidgetProps Properties	
+		public WidgetProps Properties	
 		{	
 			get	{	return _props; }
 		}

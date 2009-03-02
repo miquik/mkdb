@@ -32,9 +32,11 @@ namespace mkdb
 			Common.Instance().Canvas = this.canvas;			
 			Common.Instance().ObjTreeImageList = this.objtreeimages;
 			
-			int idx = objtree.Nodes.Add(new wdbApp(null, null));
-			wdbApp wdba = (wdbApp)objtree.Nodes[idx];
-			objtree.SelectedNode = wdba;
+			int idx = objtree.Nodes.Add(new WidgetTreeNode("Project"));
+			WidgetTreeNode node = (WidgetTreeNode)objtree.Nodes[idx];
+			node.Widget = new wiwApp(null, null);
+			objtree.SelectedNode = node;
+			
 			AddToToolStrip(new Widgets.Frame.wtbFrame("Frame", ""));
 			AddToToolStrip(new Widgets.BoxSizer.wtbBoxSizer("BoxSizer", ""));
 			AddToToolStrip(new Widgets.GridSizer.wtbGridSizer("GridSizer", ""));			
@@ -44,6 +46,9 @@ namespace mkdb
 			AddToToolStrip(new Widgets.Combobox.wtbCombobox("ComboBox", ""));
 			AddToToolStrip(new Widgets.Listbox.wtbListbox("ListBox", ""));						
 			AddToToolStrip(new Widgets.Ado.wtbAdo("Ado", ""));						
+			
+			// Init Python Editor
+			InitPythonEditor();
 		}
 		
 		void ObjtreeBeforeSelect(object sender, TreeViewCancelEventArgs e)
@@ -202,12 +207,23 @@ namespace mkdb
 			_layout.Add(button);
 			palette.Items.Add(button);
 		}
-		
-		
+				
 		void DeleteToolStripMenuItemClick(object sender, EventArgs e)
 		{
 			WidgetTreeNode node = (WidgetTreeNode)Common.Instance().ObjTree.SelectedNode;
 			node.OnDelete();
 		}
+		
+		void InitPythonEditor()
+		{
+			Python.PyFileEditor python = Common.Instance().PyEditor;
+			python.InsertSingleLineToSection(-1, Python.PyFileSection.PY_INIT_SECTION, "class MyFrame1(wx.Frame):\n");
+			python.InsertSingleLineToSection(-1, Python.PyFileSection.PY_INIT_SECTION, "\tdef __init__(self, *args, **kwds):\n");
+			foreach (string item in python.PyStream)
+			{
+				richTextBox1.AppendText(item);
+			}
+			// richTextBox1.LoadFile(python.GetPyStream(), RichTextBoxStreamType.PlainText);
+		}		
 	}
 }
