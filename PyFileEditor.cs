@@ -151,7 +151,7 @@ namespace testtext
 		{
 			// pos : relative to section, -1 mean end of section
 			int row = SeekToSection(section, 0);
-			if (row - 2 < 0)  row -= 2; else row = 0;
+			if (row - 1 < 0)  row = 0; else row--;
 			_py_mem.Insert(row, str);
 			MoveIndexes(section, 1);
 		}
