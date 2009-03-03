@@ -119,6 +119,19 @@ namespace mkdb.Widgets
 				
 		public bool InsertWidget()
 		{
+			Python.PyFileEditor ed = Common.Instance().PyEditor;
+			// Insert Text
+			// InitBase
+			/*
+			class MyFrame(wx.Frame):
+    			def __init__(self, *args, **kwds):
+        		kwds["style"] = wx.DEFAULT_FRAME_STYLE
+        		wx.Frame.__init__(self, *args, **kwds)
+			*/
+			ed.InsertSingleLine(-1, Python.PyFileSection.PYBASE_INIT_SECTION, "class " + _props.Name + "(wx.Frame):\n");
+			ed.InsertSingleLine(-1, Python.PyFileSection.PYBASE_INIT_SECTION, "\tdef __init__(self, *args, **kwds):\n");
+			ed.InsertSingleLine(-1, Python.PyFileSection.PYBASE_INIT_SECTION, "\tkwds[\"style\"] = " + _props.Style.ToLong.ToString() + "\n");
+			ed.InsertSingleLine(-1, Python.PyFileSection.PYBASE_INIT_SECTION, "\twx.Frame.__init__(self, *args, **kwds)\n");
 			return true;
 		}
 		public bool DeleteWidget()

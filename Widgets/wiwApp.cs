@@ -70,6 +70,7 @@ namespace mkdb.Widgets
 				
 		public bool InsertWidget()
 		{
+			InsertWidgetInText();
 			return true;
 		}
 		public bool DeleteWidget()
@@ -79,6 +80,18 @@ namespace mkdb.Widgets
 		
 		public bool InsertWidgetInText()
 		{
+			/*
+			if __name__ == "__main__":
+    			app = wx.PySimpleApp(0)
+    			wx.InitAllImageHandlers()
+    			...
+    			app.MainLoop()
+			*/
+			Python.PyFileEditor ed = Common.Instance().PyEditor;
+			ed.InsertSingleLine(-1, Python.PyFileSection.PY_APP_SECTION, "if __name__ == \"__main__\":\n");
+			ed.InsertSingleLine(-1, Python.PyFileSection.PY_APP_SECTION, "\tapp = wx.PySimpleApp(0)\n");
+			ed.InsertSingleLine(-1, Python.PyFileSection.PY_APP_SECTION, "\twx.InitAllImageHandlers()\n");
+			ed.InsertSingleLine(-1, Python.PyFileSection.PY_APP_SECTION, "\tapp.MainLoop()\n");
 			return true;			
 		}
 		

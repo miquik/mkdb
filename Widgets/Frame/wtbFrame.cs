@@ -44,6 +44,7 @@ namespace mkdb.Widgets.Frame
 			node.Widget = new wiwFrame(hfrm);
 			wx.Window win = (wx.Window)node.Widget;
 			Win32Utils.SetParent(win.GetHandle(), Common.Instance().Canvas.Handle);
+			node.Widget.InsertWidget();
 			// wdbFrame wdbf = new wdbFrame(null, null);
 			node.ImageIndex = _img_index;
 			node.SelectedImageIndex = _img_index;

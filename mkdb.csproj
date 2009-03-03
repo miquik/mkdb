@@ -51,6 +51,7 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Python\PyFileEditor.cs" />
+    <Compile Include="Python\SyntaxRichTextBox.cs" />
     <Compile Include="WidgetProps.cs" />
     <Compile Include="Widgets\Ado\wiwAdo.cs" />
     <Compile Include="Widgets\Ado\wiwAdoProps.cs" />

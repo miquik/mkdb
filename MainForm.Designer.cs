@@ -68,6 +68,7 @@ namespace mkdb
 			this.tabPage1 = new System.Windows.Forms.TabPage();
 			this.canvas = new System.Windows.Forms.Panel();
 			this.tabPage2 = new System.Windows.Forms.TabPage();
+			this.tabPage3 = new System.Windows.Forms.TabPage();
 			this.label4 = new System.Windows.Forms.Label();
 			this.objprops = new System.Windows.Forms.PropertyGrid();
 			this.label3 = new System.Windows.Forms.Label();
@@ -77,7 +78,6 @@ namespace mkdb
 			this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButton5 = new System.Windows.Forms.ToolStripButton();
 			this.toolStripButton6 = new System.Windows.Forms.ToolStripButton();
-			this.richTextBox1 = new System.Windows.Forms.RichTextBox();
 			this.menuStrip1.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
 			this.splitContainer1.Panel1.SuspendLayout();
@@ -89,7 +89,6 @@ namespace mkdb
 			this.splitContainer2.SuspendLayout();
 			this.tabControl1.SuspendLayout();
 			this.tabPage1.SuspendLayout();
-			this.tabPage2.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// statusStrip1
@@ -324,6 +323,7 @@ namespace mkdb
 			this.tabControl1.Alignment = System.Windows.Forms.TabAlignment.Bottom;
 			this.tabControl1.Controls.Add(this.tabPage1);
 			this.tabControl1.Controls.Add(this.tabPage2);
+			this.tabControl1.Controls.Add(this.tabPage3);
 			this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.tabControl1.Location = new System.Drawing.Point(0, 23);
 			this.tabControl1.Multiline = true;
@@ -356,7 +356,6 @@ namespace mkdb
 			// 
 			// tabPage2
 			// 
-			this.tabPage2.Controls.Add(this.richTextBox1);
 			this.tabPage2.Location = new System.Drawing.Point(4, 4);
 			this.tabPage2.Name = "tabPage2";
 			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
@@ -364,6 +363,18 @@ namespace mkdb
 			this.tabPage2.TabIndex = 1;
 			this.tabPage2.Text = "Python";
 			this.tabPage2.UseVisualStyleBackColor = true;
+			this.tabPage2.Paint += new System.Windows.Forms.PaintEventHandler(this.TabPage2Paint);
+			// 
+			// tabPage3
+			// 
+			this.tabPage3.Location = new System.Drawing.Point(4, 4);
+			this.tabPage3.Name = "tabPage3";
+			this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+			this.tabPage3.Size = new System.Drawing.Size(316, 235);
+			this.tabPage3.TabIndex = 2;
+			this.tabPage3.Text = "PyBase";
+			this.tabPage3.UseVisualStyleBackColor = true;
+			this.tabPage3.Paint += new System.Windows.Forms.PaintEventHandler(this.TabPage3Paint);
 			// 
 			// label4
 			// 
@@ -434,15 +445,6 @@ namespace mkdb
 			this.toolStripButton6.Name = "toolStripButton6";
 			this.toolStripButton6.Size = new System.Drawing.Size(23, 23);
 			// 
-			// richTextBox1
-			// 
-			this.richTextBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.richTextBox1.Location = new System.Drawing.Point(3, 3);
-			this.richTextBox1.Name = "richTextBox1";
-			this.richTextBox1.Size = new System.Drawing.Size(310, 229);
-			this.richTextBox1.TabIndex = 0;
-			this.richTextBox1.Text = "";
-			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -470,11 +472,10 @@ namespace mkdb
 			this.splitContainer2.ResumeLayout(false);
 			this.tabControl1.ResumeLayout(false);
 			this.tabPage1.ResumeLayout(false);
-			this.tabPage2.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 		}
-		private System.Windows.Forms.RichTextBox richTextBox1;
+		private System.Windows.Forms.TabPage tabPage3;
 		private System.Windows.Forms.ToolStripMenuItem moveDownToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem moveUpToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;

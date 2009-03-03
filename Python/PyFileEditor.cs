@@ -13,65 +13,8 @@ using System.Text.RegularExpressions;
 using System.Collections;
 using System.Collections.Specialized;
 
-namespace mkdb.Python
+namespace textops
 {
-	public enum PyFileSection
-	{
-		PY_HEADER_SECTION = 0,
-		PY_INIT_SECTION = 1,
-		PY_EVENTDECL_SECTION = 2,
-		PY_EVENTIMPL_SECTION = 3,
-		PY_APP_SECTION = 4,
-		//
-		PYBASE_INIT_SECTION = 5,
-		PYBASE_PROPS_SECTION = 6,
-		PYBASE_LAYOUT_SECTION = 7
-	}
-	
-	public class PySection
-	{
-		private int _begin;
-		private int _size;
-		private PyFileSection _sec;
-		
-		public PySection()
-		{
-			_begin = -1;
-			_size = 1;
-		}
-		
-		public int Begin
-		{
-			get	{	return _begin;	}
-			set	{	_begin = value;	}
-		}		
-		public int Size
-		{
-			get	{	return _size;	}
-			set	{	_size = value;	}
-		}				
-		public int End
-		{
-			get	{	return _begin + _size;	}
-		}
-		public PyFileSection Section
-		{
-			get	{	return _sec;	}
-			set	{	_sec = value;	}
-		}
-		
-		public void MoveBeginIndex(int count)
-		{
-			_begin += count;
-		}
-		
-		public void MoveSizeIndex(int count)
-		{
-			_size += count;
-			if (_size < 1)
-				_size = 1;
-		}
-	}
 		
 	
 	public class PyFileEditor
@@ -79,21 +22,13 @@ namespace mkdb.Python
 		private string _pyname;
 		private string _pybasename;
 		private StringCollection _py_mem;
-		private StringCollection _pybase_mem;
-		
-		#region InFile indexes
-		// Begin : begin include 'Comment'
-		// Size : size include 'Comment' --> size == 1 => no code		
 		// pyfile.py
 		private const int _sec_count = 8;
-		private PySection[] _py_sections;
-		#endregion
+		public PySection[] _py_sections;
 		
 		public PyFileEditor()
 		{
-			// _mem = new MemoryStream();
 			_py_mem = new StringCollection();
-			_pybase_mem = new StringCollection();
 			_py_sections = new PySection[_sec_count];
 			for (int i=0; i<_sec_count; i++)
 			{
@@ -114,48 +49,43 @@ namespace mkdb.Python
 			get	{	return _pybasename;		}
 			set	{	_pybasename = value;	}
 		}
+		public StringCollection Lines
+		{
+			get	{	return _py_mem;	}
+		}
 		
-		public void InsertSingleLineToSection(int pos, PyFileSection section, string str)
+		
+		private int SeekToSection(PyFileSection section, int pos)
+		{
+			/*
+	 		* B = 0, S = 0, E = B + S + 1
+	 		* Insert PS = B + 1 + Pos, If (Pos = -1) PS = E;
+	 		*/
+	 		int B = _py_sections[(int)section].Begin;
+	 		int E = _py_sections[(int)section].End;
+			
+			int ps = B + pos + 1;
+			if (pos == -1) 	ps = E;
+			if (ps < 0) 	ps = B + 1;
+			if (ps > E) 	ps = E;
+			
+			return ps;
+		}		
+		
+		public void InsertSingleLine(int pos, PyFileSection section, string str)
 		{
 			// pos : relative to section, -1 mean end of section
 			int row = SeekToSection(section, pos);
-			if ((int)section < 5)
-			{
-				if (row > _py_mem.Count)
-					_py_mem.Add(str);
-				else
-					_py_mem.Insert(row, str);
+			if (row >= _py_mem.Count)
+			{	
+				_py_mem.Add(str);
 			} else {
-				if (row > _pybase_mem.Count)
-					_pybase_mem.Add(str);
-				else
-					_pybase_mem.Insert(row, str);
+				_py_mem.Insert(row, str);
 			}
 			MoveSectionSize(section, 1);
 		}
-		
-		public void InsertBlankLine(PyFileSection after)
-		{
-			// pos : relative to section, -1 mean end of section
-			int row = SeekToSection(after, -1);
-			
-			if ((int)after < 5)
-			{
-				if (row >= _py_mem.Count)
-					_py_mem.Add("\n");
-				else
-					_py_mem.Insert(row + 1, "\n");
-			} else {
-				if (row >= _pybase_mem.Count)
-					_pybase_mem.Add("\n");
-				else
-					_pybase_mem.Insert(row + 1, "\n");
-			}
-			MoveIndexes((PyFileSection)(after+1), 1);
-		}
-		
-		
-		public void InsertLinesToSection(int pos, PyFileSection section, string str)
+				
+		public void InsertLines(int pos, PyFileSection section, string str)
 		{
 			// pos : relative to section, -1 mean end of section
 			string[] arr = Regex.Split(str, "\r\n");
@@ -163,40 +93,61 @@ namespace mkdb.Python
 			int row = SeekToSection(section, pos);
 			for (int i=0; i<count; i++)
 			{
-				if ((int)section < 5)
-					_py_mem.Insert(row+i, arr[i]);
-				else
-					_pybase_mem.Insert(row+i, arr[i]);				
+				if (row + i >= _py_mem.Count)
+				{	
+					_py_mem.Add(arr[i]);
+				} else {
+					_py_mem.Insert(row + i, arr[i]);
+				}
 			}
-			MoveSectionSize(section, 1);
+			MoveSectionSize(section, count);
 		}
-		
-		
-		public void DeleteLineToSection(PyFileSection section, int pos, int rowcount)
+						
+		public void DeleteLine(PyFileSection section, int pos, int rowcount)
 		{
 			// MemoryStream temp = new MemoryStream();
 			int row = SeekToSection(section, pos);
 			for (int i=0; i<rowcount; i++)
 			{
-				if ((int)section < 5)
-					_py_mem.RemoveAt(row + i);
-				else
-					_pybase_mem.RemoveAt(row + i);
+				_py_mem.RemoveAt(row + i);
 			}
 			MoveSectionSize(section, -rowcount);
 		}
 		
-		private int SeekToSection(PyFileSection section, int pos)
+		public void ReplaceEntireLine(int pos, PyFileSection section, string str)
 		{
-			int ps = _py_sections[(int)section].Begin + pos + 1;
-			if (pos == -1) ps = _py_sections[(int)section].End - 1;
-			if (ps < 0) ps = _py_sections[(int)section].Begin + 1;
-			if (ps > _py_sections[(int)section].End)
-				ps = _py_sections[(int)section].End - 1;
-			
-			return ps;
+			// pos : relative to section, -1 mean end of section
+			int row = SeekToSection(section, pos);
+			if (row < _py_mem.Count)
+			{	
+				_py_mem[row] = str;
+			}
+		}				
+		
+		
+		public void InsertBeforeSection(PyFileSection section, string str)
+		{
+			// pos : relative to section, -1 mean end of section
+			int row = SeekToSection(section, 0);
+			if (row - 1 < 0)  row = 0; else row--;
+			_py_mem.Insert(row, str);
+			MoveIndexes(section, 1);
 		}
 		
+		public void InsertAfterSection(PyFileSection section, string str)
+		{
+			// pos : relative to section, -1 mean end of section
+			int row = SeekToSection(section, -1);
+			row++;
+			if (row >= _py_mem.Count)
+			{
+				_py_mem.Add(str);
+			} else {
+				_py_mem.Insert(row, str);
+			}
+			MoveIndexes((PyFileSection)(section+1), 1);
+		}				
+				
 		public void MoveIndexes(PyFileSection startFrom, int count)
 		{
 			for (int i = (int)startFrom; i<_sec_count; i++)
@@ -214,100 +165,111 @@ namespace mkdb.Python
 			}
 		}
 				
-		private void SetDefaultIndexes()
+		public void ParsePyFile(string pyfilename, string pybasefilename)
 		{
-			/*
-			# --- Header : begin ---
-			# --- Header : end ---
-
-			# --- InitBase : begin ---
-			# --- InitBase : end ---
-
-			# --- Properties : begin ---
-			# --- Properties : end ---
-
-			# --- Layout : begin ---
-			# --- Layout : end ---
-
-
-			# --- App : begin ---
-			# --- App : end ---
-			*/
-			_py_sections[0].Begin = 1;
-			_py_sections[1].Begin = 4;
-			_py_sections[2].Begin = 7;
-			_py_sections[3].Begin = 10;
-			_py_sections[4].Begin = 13;
-			_py_sections[5].Begin = 1;
-			_py_sections[6].Begin = 4;
-			_py_sections[7].Begin = 7;
-		}
-		
-		public void ParsePyFile(string filename)
-		{
-			StreamReader read = new StreamReader(filename);
+			_py_mem.Clear();
+			StreamReader read = new StreamReader(pyfilename);
 			while (!read.EndOfStream)
 			{
 				_py_mem.Add(read.ReadLine());
 			}
 			read.Close();
-		}
-		
-		public void ParsePyBaseFile(string filename)
-		{
-			StreamReader read = new StreamReader(filename);
+			read = new StreamReader(pybasefilename);
 			while (!read.EndOfStream)
 			{
-				_pybase_mem.Add(read.ReadLine());
+				_py_mem.Add(read.ReadLine());
 			}
 			read.Close();
-		}	
-		
-		public StringCollection PyStream
-		{
-			get	{	return _py_mem;	}
+			// Create Indexes
+			CreateIndexes();
 		}
-
+		
+		private void CreateIndexes()
+		{
+			int count = 0;
+			int cursize = 0;
+			foreach (string item in _py_mem)
+			{
+				switch (item) {
+					case "# --- begin Header section ---\n" :
+						_py_sections[0].Begin = count;
+						cursize = 0;
+						break;
+					case "# --- end Header section ---\n" :
+						_py_sections[0].Size = cursize;
+						break;
+					case "# --- begin Init section ---\n" :
+						_py_sections[1].Begin = count;
+						cursize = 0;
+						break;
+					case "# --- end Init section ---\n" :
+						_py_sections[1].Size = cursize;
+						break;
+					case "# --- begin EventDecl section ---\n" :
+						_py_sections[2].Begin = count;
+						cursize = 0;
+						break;
+					case "# --- end EventDecl section ---\n" :
+						_py_sections[2].Size = cursize;
+						break;
+					case "# --- begin EventImpl section ---\n" :
+						_py_sections[3].Begin = count;
+						cursize = 0;
+						break;
+					case "# --- end EventImpl section ---\n" :
+						_py_sections[3].Size = cursize;
+						break;
+					case "# --- begin App section ---\n" :
+						_py_sections[4].Begin = count;
+						cursize = 0;
+						break;
+					case "# --- end App section ---\n" :
+						_py_sections[4].Size = cursize;
+						break;
+				}
+				count++;
+				cursize++;
+			}
+		}
+				
 		public void CreateEmpty()
 		{
 			// Header
-			_py_sections[0].Begin = 0;			
-			InsertSingleLineToSection(-1, PyFileSection.PY_HEADER_SECTION, "#!/usr/bin/env python\n");
-			InsertSingleLineToSection(-1, PyFileSection.PY_HEADER_SECTION, "# --- begin Header section ---\n");
-			InsertSingleLineToSection(-1, PyFileSection.PY_HEADER_SECTION, "# generated by mkdb\n");
-			InsertSingleLineToSection(-1, PyFileSection.PY_HEADER_SECTION, "\n");
-			InsertSingleLineToSection(-1, PyFileSection.PY_HEADER_SECTION, "import wx\n");
-			InsertSingleLineToSection(-1, PyFileSection.PY_HEADER_SECTION, "\n");
-			InsertSingleLineToSection(-1, PyFileSection.PY_HEADER_SECTION, "# --- end Header section ---\n");
-			InsertBlankLine(PyFileSection.PY_HEADER_SECTION);
-			// Init			
-			InsertSingleLineToSection(-1, PyFileSection.PY_INIT_SECTION, "# --- begin Init section ---\n");
-			InsertSingleLineToSection(-1, PyFileSection.PY_INIT_SECTION, "# --- end Init section ---\n");
-			InsertBlankLine(PyFileSection.PY_INIT_SECTION);
-			// Event Decl			
-			InsertSingleLineToSection(-1, PyFileSection.PY_EVENTDECL_SECTION, "# --- begin EventDecl section ---\n");
-			InsertSingleLineToSection(-1, PyFileSection.PY_EVENTDECL_SECTION, "# --- end EventDecl section ---\n");
-			InsertBlankLine(PyFileSection.PY_EVENTDECL_SECTION);
-			// Event Impl			
-			InsertSingleLineToSection(-1, PyFileSection.PY_EVENTIMPL_SECTION, "# --- begin EventImpl section ---\n");
-			InsertSingleLineToSection(-1, PyFileSection.PY_EVENTIMPL_SECTION, "# --- end EventImpl section ---\n");
-			InsertBlankLine(PyFileSection.PY_EVENTIMPL_SECTION);
-			// App			
-			InsertSingleLineToSection(-1, PyFileSection.PY_APP_SECTION, "# --- begin App section ---\n");
-			InsertSingleLineToSection(-1, PyFileSection.PY_APP_SECTION, "# --- end App section ---\n");
+			_py_sections[0].Begin = 1;
+			_py_mem.Add("#!/usr/bin/env python\n");
+			_py_mem.Add("# --- begin Header section ---\n");
+			_py_mem.Add("# --- end Header section ---\n");
+			_py_mem.Add("\n");
+			_py_sections[1].Begin = _py_mem.Count;
+			_py_mem.Add("# --- begin Init section ---\n");
+			_py_mem.Add("# --- end Init section ---\n");
+			_py_mem.Add("\n");
+			_py_sections[2].Begin = _py_mem.Count;
+			_py_mem.Add("# --- begin EventDecl section ---\n");
+			_py_mem.Add("# --- end EventDecl section ---\n");
+			_py_mem.Add("\n");
+			_py_sections[3].Begin = _py_mem.Count;
+			_py_mem.Add("# --- begin EventImpl section ---\n");
+			_py_mem.Add("# --- end EventImpl section ---\n");
+			_py_mem.Add("\n");
+			_py_sections[4].Begin = _py_mem.Count;
+			_py_mem.Add("# --- begin App section ---\n");
+			_py_mem.Add("# --- end App section ---\n");
+			_py_sections[5].Begin = _py_mem.Count;
+			_py_mem.Add("# --- begin InitBase section ---\n");
+			_py_mem.Add("# --- end InitBase section ---\n");
+			_py_mem.Add("\n");
+			_py_sections[6].Begin = _py_mem.Count;
+			_py_mem.Add("# --- begin Props section ---\n");
+			_py_mem.Add("# --- end Props section ---\n");
+			_py_mem.Add("\n");
+			_py_sections[7].Begin = _py_mem.Count;
+			_py_mem.Add("# --- begin Layout section ---\n");
+			_py_mem.Add("# --- end Layout section ---\n");
+			InsertSingleLine(-1, PyFileSection.PY_HEADER_SECTION, "# generated by mkdb\n");
+			InsertSingleLine(-1, PyFileSection.PY_HEADER_SECTION, "\n");
+			InsertSingleLine(-1, PyFileSection.PY_HEADER_SECTION, "import wx\n");
+			InsertSingleLine(-1, PyFileSection.PY_HEADER_SECTION, "\n");
 		}
-		
-		/*
-		public Stream GetPyStream()
-		{
-			MemoryStream stream = new MemoryStream();
-			foreach (string item in _py_mem)
-			{
-				byte[] byt = Encoding.ASCII.GetBytes(item);
-				stream.Write(byt, 0, (int)byt.Length);
-			}
-			return stream;
-		}
-		*/
 	}
 }

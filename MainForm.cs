@@ -22,10 +22,15 @@ namespace mkdb
 	public partial class MainForm : Form
 	{	
 		protected ArrayList _layout;
+		protected Python.SyntaxRichTextBox richTextBox1;
+		protected Python.SyntaxRichTextBox richTextBox2;
 		
 		public MainForm()
 		{
 			InitializeComponent();
+			InitSyntaxRichTextBox();
+			InitSyntaxHighlighter();
+			
 			_layout = new ArrayList();
 			Common.Instance().ObjPropsPanel = objprops;
 			Common.Instance().ObjTree = objtree;
@@ -35,6 +40,7 @@ namespace mkdb
 			int idx = objtree.Nodes.Add(new WidgetTreeNode("Project"));
 			WidgetTreeNode node = (WidgetTreeNode)objtree.Nodes[idx];
 			node.Widget = new wiwApp(null, null);
+			node.Widget.InsertWidget();
 			objtree.SelectedNode = node;
 			
 			AddToToolStrip(new Widgets.Frame.wtbFrame("Frame", ""));
@@ -49,6 +55,28 @@ namespace mkdb
 			
 			// Init Python Editor
 			InitPythonEditor();
+		}
+
+		void InitSyntaxRichTextBox()
+		{
+			this.SuspendLayout();
+			// First Text Box
+			this.richTextBox1 = new mkdb.Python.SyntaxRichTextBox();
+			this.richTextBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.richTextBox1.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.richTextBox1.Location = new System.Drawing.Point(0, 0);
+			this.richTextBox1.Name = "richTextBox1";
+			this.richTextBox1.ReadOnly = true;
+			this.tabPage2.Controls.Add(richTextBox1);			
+			// Second Text Box
+			this.richTextBox2 = new mkdb.Python.SyntaxRichTextBox();
+			this.richTextBox2.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.richTextBox2.Font = new System.Drawing.Font("Courier New", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.richTextBox2.Location = new System.Drawing.Point(0, 0);
+			this.richTextBox2.Name = "richTextBox2";
+			this.richTextBox2.ReadOnly = true;
+			this.tabPage3.Controls.Add(richTextBox2);			
+			this.ResumeLayout();
 		}
 		
 		void ObjtreeBeforeSelect(object sender, TreeViewCancelEventArgs e)
@@ -216,14 +244,98 @@ namespace mkdb
 		
 		void InitPythonEditor()
 		{
+			bool b1 = false;
 			Python.PyFileEditor python = Common.Instance().PyEditor;
-			python.InsertSingleLineToSection(-1, Python.PyFileSection.PY_INIT_SECTION, "class MyFrame1(wx.Frame):\n");
-			python.InsertSingleLineToSection(-1, Python.PyFileSection.PY_INIT_SECTION, "\tdef __init__(self, *args, **kwds):\n");
-			foreach (string item in python.PyStream)
+			foreach (string item in python.Lines)
 			{
-				richTextBox1.AppendText(item);
+				if (item == "# --- begin InitBase section ---\n") b1 = true;
+				if (!b1)
+				{
+					richTextBox1.AppendText(item);
+				} else {
+					richTextBox2.AppendText(item);					
+				}
 			}
-			// richTextBox1.LoadFile(python.GetPyStream(), RichTextBoxStreamType.PlainText);
+			richTextBox1.ProcessAllLines();
+			richTextBox2.ProcessAllLines();
 		}		
+		
+		void TabPage2Paint(object sender, PaintEventArgs e)
+		{
+			bool b1 = false;
+			richTextBox1.Clear();
+			foreach (string item in Common.Instance().PyEditor.Lines)
+			{
+				if (item == "# --- begin InitBase section ---\n") break;
+				if (!b1)
+				{
+					richTextBox1.AppendText(item);
+				}
+			}
+			richTextBox1.ProcessAllLines();			
+		}
+		
+		
+		void TabPage3Paint(object sender, PaintEventArgs e)
+		{
+			bool b1 = false;			
+			richTextBox2.Clear();
+			foreach (string item in Common.Instance().PyEditor.Lines)
+			{
+				if (item == "# --- begin InitBase section ---\n") b1 = true;
+				if (b1)
+				{
+					richTextBox2.AppendText(item);
+				}
+			}
+			richTextBox2.ProcessAllLines();						
+		}		
+		
+		void InitSyntaxHighlighter()
+		{
+			// Add the keywords to the list.
+    		richTextBox1.Settings.Keywords.Add("if");
+    		richTextBox1.Settings.Keywords.Add("def");
+    		richTextBox1.Settings.Keywords.Add("class");
+
+   	 		// Set the comment identifier. 
+    		richTextBox1.Settings.Comment = "# ---";
+
+    		// Set the colors that will be used.
+    		richTextBox1.Settings.KeywordColor = Color.Blue;
+    		richTextBox1.Settings.CommentColor = Color.Green;
+    		richTextBox1.Settings.StringColor = Color.Gray;
+    		richTextBox1.Settings.IntegerColor = Color.Red;
+
+    		// Let's not process strings and integers.
+    		richTextBox1.Settings.EnableStrings = true;
+    		richTextBox1.Settings.EnableIntegers = true;
+
+    		// Let's make the settings we just set valid by compiling
+    		// the keywords to a regular expression.
+			richTextBox1.CompileKeywords();
+			
+			// Add the keywords to the list.
+    		richTextBox2.Settings.Keywords.Add("if");
+    		richTextBox2.Settings.Keywords.Add("def");
+    		richTextBox2.Settings.Keywords.Add("class");
+
+   	 		// Set the comment identifier. 
+    		richTextBox2.Settings.Comment = "# ---";
+
+    		// Set the colors that will be used.
+    		richTextBox2.Settings.KeywordColor = Color.Blue;
+    		richTextBox2.Settings.CommentColor = Color.Green;
+    		richTextBox2.Settings.StringColor = Color.Gray;
+    		richTextBox2.Settings.IntegerColor = Color.Red;
+
+    		// Let's not process strings and integers.
+    		richTextBox2.Settings.EnableStrings = true;
+    		richTextBox2.Settings.EnableIntegers = true;
+
+    		// Let's make the settings we just set valid by compiling
+    		// the keywords to a regular expression.
+			richTextBox1.CompileKeywords();
+		}
 	}
 }
