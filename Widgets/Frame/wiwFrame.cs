@@ -26,6 +26,9 @@ namespace mkdb.Widgets
 		protected Point _real_pos;
 		protected Size _real_size;
 		
+		protected Python.PySection _py_class;
+		protected Python.PySection _py_base_class;
+		
 		#region SimpleFrame Defs
     	private enum mSizing {
       		NONE,
@@ -119,19 +122,10 @@ namespace mkdb.Widgets
 				
 		public bool InsertWidget()
 		{
-			Python.PyFileEditor ed = Common.Instance().PyEditor;
-			// Insert Text
-			// InitBase
-			/*
-			class MyFrame(wx.Frame):
-    			def __init__(self, *args, **kwds):
-        		kwds["style"] = wx.DEFAULT_FRAME_STYLE
-        		wx.Frame.__init__(self, *args, **kwds)
-			*/
-			ed.InsertSingleLine(-1, Python.PyFileSection.PYBASE_INIT_SECTION, "class " + _props.Name + "(wx.Frame):\n");
-			ed.InsertSingleLine(-1, Python.PyFileSection.PYBASE_INIT_SECTION, "\tdef __init__(self, *args, **kwds):\n");
-			ed.InsertSingleLine(-1, Python.PyFileSection.PYBASE_INIT_SECTION, "\tkwds[\"style\"] = " + _props.Style.ToLong.ToString() + "\n");
-			ed.InsertSingleLine(-1, Python.PyFileSection.PYBASE_INIT_SECTION, "\twx.Frame.__init__(self, *args, **kwds)\n");
+			// Python.PyFileEditor ed = Common.Instance().PyEditor;
+			// Create python file struct
+			// and base python file struct
+			
 			return true;
 		}
 		public bool DeleteWidget()
@@ -398,12 +392,5 @@ namespace mkdb.Widgets
 			e.Skip();
 		}						
 		#endregion		
-		/*
-		if (m_inner_frame_resized != null)
-		{
-			wx.CommandEvent _event = new wx.CommandEvent(wxEVT_INNER_FRAME_RESIZED, this.ID);
-			this.EventHandler.ProcessEvent(_event);
-		}
-		*/		
 	}
 }

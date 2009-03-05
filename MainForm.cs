@@ -246,33 +246,12 @@ namespace mkdb
 		{
 			bool b1 = false;
 			Python.PyFileEditor python = Common.Instance().PyEditor;
-			foreach (string item in python.Lines)
-			{
-				if (item == "# --- begin InitBase section ---\n") b1 = true;
-				if (!b1)
-				{
-					richTextBox1.AppendText(item);
-				} else {
-					richTextBox2.AppendText(item);					
-				}
-			}
-			richTextBox1.ProcessAllLines();
-			richTextBox2.ProcessAllLines();
 		}		
 		
 		void TabPage2Paint(object sender, PaintEventArgs e)
 		{
 			bool b1 = false;
 			richTextBox1.Clear();
-			foreach (string item in Common.Instance().PyEditor.Lines)
-			{
-				if (item == "# --- begin InitBase section ---\n") break;
-				if (!b1)
-				{
-					richTextBox1.AppendText(item);
-				}
-			}
-			richTextBox1.ProcessAllLines();			
 		}
 		
 		
@@ -280,15 +259,6 @@ namespace mkdb
 		{
 			bool b1 = false;			
 			richTextBox2.Clear();
-			foreach (string item in Common.Instance().PyEditor.Lines)
-			{
-				if (item == "# --- begin InitBase section ---\n") b1 = true;
-				if (b1)
-				{
-					richTextBox2.AppendText(item);
-				}
-			}
-			richTextBox2.ProcessAllLines();						
 		}		
 		
 		void InitSyntaxHighlighter()

@@ -12,18 +12,17 @@ using System.Collections.Specialized;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace textops
+namespace mkdb.Python
 {
 	public class PyParser
 	{
 		private StreamReader _t;
-		private PySection _main;
 		
 		public PyParser()
 		{			
 		}
 		
-		public void Render(StringCollection box)
+		public void Render(StringCollection box, PySection _main)
 		{
 			RenderSection(box, _main);
 		}
@@ -70,17 +69,22 @@ namespace textops
 				InsertToPos(box, section.End, "# end " + section.Name + "\n");
 			}
 		}
-		
-		public void ParseFile(string filename)
+
+		public void ParseFile(StreamReader stream, PySection _main)
 		{
-			_t = File.OpenText(filename);
+			// _t = File.OpenText(filename);
 			StringCollection coll = new StringCollection();
-			_main = new PySection("");
-			while (!_t.EndOfStream)
+			while (!stream.EndOfStream)
 			{
-				coll.Add(_t.ReadLine());
+				coll.Add(stream.ReadLine());
 			}
 			ParseFileSection(coll, _main, 0, coll.Count);
+		}		
+		
+		public void ParseFile(string filename, PySection _main)
+		{
+			_t = File.OpenText(filename);
+			ParseFile(_t, _main);
 		}
 		
 		public int ParseFileSection(StringCollection sec, PySection section, int begin, int end)
@@ -121,7 +125,7 @@ namespace textops
 				count++;
 			} 
 			return count;
-		}		
-		
-	}		
+		}			
+	}
+	
 }

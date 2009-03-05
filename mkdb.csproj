@@ -51,6 +51,8 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Python\PyFileEditor.cs" />
+    <Compile Include="Python\PyParser.cs" />
+    <Compile Include="Python\PySection.cs" />
     <Compile Include="Python\SyntaxRichTextBox.cs" />
     <Compile Include="WidgetProps.cs" />
     <Compile Include="Widgets\Ado\wiwAdo.cs" />
@@ -92,6 +94,9 @@
     </EmbeddedResource>
     <None Include="app.py" />
     <None Include="app_struct.py" />
+    <EmbeddedResource Include="Python\app_template.py" />
+    <EmbeddedResource Include="Python\base_class_template.py" />
+    <EmbeddedResource Include="Python\class_template.py" />
     <None Include="WidgetList.txt" />
     <EmbeddedResource Include="Widgets\Frame\frame.jpg" />
     <EmbeddedResource Include="Widgets\BoxSizer\sizer.jpg" />
