@@ -49,6 +49,7 @@ namespace mkdb.Widgets.GridSizer
 			Common.Instance().CheckParentForSizer(pc, ps, out win, out siz);
 			WidgetTreeNode node = new WidgetTreeNode("GridSizer");
 			node.Widget = new wiwGridSizer(win, siz);
+			node.Widget.InsertWidget();			
 			// wdbGridSizer gsizer = new wdbGridSizer(win, siz);
 			if (ps != null)	
 				ps.Nodes.Add(node);

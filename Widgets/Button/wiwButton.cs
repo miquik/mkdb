@@ -164,19 +164,7 @@ namespace mkdb.Widgets
             }
             this.UpdateWindowUI();            
         }
-		/*
-		int FindPositionInSizerList(IWDBBase node, IWXSizer sizer)
-		{
-			int i=0;
-			foreach (IWDBBase e in sizer.List)
-			{
-				if (node.Equals(e))
-					return i;
-				i++;
-			}
-			return -1;
-		}
-		*/		
+
 		public void SetWidgetProps()
 		{
 			_props.PropertyChanged += new PropertyChangedEventHandler(winProps_PropertyChanged);

@@ -12,6 +12,7 @@ using System.Windows.Forms.Design;
 using System.Windows.Forms;
 using System.Drawing.Design;
 using System.Drawing;
+using System.Text.RegularExpressions;
 
 
 namespace mkdb.Widgets
@@ -20,12 +21,19 @@ namespace mkdb.Widgets
 	{
 		protected wdbAppProps _props;
 		protected bool _is_selected;
+		protected Python.PySection _section;
 			
 		public wiwApp(wx.Window _pc, wx.Sizer _ps) : base(null)
 		{
 			_props = new wdbAppProps();
 			SetDefaultProps("Project");
 			SetWidgetProps();
+		}
+		
+		public Python.PySection AppSection
+		{
+			get	{	return _section;	}
+			set	{	_section = value;	}
 		}
 		
 		#region IWidgetElem Interface implementation
@@ -109,6 +117,42 @@ namespace mkdb.Widgets
 		public void HighlightSelection()
 		{			
 		}
+		
+		private void SetPythonText(string appname)
+		{
+			if (_section == null)
+				return;
+			Python.PySection appbody = _section.FindChildByName("App");
+			// class MyApp(wxApp):
+			string regexp1 = @"^(?<space>[\t\s]*)class\s*(?<appreg>\w*)\(";
+			string regexp2 = @"${space}class " + appname + "(";
+			Regex r = new Regex(regexp1);
+			for (int i=0; i<appbody.Lines.Count; i++)
+			{				
+				Match m = r.Match(appbody.Lines[i]);
+				if (m.Success)
+				{
+					// Change name
+					appbody.Lines[i] = r.Replace(appbody.Lines[i], regexp2);
+					break;
+				}
+			}
+			Python.PySection apprun = _section.FindChildByName("Run");
+			// app = MyApp(0)
+			regexp1 = @"^(?<space>[\t\s]*)app\s*=\s*(?<appreg>\w*)\(";
+			regexp2 = @"${space}app = " + appname + "(";
+			r = new Regex(regexp1);
+			for (int i=0; i<appbody.Lines.Count; i++)
+			{				
+				Match m = r.Match(apprun.Lines[i]);
+				if (m.Success)
+				{
+					// Change name
+					apprun.Lines[i] = r.Replace(apprun.Lines[i], regexp2);
+					break;
+				}
+			}
+		}
 								
 		public void winProps_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -116,7 +160,11 @@ namespace mkdb.Widgets
             {
             	case "Name":
             		this.Name = _props.Name;
+            		_section.Name = _props.Name;
 					Common.Instance().ObjTree.SelectedNode.Text = _props.Name;		
+            		break;
+            	case "AppName":
+            		SetPythonText(_props.AppName);
             		break;
             }
             this.UpdateWindowUI();            

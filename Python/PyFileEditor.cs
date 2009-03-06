@@ -76,6 +76,11 @@ namespace mkdb.Python
 			get	{	return _app_file;	}
 		}
 		
+		public PyParser Parser
+		{
+			get	{	return _parser;	}
+		}
+		
 		public PyClassFile CreateNewClassFile(string name)
 		{
 			PyClassFile pf = new PyClassFile(name);

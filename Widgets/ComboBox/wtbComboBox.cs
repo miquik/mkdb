@@ -49,6 +49,7 @@ namespace mkdb.Widgets.Combobox
 			Common.Instance().CheckParentForWidget(pc, ps, out win);
 			WidgetTreeNode node = new WidgetTreeNode("ComboBox");
 			node.Widget = new wiwCombobox(win, (wx.Sizer)ps.Widget);
+			node.Widget.InsertWidget();			
 			// wdbCombobox item = new wdbCombobox(win, (wx.Sizer)ps.Widget);
 			ps.Nodes.Add(node);
 			node.ImageIndex = _img_index;

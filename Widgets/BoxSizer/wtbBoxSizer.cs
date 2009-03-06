@@ -50,6 +50,7 @@ namespace mkdb.Widgets.BoxSizer
 			Common.Instance().CheckParentForSizer(pc, ps, out win, out siz);
 			WidgetTreeNode node = new WidgetTreeNode("BoxSizer");
 			node.Widget = new wiwBoxSizer(win, siz);
+			node.Widget.InsertWidget();			
 			// wdbBoxSizer bsizer = new wdbBoxSizer(win, siz);
 			if (ps != null)	
 				ps.Nodes.Add(node);

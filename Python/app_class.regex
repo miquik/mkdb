@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<SavedRegex xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <FindPattern>^[\t\s]*class\s*(\w*)\(</FindPattern>
+  <ReplacePattern />
+  <Options>IgnoreCase</Options>
+</SavedRegex>

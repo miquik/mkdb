@@ -49,6 +49,7 @@ namespace mkdb.Widgets.Button
 			Common.Instance().CheckParentForWidget(pc, ps, out win);
 			WidgetTreeNode node = new WidgetTreeNode("Button");
 			node.Widget = new wiwButton(win, (wx.Sizer)ps.Widget);
+			node.Widget.InsertWidget();
 			// wdbButton btn = new wdbButton(win, (wx.Sizer)ps.Widget);
 			ps.Nodes.Add(node);
 			node.ImageIndex = _img_index;

@@ -9,6 +9,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Drawing;
 using System.Windows.Forms;
 using mkdb.Widgets;
@@ -55,6 +56,8 @@ namespace mkdb
 			
 			// Init Python Editor
 			InitPythonEditor();
+			wiwApp theapp = (wiwApp)node.Widget;
+			theapp.AppSection = Common.Instance().PyEditor.ApplicationSection;
 		}
 
 		void InitSyntaxRichTextBox()
@@ -243,21 +246,26 @@ namespace mkdb
 		}
 		
 		void InitPythonEditor()
-		{
-			bool b1 = false;
-			Python.PyFileEditor python = Common.Instance().PyEditor;
+		{			
+			Python.PyFileEditor pyed = Common.Instance().PyEditor;
+			// NOTHING TO DO
 		}		
 		
 		void TabPage2Paint(object sender, PaintEventArgs e)
 		{
-			bool b1 = false;
+			StringCollection coll = new StringCollection();
 			richTextBox1.Clear();
+			Python.PyFileEditor pyed = Common.Instance().PyEditor;
+			pyed.Parser.Render(coll, pyed.ApplicationSection);
+			foreach (string it in coll)
+			{
+				richTextBox1.AppendText(it);
+			}
 		}
 		
 		
 		void TabPage3Paint(object sender, PaintEventArgs e)
 		{
-			bool b1 = false;			
 			richTextBox2.Clear();
 		}		
 		

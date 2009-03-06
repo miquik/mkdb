@@ -40,14 +40,17 @@ namespace mkdb.Widgets.Frame
 			TreeView objtree = Common.Instance().ObjTree;
 			WidgetTreeNode node = new WidgetTreeNode("Frame");
 			//
+			//			
 			wx.Frame hfrm = new wx.Frame(null, -1, "");		
 			node.Widget = new wiwFrame(hfrm);
 			wx.Window win = (wx.Window)node.Widget;
-			Win32Utils.SetParent(win.GetHandle(), Common.Instance().Canvas.Handle);
 			node.Widget.InsertWidget();
+			Win32Utils.SetParent(win.GetHandle(), Common.Instance().Canvas.Handle);
 			// wdbFrame wdbf = new wdbFrame(null, null);
 			node.ImageIndex = _img_index;
 			node.SelectedImageIndex = _img_index;
+			WidgetTreeNode app = (WidgetTreeNode)objtree.Nodes[0];
+			app.Nodes.Add(node);
 			objtree.SelectedNode = node;
 			// _tapp.Nodes.Add(wdbf);			
 			// Common.Instance().ObjTree.SelectedNode = wdbf;

@@ -49,6 +49,7 @@ namespace mkdb.Widgets.TextEdit
 			Common.Instance().CheckParentForWidget(pc, ps, out win);
 			WidgetTreeNode node = new WidgetTreeNode("TextEdit");
 			node.Widget = new wiwTextEdit(win, (wx.Sizer)ps.Widget);
+			node.Widget.InsertWidget();			
 			// wdbTextEdit btn = new wdbTextEdit(win, (wx.Sizer)ps.Widget);
 			ps.Nodes.Add(node);
 			node.ImageIndex = _img_index;

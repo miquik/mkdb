@@ -47,6 +47,7 @@ namespace mkdb.Widgets.Label
 			Common.Instance().CheckParentForWidget(pc, ps, out win);
 			WidgetTreeNode node = new WidgetTreeNode("Label");
 			node.Widget = new wiwLabel(win, (wx.Sizer)ps.Widget);
+			node.Widget.InsertWidget();			
 			// wdbLabel lab = new wdbLabel(win, (wx.Sizer)ps.Widget);
 			ps.Nodes.Add(node);
 			node.ImageIndex = _img_index;

@@ -3,13 +3,13 @@
 
 import wx
 
-# begin MyApp
+# begin App
 class MyApp(wxApp):
 	# begin OnInit
     def OnInit(self):
         return true
 	# end OnInit
-# end MyApp
+# end App
 
 # begin Run
 app = MyApp(0)

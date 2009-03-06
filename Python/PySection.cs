@@ -8,6 +8,7 @@
  */
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -31,14 +32,14 @@ namespace mkdb.Python
 		private int _begin;
 		private int _size;
 		private	StringCollection _lines;
-		private ArrayList _children;		
+		private List<PySection> _children;		
 		
 		public PySection(string name)
 		{
 			_name = name;
 			_begin = 0;
 			_size = 0;
-			_children = new ArrayList();
+			_children = new List<PySection>();
 			_lines = new StringCollection();
 		}
 		
@@ -61,7 +62,7 @@ namespace mkdb.Python
 		{
 			get	{	return _begin + _size + 1;	}
 		}
-		public ArrayList Children
+		public List<PySection> Children
 		{
 			get	{	return _children;	}
 		}
@@ -82,6 +83,10 @@ namespace mkdb.Python
 			Size -= sec.Size;
 		}
 		
+		public PySection FindChildByName(string childname)
+		{
+			return _children.Find(delegate(PySection ps){return ps.Name == childname;});
+		}
 		
 		public void MoveBeginIndex(int count)
 		{

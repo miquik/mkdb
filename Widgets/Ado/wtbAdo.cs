@@ -48,6 +48,7 @@ namespace mkdb.Widgets.Ado
 			Common.Instance().CheckParentForWidget(pc, ps, out win);
 			WidgetTreeNode node = new WidgetTreeNode("Ado");
 			node.Widget = new wiwAdo(win, (wx.Sizer)ps.Widget);
+			node.Widget.InsertWidget();			
 			ps.Nodes.Add(node);
 			node.ImageIndex = _img_index;
 			node.SelectedImageIndex = _img_index;			
