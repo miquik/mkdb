@@ -88,6 +88,77 @@ namespace mkdb.Python
 			return _children.Find(delegate(PySection ps){return ps.Name == childname;});
 		}
 		
+		public Match RegexFindAndReplace(string pattern, string newstr, string groupName)
+		{
+			Regex r = new Regex(pattern);
+			for (int i=0; i<_lines.Count; i++)
+			{				
+				Match m = r.Match(_lines[i]);
+				if (m.Success)
+				{
+					// Change name
+					Group gr = m.Groups[groupName];
+					string temp = _lines[i].Replace(gr.Value, newstr);
+					_lines[i] = temp;
+					return m;
+				}
+			}		
+			return null;
+		}
+		
+		public void RegexFindAndReplaceSub(string pattern, string newstr, string groupName)
+		{
+			Regex r = new Regex(pattern);
+			for (int i=0; i<_lines.Count; i++)
+			{				
+				Match m = r.Match(_lines[i]);
+				if (m.Success)
+				{
+					// Change name
+					Group gr = m.Groups[groupName];
+					string temp = _lines[i].Replace(gr.Value, newstr);
+					_lines[i] = temp;
+				}
+			}		
+			foreach (PySection s in _children)
+			{
+				s.RegexFindAndReplaceSub(pattern, newstr, groupName);
+			}
+		}		
+		
+		public bool FindAndReplace(string oldstr, string newstr)
+		{
+			for (int i=0; i<_lines.Count; i++)
+			{								
+				if (_lines[i].Contains(oldstr))
+				{
+					// Change name
+					string temp = _lines[i].Replace(oldstr, newstr);
+					_lines[i] = temp;
+					return true;
+				}
+			}		
+			return false;			
+		}
+		
+		public void FindAndReplaceSub(string oldstr, string newstr)
+		{
+			for (int i=0; i<_lines.Count; i++)
+			{								
+				if (_lines[i].Contains(oldstr))
+				{
+					// Change name
+					string temp = _lines[i].Replace(oldstr, newstr);
+					_lines[i] = temp;
+				}
+			}		
+			foreach (PySection s in _children)
+			{
+				s.FindAndReplaceSub(oldstr, newstr);
+			}
+		}
+		
+		
 		public void MoveBeginIndex(int count)
 		{
 			_begin += count;

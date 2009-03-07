@@ -3,14 +3,14 @@
 
 import wx
 
-# begin InheritFrame
-class InheritFrame(MyFrame1):
+# begin InheritedFrame
+class InheritFrame(BaseFrame):
 	# begin __init__
     def __init__(self, *args, **kwds) :
-    	MyFrame1.__init__(self, *args, **kwds)
+    	BaseFrame.__init__(self, *args, **kwds)
 	# end __init__
 
 	# begin events
 	# end events
 
-# end InheritFrame
+# end InheritedFrame

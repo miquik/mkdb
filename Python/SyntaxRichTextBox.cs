@@ -21,18 +21,11 @@ namespace mkdb.Python
 		private string m_strKeywords = "";
 		private int m_nCurSelection = 0;
 
-		/// <summary>
-		/// The settings.
-		/// </summary>
 		public SyntaxSettings Settings
 		{
 			get { return m_settings; }
 		}
 		
-		/// <summary>
-		/// WndProc
-		/// </summary>
-		/// <param name="m"></param>
 		protected override void WndProc(ref System.Windows.Forms.Message m)
 		{
 			if (m.Msg == 0x00f)
@@ -45,36 +38,34 @@ namespace mkdb.Python
 			else
 				base.WndProc(ref m);
 		}
-		/// <summary>
-		/// OnTextChanged
-		/// </summary>
-		/// <param name="e"></param>
+		
+		public int LineStart
+		{
+			get	{	return m_nLineStart;	}
+			set	{	m_nLineStart = value;	}
+		}
+		
+		public int LineEnd
+		{
+			get	{	return m_nLineEnd;	}
+			set	{	m_nLineEnd = value;	}
+		}		
+
 		protected override void OnTextChanged(EventArgs e)
 		{
-			// Calculate shit here.
-			m_nContentLength = this.TextLength;
-
-			int nCurrentSelectionStart = SelectionStart;
-			int nCurrentSelectionLength = SelectionLength;
-
 			m_bPaint = false;
-
-			// Find the start of the current line.
-			m_nLineStart = nCurrentSelectionStart;
-			while ((m_nLineStart > 0) && (Text[m_nLineStart - 1] != '\n'))
-				m_nLineStart--;
-			// Find the end of the current line.
-			m_nLineEnd = nCurrentSelectionStart;
-			while ((m_nLineEnd < Text.Length) && (Text[m_nLineEnd] != '\n'))
-				m_nLineEnd++;
+			
 			// Calculate the length of the line.
+			if (m_nLineEnd > Text.Length)
+				m_nLineEnd = Text.Length;
 			m_nLineLength = m_nLineEnd - m_nLineStart;
-			// Get the current line.
-			m_strLine = Text.Substring(m_nLineStart, m_nLineLength);
-
-			// Process this line.
-			ProcessLine();
-
+			if (m_nLineLength > 0)
+			{
+				// Get the current line.
+				m_strLine = Text.Substring(m_nLineStart, m_nLineLength);
+				// Process this line.
+				ProcessLine();
+			}
 			m_bPaint = true;
 		}
 		/// <summary>

@@ -50,7 +50,6 @@ namespace mkdb.Python
 	}
 	
 	
-	
 	public class PyFileEditor
 	{
 		protected ArrayList _class_files;
@@ -60,6 +59,7 @@ namespace mkdb.Python
 		public PyFileEditor()
 		{
 			_parser = new PyParser();
+			_class_files = new ArrayList();
 			CreateEmptyApp();
 		}
 		

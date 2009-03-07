@@ -88,13 +88,6 @@ namespace mkdb.Widgets
 		
 		public bool InsertWidgetInText()
 		{
-			/*
-			if __name__ == "__main__":
-    			app = wx.PySimpleApp(0)
-    			wx.InitAllImageHandlers()
-    			...
-    			app.MainLoop()
-			*/
 			Python.PyFileEditor ed = Common.Instance().PyEditor;
 			return true;			
 		}
@@ -120,38 +113,21 @@ namespace mkdb.Widgets
 		
 		private void SetPythonText(string appname)
 		{
+			string regexp1;
 			if (_section == null)
 				return;
+			// Looking for : class MyApp(wxApp):
 			Python.PySection appbody = _section.FindChildByName("App");
-			// class MyApp(wxApp):
-			string regexp1 = @"^(?<space>[\t\s]*)class\s*(?<appreg>\w*)\(";
-			string regexp2 = @"${space}class " + appname + "(";
-			Regex r = new Regex(regexp1);
-			for (int i=0; i<appbody.Lines.Count; i++)
-			{				
-				Match m = r.Match(appbody.Lines[i]);
-				if (m.Success)
-				{
-					// Change name
-					appbody.Lines[i] = r.Replace(appbody.Lines[i], regexp2);
-					break;
-				}
-			}
+			if (appbody == null)
+				return;
+			regexp1 = @"^(?<space>[\t\s]*)class\s*(?<appreg>\w*)\(";
+			appbody.RegexFindAndReplace(regexp1, appname, "appreg");			
+			// Looking for : app = MyApp(0)
 			Python.PySection apprun = _section.FindChildByName("Run");
-			// app = MyApp(0)
+			if (apprun == null) 
+				return;
 			regexp1 = @"^(?<space>[\t\s]*)app\s*=\s*(?<appreg>\w*)\(";
-			regexp2 = @"${space}app = " + appname + "(";
-			r = new Regex(regexp1);
-			for (int i=0; i<appbody.Lines.Count; i++)
-			{				
-				Match m = r.Match(apprun.Lines[i]);
-				if (m.Success)
-				{
-					// Change name
-					apprun.Lines[i] = r.Replace(apprun.Lines[i], regexp2);
-					break;
-				}
-			}
+			apprun.RegexFindAndReplace(regexp1, appname, "appreg");
 		}
 								
 		public void winProps_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -176,4 +152,38 @@ namespace mkdb.Widgets
 			Common.Instance().ObjPropsPanel.SelectedObject = _props;
 		}		
 	}
+	
+/*
+			// class MyApp(wxApp):
+			string regexp1 = @"^(?<space>[\t\s]*)class\s*(?<appreg>\w*)\(";
+			string regexp2 = @"${space}class " + appname + "(";
+			Regex r = new Regex(regexp1);
+			for (int i=0; i<appbody.Lines.Count; i++)
+			{				
+				Match m = r.Match(appbody.Lines[i]);
+				if (m.Success)
+				{
+					// Change name
+					string temp = appbody.Lines[i].Replace(m.Groups[1].Value, appname);
+					appbody.Lines[i] = temp;
+					break;
+				}
+			}
+			Python.PySection apprun = _section.FindChildByName("Run");
+			// app = MyApp(0)
+			regexp1 = @"^(?<space>[\t\s]*)app\s*=\s*(?<appreg>\w*)\(";
+			regexp2 = @"${space}app = " + appname + "(";
+			r = new Regex(regexp1);
+			for (int i=0; i<appbody.Lines.Count; i++)
+			{				
+				Match m = r.Match(apprun.Lines[i]);
+				if (m.Success)
+				{
+					// Change name
+					string temp = apprun.Lines[i].Replace(m.Groups[1].Value, appname);
+					apprun.Lines[i] = temp;
+					break;
+				}
+			}
+*/	
 }

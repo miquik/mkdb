@@ -3,8 +3,8 @@
 
 import wx
 
-# begin MyFrame1
-class MyFrame1(wx.Frame):
+# begin BaseFrame
+class BaseFrame(wx.Frame):
 	# begin __init__
     def __init__(self, *args, **kwds):
         self.__set_properties()
@@ -19,4 +19,4 @@ class MyFrame1(wx.Frame):
     def __do_layout(self):
 	# end __do_layout
 
-# end MyFrame1
+# end BaseFrame

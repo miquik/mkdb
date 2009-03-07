@@ -13,6 +13,7 @@ using System.Windows.Forms.Design;
 using System.Windows.Forms;
 using System.Drawing.Design;
 using System.Drawing;
+using System.Text.RegularExpressions;
 
 
 
@@ -26,8 +27,7 @@ namespace mkdb.Widgets
 		protected Point _real_pos;
 		protected Size _real_size;
 		
-		protected Python.PySection _py_class;
-		protected Python.PySection _py_base_class;
+		protected Python.PyClassFile _py_classes;
 		
 		#region SimpleFrame Defs
     	private enum mSizing {
@@ -72,6 +72,7 @@ namespace mkdb.Widgets
 			string temp_name = "Frame" + _frame_cur_index.ToString();
 			SetDefaultProps(temp_name);
 			SetWidgetProps();
+			InitPyClassFile();
 		}
 		
 		#region IWidgetElem Interface implementation
@@ -392,5 +393,30 @@ namespace mkdb.Widgets
 			e.Skip();
 		}						
 		#endregion		
+		
+		private void InitPyClassFile()
+		{
+			Python.PySection mc;
+			_py_classes = Common.Instance().PyEditor.CreateNewClassFile(_props.Name);
+			// Base Frame class
+			// Looking for : class MyFrame1(wx.Frame):
+			// sec = _py_classes.BaseClassSection.FindChildByName(_props.Name + "_base_class");
+			mc = _py_classes.BaseClassSection.FindChildByName("BaseFrame");
+			if (mc == null)
+				return;
+			string regexp1 = @"^(?<space>[\t\s]*)class\s*(?<mc>\w*)\(";
+			Match res = mc.RegexFindAndReplace(regexp1, _props.Name + "Base", "mc");
+			
+			mc = _py_classes.ClassSection.FindChildByName("InheritedFrame");
+			if (mc == null)
+				return;
+			mc.FindAndReplaceSub(res.Groups["mc"].Value, _props.Name + "Base");
+		}
+		
+		public Python.PySection FrameClass
+		{
+			get	{	return _py_classes.BaseClassSection;	}
+		}
+			
 	}
 }
