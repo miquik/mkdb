@@ -7,7 +7,7 @@
         <xs:element maxOccurs="unbounded" name="function">
           <xs:complexType>
             <xs:sequence>
-              <xs:element name="line" type="xs:string" />
+              <xs:element minOccurs="0" maxOccurs="unbounded" name="line" type="xs:string" />
             </xs:sequence>
             <xs:attribute name="Name" type="xs:string" />
           </xs:complexType>
