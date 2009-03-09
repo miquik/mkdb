@@ -22,12 +22,14 @@ namespace mkdb.Widgets
 		protected wdbAppProps _props;
 		protected bool _is_selected;
 		protected Python.PySection _section;
+		protected string _old_appname;
 			
 		public wiwApp(wx.Window _pc, wx.Sizer _ps) : base(null)
 		{
 			_props = new wdbAppProps();
 			SetDefaultProps("Project");
 			SetWidgetProps();
+			_old_appname = "MyApp";
 		}
 		
 		public Python.PySection AppSection
@@ -111,23 +113,9 @@ namespace mkdb.Widgets
 		{			
 		}
 		
-		private void SetPythonText(string appname)
+		private void SetPythonText(string oldname, string appname)
 		{
-			string regexp1;
-			if (_section == null)
-				return;
-			// Looking for : class MyApp(wxApp):
-			Python.PySection appbody = _section.FindChildByName("App");
-			if (appbody == null)
-				return;
-			regexp1 = @"^(?<space>[\t\s]*)class\s*(?<appreg>\w*)\(";
-			appbody.RegexFindAndReplace(regexp1, appname, "appreg");			
-			// Looking for : app = MyApp(0)
-			Python.PySection apprun = _section.FindChildByName("Run");
-			if (apprun == null) 
-				return;
-			regexp1 = @"^(?<space>[\t\s]*)app\s*=\s*(?<appreg>\w*)\(";
-			apprun.RegexFindAndReplace(regexp1, appname, "appreg");
+			_section.FindAndReplaceSub(oldname, appname);
 		}
 								
 		public void winProps_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -140,7 +128,8 @@ namespace mkdb.Widgets
 					Common.Instance().ObjTree.SelectedNode.Text = _props.Name;		
             		break;
             	case "AppName":
-            		SetPythonText(_props.AppName);
+            		SetPythonText(_old_appname, _props.AppName);
+            		_old_appname = _props.AppName;
             		break;
             }
             this.UpdateWindowUI();            

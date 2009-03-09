@@ -14,6 +14,7 @@ using System.Windows.Forms;
 using System.Drawing.Design;
 using System.Drawing;
 using System.Text.RegularExpressions;
+using System.Xml;
 
 
 
@@ -28,6 +29,8 @@ namespace mkdb.Widgets
 		protected Size _real_size;
 		
 		protected Python.PyClassFile _py_classes;
+		protected Python.PySection _base_class_section;
+		protected XmlDocument _actions;
 		
 		#region SimpleFrame Defs
     	private enum mSizing {
@@ -73,6 +76,7 @@ namespace mkdb.Widgets
 			SetDefaultProps(temp_name);
 			SetWidgetProps();
 			InitPyClassFile();
+			LoadXmlActions();
 		}
 		
 		#region IWidgetElem Interface implementation
@@ -126,7 +130,12 @@ namespace mkdb.Widgets
 			// Python.PyFileEditor ed = Common.Instance().PyEditor;
 			// Create python file struct
 			// and base python file struct
-			
+			Python.PySection mc;
+			mc = _base_class_section.FindChildByName("__init__");
+			mc.Lines.Insert(1, "kwds[\"style\"] = " + _props.Style.ToLong.ToString());
+			mc.Lines.Insert(2, "wx.Frame.__init__(self, *args, **kwds)");
+			mc = _base_class_section.FindChildByName("__set_properties");
+			mc.Lines.Add("self.SetTitle(" + _props.Title +")");
 			return true;
 		}
 		public bool DeleteWidget()
@@ -150,21 +159,6 @@ namespace mkdb.Widgets
 		
 		public void HighlightSelection()
 		{
-			/*
-			Graphics screen_area = Graphics.FromHwnd(Win32Utils.GetDesktopWindow());
-			Panel pan = Common.Instance().Canvas;			
-			Point _start = pan.PointToScreen(new Point(0, 0));
-			screen_area.FillRectangle(new SolidBrush(Color.Orange), 
-			                          new Rectangle(_start.X, _start.Y, pan.Width, pan.Height));
-			if (IsSelected)
-			{
-				Pen _pen = new Pen(Color.Red, 10);
-				Point ps = pan.PointToScreen(new Point(4, 4));
-				screen_area.DrawRectangle(_pen, ps.X, ps.Y, Size.Width + 1, Size.Height + 1);
-			}			
-			// area.Clear(pan.BackColor);
-			// Graphics screen = Graphics.FromHwnd(
-			*/
 			Panel pan = Common.Instance().Canvas;
 			Graphics area = pan.CreateGraphics();
 			area.Clear(pan.BackColor);
@@ -411,6 +405,15 @@ namespace mkdb.Widgets
 			if (mc == null)
 				return;
 			mc.FindAndReplaceSub(res.Groups["mc"].Value, _props.Name + "Base");
+			_base_class_section = _py_classes.BaseClassSection.FindChildByName("BaseFrame");
+		}
+		
+		private void LoadXmlActions()
+		{
+    		System.Reflection.Assembly a = System.Reflection.Assembly.GetExecutingAssembly();
+        	System.IO.Stream str = a.GetManifestResourceStream("mkdb.Widgets.Frame.wxframe.xml");        		
+        	_actions = new XmlDocument();
+        	_actions.Load(str);
 		}
 		
 		public Python.PySection FrameClass

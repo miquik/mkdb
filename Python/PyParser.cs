@@ -31,9 +31,11 @@ namespace mkdb.Python
 		{
 			if (pos >= coll.Count)
 			{
-				coll.Add(pos.ToString() + " :: " + str);
+				// coll.Add(pos.ToString() + " :: " + str);
+				coll.Add(str);
 			} else {
-				coll.Insert(pos, pos.ToString() + " :: " + str);
+				// coll.Insert(pos, pos.ToString() + " :: " + str);
+				coll.Insert(pos, str);
 			}
 		}
 		

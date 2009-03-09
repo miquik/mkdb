@@ -1,8 +1,8 @@
 ﻿/*
  * Creato da SharpDevelop.
  * Utente: michele
- * Data: 04/02/2009
- * Ora: 15.36
+ * Data: 09/03/2009
+ * Ora: 15.00
  * 
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
@@ -10,9 +10,10 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using System.ComponentModel.Design;
+using System.Xml;
+using System.Reflection;
 
-namespace provablit
+namespace pyprova
 {
 	/// <summary>
 	/// Description of MainForm.
@@ -21,99 +22,62 @@ namespace provablit
 	{
 		public MainForm()
 		{
-			InitializeComponent();			
-			// wx.Frame frame = new wx.Frame(null, -1, "Prova");
-			wx.Frame frame = new wx.Frame(null, -1, "");
-			InnerFrame panel = new InnerFrame(frame, -1, "Prova", wx.Panel.wxDefaultPosition, new Size(frame.Width, frame.Height), 0);
-			frame.StyleFlags = 0;
-			frame.Show();
-			// Win32Utils.SetParent(panel.GetHandle(), this.Handle);
-			// frame.Show();
-			// panel.EVT_MOUSE_EVENTS(new wx.EventListener(OnMouseEvent));
-			// wx.MiniFrame frame = new wx.MDIClientWindow(null, -1, "Prova");
-			// frame.StyleFlags = 0;
-			// frame.Show();
-			// panel = new wx.Panel(frame, -1, new System.Drawing.Point(0,0), new System.Drawing.Size(100,100));
-			// bmp = new wx.Bitmap();
-			// bmp.LoadFile("../../minimize_xpm.xpm", wx.BitmapType.wxBITMAP_TYPE_XPM);
-		}
-		
-		protected void OnMouseEvent(object sender, wx.Event e)
-		{
-			wx.MouseEvent evt = (wx.MouseEvent)e;
-			if (evt.Entering)
-			{
-				InnerFrame pan = (InnerFrame)sender;
-				pan.Cursor = new wx.Cursor(wx.StockCursor.wxCURSOR_CROSS);
+			//
+			// The InitializeComponent() call is required for Windows Forms designer support.
+			//
+			InitializeComponent();
+    		System.Reflection.Assembly a = System.Reflection.Assembly.GetExecutingAssembly();
+    		System.IO.Stream str = a.GetManifestResourceStream("pyprova.wxclass.xsd");
+			// xsd_settings = new XmlReaderSettings();
+			// xsd_settings.ValidationType = ValidationType.Schema;
+			// xsd_settings.Schemas.Add("wxprops", new XmlTextReader(str));
+			XmlDocument doc = new XmlDocument();
+			doc.Schemas.Add("wxprops", new XmlTextReader(str));
+			doc.Load("../../template_app.xml");
+/*			
+<pythonfile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <beforelines>#!/usr/bin/env python</beforelines>
+  <class Name="MyApp">
+    <function Name="OnInit(self)">
+      <line>return true</line>
+    </function>
+    <classafterlines></classafterlines>
+  </class>
+  <afterlines>app = MyApp(0)</afterlines>
+</pythonfile>			
+*/			
+			XmlNode file = null;
+			foreach (XmlNode node in doc.ChildNodes)
+			{				
+				if (node.Name == "pythonfile")
+				{
+					file = node;
+					break;
+				}
 			}
-		}
-		
-		void MainFormPaint(object sender, PaintEventArgs e)
-		{
-			/*
-			wx.WindowDC wdc = new wx.WindowDC(panel);
-			wdc.DrawBitmap(bmp, 0, 0);
-			*/
-			/*
-		'/ <summary>
-        '/ Creates an Image object containing a screen shot of a specific window
-        '/ </summary>
-        '/ <param name="handle">The handle to the window. (In windows forms, this is obtained by the Handle property)</param>
-        '/ <returns></returns>
-        Public Function CaptureWindow(ByVal handle As IntPtr) As Image
-            ' get te hDC of the target window
-            Dim hdcSrc As IntPtr = User32.GetWindowDC(handle)
-            ' get the size
-            Dim windowRect As New User32.RECT()
-            User32.GetWindowRect(handle, windowRect)
-            Dim width As Integer = windowRect.right - windowRect.left
-            Dim height As Integer = windowRect.bottom - windowRect.top
-            ' create a device context we can copy to
-            Dim hdcDest As IntPtr = GDI32.CreateCompatibleDC(hdcSrc)
-            ' create a bitmap we can copy it to,
-            ' using GetDeviceCaps to get the width/height
-            Dim hBitmap As IntPtr = GDI32.CreateCompatibleBitmap(hdcSrc, width, height)
-            ' select the bitmap object
-            Dim hOld As IntPtr = GDI32.SelectObject(hdcDest, hBitmap)
-            ' bitblt over
-            GDI32.BitBlt(hdcDest, 0, 0, width, height, hdcSrc, 0, 0, GDI32.SRCCOPY)
-            ' restore selection
-            GDI32.SelectObject(hdcDest, hOld)
-            ' clean up 
-            GDI32.DeleteDC(hdcDest)
-            User32.ReleaseDC(handle, hdcSrc)
-
-            ' get a .NET image object for it
-            Dim img As Image = Image.FromHbitmap(hBitmap)
-            ' free up the Bitmap object
-            GDI32.DeleteObject(hBitmap)
-
-            Return img
-        End Function 'CaptureWindow*/		
-			/*
-			Graphics gContainer = this.panel1.CreateGraphics();	
-			Graphics frameContainer = Graphics.FromHwnd(frame.GetHandle());
 			
-			IntPtr hdc = gContainer.GetHdc();
-			IntPtr hMemdc = frameContainer.GetHdc();
-			if (Win32Utils.BitBlt(hdc, 0, 0, frame.Width, frame.Height,
-			                      hMemdc, 0, 0, (int)Win32Utils.TernaryRasterOperations.SRCCOPY) == true)
-			{
-				int k=0;
+			foreach (XmlNode node in file.ChildNodes)
+			{				
+				if (node.Name == "beforelines")
+				{
+					string[] sep = {"\\n"};
+					string[] strs = node.InnerText.Split(sep, StringSplitOptions.None);
+					foreach (string s in strs)
+					{
+						richTextBox1.AppendText(s + '\n');
+					}
+				}
+				if (node.Name == "afterlines")
+				{
+					string[] sep = {"\\n"};
+					string[] strs = node.InnerText.Split(sep,StringSplitOptions.None);
+					foreach (string s in strs)
+					{
+						richTextBox1.AppendText(s + '\n');
+					}
+				}
 			}
-			gContainer.ReleaseHdc(hdc);
-			frameContainer.ReleaseHdc(hMemdc);			
-			*/
-			/*
-			Graphics gContainer = this.CreateGraphics();			
-			IntPtr hdc = gContainer.GetHdc();
-			if (Win32Utils.BitBlt(hdc, 0, 0, 100, 100,
-			                      hdc, 0, 0, Win32Utils.TernaryRasterOperations.NOTSRCCOPY) == true)
-			{
-				int k=0;
-			}
-			gContainer.ReleaseHdc(hdc);
-			*/
+			
 		}
 	}
 }

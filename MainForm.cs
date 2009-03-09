@@ -317,9 +317,15 @@ namespace mkdb
 			WidgetTreeNode node = (WidgetTreeNode)objtree.SelectedNode;
 			wiwFrame frame = (wiwFrame)node.Widget;
 			pyed.Parser.Render(coll, frame.FrameClass);
+			int nStartPos = 0;
+			m_nLineStart = 0;
 			foreach (string it in coll)
 			{
+				m_nLineStart = nStartPos;
+				richTextBox2.LineStart = nStartPos;
+				richTextBox2.LineEnd = nStartPos + it.Length;
 				richTextBox2.AppendText(it);
+				nStartPos += it.Length;				
 			}
 		}		
 		

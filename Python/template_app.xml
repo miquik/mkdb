@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Created with Liquid XML Studio - FREE Community Edition 7.0.5.906 (http://www.liquid-technologies.com) -->
+<pythonfile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file:///C:/Documents%20and%20Settings/Michele/Documenti/SharpDevelop%20Projects/mkdb/Python/wxclass.xsd">
+  <beforelines>string</beforelines>
+  <class Name="string">
+    <function Name="string" />
+    <function Name="string">
+      <line>string</line>
+      <line>string</line>
+      <line>string</line>
+      <line>string</line>
+    </function>
+    <function Name="string">
+      <line>string</line>
+      <line>string</line>
+      <line>string</line>
+    </function>
+    <function Name="string">
+      <line>string</line>
+      <line>string</line>
+    </function>
+    <classafterlines>string</classafterlines>
+  </class>
+  <class Name="string">
+    <function Name="string">
+      <line>string</line>
+      <line>string</line>
+      <line>string</line>
+      <line>string</line>
+    </function>
+    <function Name="string">
+      <line>string</line>
+      <line>string</line>
+    </function>
+    <function Name="string">
+      <line>string</line>
+      <line>string</line>
+      <line>string</line>
+      <line>string</line>
+    </function>
+    <classafterlines>string</classafterlines>
+  </class>
+  <class Name="string">
+    <function Name="string">
+      <line>string</line>
+    </function>
+    <function Name="string">
+      <line>string</line>
+      <line>string</line>
+      <line>string</line>
+    </function>
+    <classafterlines>string</classafterlines>
+  </class>
+  <class Name="string">
+    <function Name="string">
+      <line>string</line>
+      <line>string</line>
+      <line>string</line>
+      <line>string</line>
+    </function>
+    <function Name="string">
+      <line>string</line>
+      <line>string</line>
+      <line>string</line>
+      <line>string</line>
+    </function>
+    <function Name="string" />
+    <classafterlines>string</classafterlines>
+  </class>
+  <class Name="string">
+    <function Name="string">
+      <line>string</line>
+    </function>
+    <function Name="string">
+      <line>string</line>
+      <line>string</line>
+    </function>
+    <classafterlines>string</classafterlines>
+  </class>
+  <afterlines>string</afterlines>
+</pythonfile>
