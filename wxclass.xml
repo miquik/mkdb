@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- Created with Liquid XML Studio - FREE Community Edition 7.0.5.906 (http://www.liquid-technologies.com) -->
-<pythonfile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="D:\Miki\Documenti\Programmazione\python\mkdb\wxclass.xsd">
-  <beforelines>Ciao\n</beforelines>
-  <class Name="Prova">
-    <function Name="__init__(self)">
-      <line>return true</line>
+<pythonfile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="file:///C:/Documents%20and%20Settings/Miki/Documenti/SharpDevelop%20Projects/testxml/wxclass.xsd">
+  <doctext># comment\n</doctext>
+  <class Name="BaseFrame">
+    <function Name="__init__" Parameters="self, kwd">
+      <body>wxFrame.__init(self, -1, "")</body>
     </function>
-    <classafterlines></classafterlines>
+	<classtext># comment 2\n</classtext>
+    <function Name="__set_properties" Parameters="">
+      <body>return true</body>
+    </function>
   </class>
-  <afterlines># end here</afterlines>
+  <doctext># string</doctext>
+  <doctext># string</doctext>
 </pythonfile>

@@ -3,27 +3,27 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:element name="class">
     <xs:complexType>
-      <xs:sequence>
-        <xs:element maxOccurs="unbounded" name="function">
+      <xs:choice maxOccurs="unbounded">
+        <xs:element name="classtext" type="xs:string" />
+        <xs:element name="function">
           <xs:complexType>
             <xs:sequence>
-              <xs:element name="line" type="xs:string" />
+              <xs:element name="body" type="xs:string" />
             </xs:sequence>
             <xs:attribute name="Name" type="xs:string" />
+            <xs:attribute name="Parameters" type="xs:string" />
           </xs:complexType>
         </xs:element>
-        <xs:element name="classafterlines" type="xs:string" />
-      </xs:sequence>
+      </xs:choice>
       <xs:attribute name="Name" type="xs:string" />
     </xs:complexType>
   </xs:element>
   <xs:element name="pythonfile">
     <xs:complexType>
-      <xs:sequence>
-        <xs:element name="beforelines" type="xs:string" />
-        <xs:element maxOccurs="unbounded" ref="class" />
-        <xs:element name="afterlines" type="xs:string" />
-      </xs:sequence>
+      <xs:choice maxOccurs="unbounded">
+        <xs:element name="doctext" type="xs:string" />
+        <xs:element ref="class" />
+      </xs:choice>
     </xs:complexType>
   </xs:element>
 </xs:schema>
