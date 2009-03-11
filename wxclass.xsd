@@ -7,7 +7,7 @@
         <xs:element name="classtext" type="xs:string" />
         <xs:element name="function">
           <xs:complexType>
-            <xs:sequence>
+            <xs:sequence maxOccurs="unbounded">
               <xs:element name="body" type="xs:string" />
             </xs:sequence>
             <xs:attribute name="Name" type="xs:string" />

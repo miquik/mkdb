@@ -14,8 +14,9 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Reflection;
 using System.IO;
+using System.Text.RegularExpressions;
 
-namespace testxml
+namespace pyprova
 {
 	public class PyCodeTree
 	{
@@ -27,37 +28,13 @@ namespace testxml
 		public PyCodeTree()
 		{
 			_doc = new XmlDocument();
-    		Stream str = Assembly.GetExecutingAssembly().GetManifestResourceStream("testxml.wxclass.xsd");
+    		Stream str = Assembly.GetExecutingAssembly().GetManifestResourceStream("pyprova.wxclass.xsd");
 			_doc.Schemas.Add("wxclass", new XmlTextReader(str));			
 			_name = "";
 			curclass = -1;
 		}
-		/*		
-		public StringCollection BeforeTextArray
-		{
-			get	{	return ToCollection(_btext.InnerText);	}
-			set	{	_btext.InnerText = ToText(value);	}
-		}
 		
-		public StringCollection AfterTextArray
-		{
-			get	{	return ToCollection(_atext.InnerText);	}
-			set	{	_atext.InnerText = ToText(value);	}
-		}		
-		
-		public string BeforeText
-		{
-			get	{	return _btext.InnerText;	}
-			set	{	_btext.InnerText = value;	}
-		}
-		
-		public string AfterText
-		{
-			get	{	return _atext.InnerText;	}
-			set	{	_atext.InnerText = value;	}
-		}
-		*/
-		private StringCollection ToCollection(string text)
+		public static StringCollection ToStringCollection(string text)
 		{
 			string[] sep = {"\\n"};
 			string[] strs = text.Split(sep, StringSplitOptions.None);
@@ -66,7 +43,7 @@ namespace testxml
 			return coll;
 		}
 		
-		private string ToText(StringCollection coll)
+		public static string ToText(StringCollection coll)
 		{
 			string res = "";
 			foreach (string s in coll)
@@ -76,26 +53,42 @@ namespace testxml
 			return res;
 		}
 		
-		public bool InsertBeginInFunction(string cname, string fname, string val)
+		public StringCollection GetFunctionBody(string classname, string funcname)
 		{			
-			// check if exist
-			if (curclass == -1) return false;
-			XmlNodeList nodes = _doc.GetElementsByTagName("fname");
-			XmlNode nd = null;
-			foreach (XmlNode n in nodes)
+			XmlElement root = _doc.DocumentElement;
+			XmlNodeList nodes = root.SelectNodes("/pythonfile/class[@Name='" + classname + "']" +
+			                                     "/function[@Name='" + funcname + "']/body");
+			StringCollection c = null;
+			if (nodes.Count > 0)
 			{
-				if (n.ParentNode.Attributes[0].Value == cname)
+				c = new StringCollection();
+				foreach (XmlNode n in nodes)
 				{
-					nd = n;
-					break;
+					c.Add(n.InnerText);
 				}
 			}
-			if (nd == null) return false;
-			if (!nd.HasChildNodes)
-			{
-			} else {
-				
-			}
+			return c;
+		}
+		
+		public bool CreateNewFunction(string classname, string funcname, string parameters)
+		{
+			XmlElement root = _doc.DocumentElement;
+			XmlNode node = root.SelectSingleNode("/pythonfile/class[@Name='" + classname + "']");
+			if (node == null)
+				return false;
+			
+			XmlElement func = _doc.CreateElement("function");
+			XmlAttribute funcname = _doc.CreateAttribute("Name");
+			XmlAttribute funcparams = _doc.CreateAttribute("Parameters");					
+			funcname.InnerText = funcname;
+			if (parameters != "")
+				funcparams.InnerText = parameters;
+			else
+				funcparams.InnerText = "";
+			func.Attributes.Append(funcname);
+			func.Attributes.Append(funcparams);
+			func.InnerText = "";
+			node.AppendChild(func);
 			return true;
 		}
 		
@@ -123,15 +116,6 @@ namespace testxml
 				if (m.Success)
 				{
 					// this is a function...
-					// terminate <classtext> element
-					if (c.Count > 0)
-					{
-						// Create base element <pythonfile>
-						XmlElement dt = _doc.CreateElement("classtext");
-						dt.InnerText = ToText(c);
-						classnode.AppendChild(dt);
-						c.Clear();
-					}
 					// Create <function> element
 					XmlElement func = _doc.CreateElement("function");
 					XmlAttribute funcname = _doc.CreateAttribute("Name");
@@ -146,38 +130,33 @@ namespace testxml
 					// find the end of this class.
 					int funcbegin = i+1;
 					int funcend = funcbegin;
-					string str = "";
 					while (funcend <= end)
 					{
 						if (coll[funcend].Contains("# end " + funcname.InnerText))
 						{
 							break;							
 						}
-						str += coll[funcend] + "\\n";
+						// str += coll[funcend] + "\\n";
+						XmlElement body = _doc.CreateElement("body");	
+						if (coll[funcend] == "")
+							body.InnerText = "\\n";
+						else
+							body.InnerText = coll[funcend].Trim();
+						func.AppendChild(body);						
 						funcend++;						
-					}
-					if (funcend - funcbegin > 0)
-					{
-						// text inside this function...
-						// create body element...
-						XmlElement body = _doc.CreateElement("body");
-						body.InnerText = str;
-						func.AppendChild(body);
 					}
 					classnode.AppendChild(func);
 					i = funcend;
 				} else {
-					c.Add(item);
+					// Create base element <pythonfile>
+					XmlElement dt = _doc.CreateElement("classtext");
+					if (item == "")
+						dt.InnerText = "\\n";
+					else
+						dt.InnerText = item.Trim();
+					classnode.AppendChild(dt);
 				}
 			}
-			if (c.Count > 0)
-			{
-				// Create base element <pythonfile>						
-				XmlElement dt = _doc.CreateElement("classtext");
-				dt.InnerText = ToText(c);
-				classnode.AppendChild(dt);
-				c.Clear();
-			}			
 			return end;
 		}
 		
@@ -206,7 +185,6 @@ namespace testxml
 			}
 			read.Close();
 			
-			StringCollection c = new StringCollection();			
 			string classexp = @"^[\t\s]*class\s*(?<classname>\w*)\(";
 			
 			for (int i=0; i<filelines.Count; i++)
@@ -216,16 +194,6 @@ namespace testxml
 				if (m.Success)
 				{
 					// this is a class...
-					// terminate <doctext> element
-					if (c.Count > 0)
-					{
-						// Create base element <pythonfile>
-						XmlElement dt = _doc.CreateElement("doctext");
-						string str = ToText(c);
-						dt.InnerText = str;
-						pfile.AppendChild(dt);
-						c.Clear();
-					}
 					// Create <class> element
 					XmlElement cl = _doc.CreateElement("class");
 					XmlAttribute clname = _doc.CreateAttribute("Name");
@@ -246,16 +214,14 @@ namespace testxml
 					// Parse sub-nodes
 					pfile.AppendChild(cl);
 				} else {
-					c.Add(item);
+					XmlElement dt = _doc.CreateElement("doctext");
+					if (item == "")
+						dt.InnerText = "\\n";
+					else
+						dt.InnerText = item.Trim();
+					pfile.AppendChild(dt);
 				}
 			}
-			if (c.Count > 0)
-			{
-				XmlElement dt = _doc.CreateElement("doctext");
-				dt.InnerText = ToText(c);
-				pfile.AppendChild(dt);
-				c.Clear();
-			}			
 			_doc.AppendChild(pfile);
 			XmlTextWriter xmlWriter = new XmlTextWriter("../../at.xml", System.Text.Encoding.UTF8);
             xmlWriter.Formatting = Formatting.Indented;
@@ -263,47 +229,5 @@ namespace testxml
 			xmlWriter.Flush();
 			xmlWriter.Close();
 		}		
-		
-		public void RenderTree(RichTextBox box)
-		{
-			string[] sep = {"\\n"};
-			string[] bstrs = null;
-			// bstrs = _btext.InnerText.Split(sep, StringSplitOptions.None);
-			foreach (string s in bstrs)
-			{
-				box.AppendText(s + '\n');
-			}
-			// Render class
-			foreach (XmlNode n in _classes)
-			{
-				box.AppendText("class " + n.Attributes[0].Value + "(wxFrame):\n");
-				foreach (XmlNode func in n.ChildNodes)
-				{
-					if (func.Name == "classafterlines")
-					{
-						string[] ca = func.InnerText.Split(sep, StringSplitOptions.None);
-						foreach (string s in ca)
-						{
-							box.AppendText(s + '\n');
-						}
-					} else if (func.Name == "function")
-					{
-						box.AppendText("\tdef " + func.Attributes[0].Value + ":\n");
-						XmlNode text = func.ChildNodes[0];
-						string[] ca = text.InnerText.Split(sep, StringSplitOptions.None);
-						foreach (string s in ca)
-						{
-							box.AppendText("\t\t" + s + '\n');
-						}						
-						box.AppendText("\t# end " + func.Attributes[0].Value + "\n");
-					}
-				}
-			}
-			// bstrs = _atext.InnerText.Split(sep, StringSplitOptions.None);
-			foreach (string s in bstrs)
-			{
-				box.AppendText(s + '\n');
-			}
-		}
 	}
 }
